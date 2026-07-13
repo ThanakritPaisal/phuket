@@ -1,0 +1,83 @@
+/* ============================================================
+   PROVIDER PORTAL — classes ported from LOMA-prototype.html
+   (reuses design tokens from tokens.css)
+   ============================================================ */
+
+/* provider app bar (richer than the tourist .appbar) */
+.appbar .row1 { display: flex; align-items: center; gap: 10px; width: 100%; }
+.appbar .logo { width: 30px; height: 30px; border-radius: 9px; background: linear-gradient(135deg, var(--primary), #19a89c); display: grid; place-items: center; color: #fff; font-weight: 800; font-size: 15px; flex: none; }
+.appbar .where { flex: 1; min-width: 0; }
+.appbar .where .t { font-size: 11px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .4px; }
+.appbar .where .p { font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 5px; }
+.appbar .avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--accent-l); color: var(--accent); display: grid; place-items: center; font-weight: 700; font-size: 13px; border: 1px solid var(--line); flex: none; cursor: pointer; }
+
+/* bottom tab bar */
+.tabbar { display: flex; border-top: 1px solid var(--line); background: var(--surface); position: sticky; bottom: 0; z-index: 10; box-shadow: 0 -4px 14px rgba(16, 40, 38, .05); margin-top: auto; flex: none; }
+.tabbar button { flex: 1; padding: 9px 0 11px; font-size: 10.5px; font-weight: 600; color: var(--muted); display: flex; flex-direction: column; align-items: center; gap: 3px; background: none; }
+.tabbar button .ic { width: 22px; height: 22px; display: grid; place-items: center; }
+.tabbar button.on { color: var(--primary); }
+
+/* section header */
+.h-sec { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); margin: 18px 0 9px; }
+
+/* segmented control */
+.segmented { display: flex; background: var(--surface-2); border: 1px solid var(--line); border-radius: 12px; padding: 4px; gap: 4px; }
+.segmented button { flex: 1; font-size: 12.5px; font-weight: 600; color: var(--ink-2); padding: 9px 6px; border-radius: 9px; display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; line-height: 1.2; background: none; }
+.segmented button.on { background: var(--surface); color: var(--primary); box-shadow: var(--shadow); }
+
+/* LOMA score ring */
+.score { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 700; color: var(--ink-2); }
+.score .ring { width: 26px; height: 26px; border-radius: 50%; background: conic-gradient(var(--primary) calc(var(--v) * 1%), var(--line) 0); display: grid; place-items: center; }
+.score .ring i { width: 19px; height: 19px; border-radius: 50%; background: var(--surface); display: grid; place-items: center; font-size: 9px; font-style: normal; color: var(--primary-d); font-weight: 800; }
+
+/* demo-account / partner row */
+.prow { display: flex; gap: 11px; padding: 11px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); margin-bottom: 9px; cursor: pointer; transition: .12s; align-items: center; }
+.prow:hover { border-color: var(--primary); box-shadow: var(--shadow); }
+.prow .info { flex: 1; min-width: 0; }
+.prow .info h3 { font-size: 14px; }
+.prow .info .m { font-size: 11.5px; color: var(--muted); margin-top: 2px; }
+
+/* info / pending note */
+.note-box { background: var(--warn-l); border-radius: 12px; padding: 11px 13px; margin-top: 10px; font-size: 13px; color: var(--warn); }
+.note-box .lab { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .4px; color: var(--warn); display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+
+/* tag pill */
+.tag { font-size: 11.5px; font-weight: 600; background: var(--surface-2); border: 1px solid var(--line); color: var(--ink-2); padding: 4px 9px; border-radius: 99px; }
+
+/* stars */
+.starrow { color: #E0A93C; letter-spacing: 2px; }
+
+/* referral / code input */
+.pp-input { width: 100%; border: 1px solid var(--line); border-radius: 12px; padding: 14px; font-size: 18px; font-weight: 700; letter-spacing: 3px; text-align: center; text-transform: uppercase; font-family: var(--f); color: var(--ink); background: var(--surface); margin-top: 4px; }
+.pp-input.sm { font-size: 15px; letter-spacing: 0; font-weight: 500; text-align: left; text-transform: none; }
+
+/* visit-confirmed success screen */
+.confirm-ok { text-align: center; padding: 30px 16px; flex: 1; overflow-y: auto; }
+.confirm-ok .ck { width: 74px; height: 74px; border-radius: 50%; background: var(--ok-l); color: var(--ok); display: grid; place-items: center; margin: 0 auto 16px; }
+.confirm-ok .ck svg { width: 40px; height: 40px; }
+
+/* lead row */
+.lead-row { display: flex; align-items: center; gap: 11px; padding: 11px 0; border-bottom: 1px solid var(--line-2); }
+.lead-row .ds { width: 42px; height: 42px; border-radius: 10px; background: var(--primary-l); color: var(--primary-d); display: grid; place-items: center; font-weight: 800; font-size: 12px; flex: none; text-align: center; line-height: 1.1; }
+
+/* aggregate tag bars */
+.blist { display: flex; flex-direction: column; gap: 11px; }
+.brow { display: flex; align-items: center; gap: 10px; font-size: 12.5px; }
+.brow .nm { width: 130px; flex: none; font-weight: 600; color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.brow .track { flex: 1; height: 9px; background: var(--surface-2); border-radius: 99px; overflow: hidden; }
+.brow .fill { height: 100%; border-radius: 99px; background: var(--primary); }
+.brow .fill.a { background: var(--accent); }
+.brow .vv { width: 46px; text-align: right; font-weight: 700; color: var(--ink); }
+
+/* tiny status badge */
+.tinybadge { font-size: 10.5px; font-weight: 700; padding: 2px 7px; border-radius: 6px; }
+.tinybadge.hot { background: var(--ok-l); color: var(--ok); }
+.tinybadge.under { background: var(--surface-2); color: var(--muted); }
+
+/* photo thumb with emoji fallback */
+.pthumb { background-size: cover; background-position: center; background-color: var(--surface-2); display: grid; place-items: center; position: relative; overflow: hidden; }
+.pthumb .ph-emo { opacity: .55; }
+
+/* toast */
+.prov-toast { position: absolute; left: 50%; bottom: 74px; transform: translateX(-50%) translateY(8px); background: var(--ink); color: #fff; font-size: 12.5px; font-weight: 600; padding: 9px 14px; border-radius: 10px; box-shadow: var(--shadow-lg); opacity: 0; pointer-events: none; transition: .2s var(--ease); z-index: 40; white-space: nowrap; max-width: 90%; }
+.prov-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }

@@ -1,0 +1,404 @@
+[
+ {
+  "id": "kathu",
+  "name": "ชุมชนกะทู้",
+  "nameEn": "Kathu Community",
+  "area": "Kathu",
+  "emo": "⛏️",
+  "img": "/providers/OSM-KATHU-01.jpg",
+  "about": "Phuket's old tin-mining heart — heritage houses, an old town, deep-rooted culture and traditional rituals set against green hills.",
+  "activities": [
+   "ของเก่า บ้านเก่า เมืองเก่า",
+   "ธรรมชาติดี",
+   "วัฒนธรรมเก่าแก่",
+   "พิธีกรรมเก่าๆ"
+  ],
+  "memberIds": [
+   "OSM-KATHU-01",
+   "OSM-KATHU-02",
+   "OSM-KATHU-03",
+   "OSM-KATHU-130",
+   "OSM-KATHU-134"
+  ],
+  "priceFrom": "฿350–500 / person (est.)",
+  "duration": "Half-day · flexible",
+  "schedule": [
+   "By appointment — contact the community"
+  ],
+  "phone": "Arrange via LOMA"
+ },
+ {
+  "id": "koh-maprao",
+  "name": "ชุมชนเกาะมะพร้าว",
+  "nameEn": "Koh Maprao (Coconut Island) Community",
+  "area": "Koh Maprao",
+  "emo": "🥥",
+  "img": "/providers/LOMA-CBT-P034.jpg",
+  "about": "The island closest to Phuket — 5 minutes by longtail. 2,800 rai of nature incl. 600 rai of pristine mangrove, fully organic, with a way of life kept whole. It makes 'having nothing like the city' the whole point.",
+  "activities": [
+   "ใกล้ภูเก็ตที่สุด — เรือหางยาวจากฝั่งไม่เกิน 5 นาที",
+   "ป่าโกงกาง 600 ไร่ ธรรมชาติ 2,800 ไร่",
+   "ทั้งเกาะออร์แกนิก",
+   "อาหารทะเลสด แปรรูปอาหารทะเล ผลิตภัณฑ์จากมะพร้าว",
+   "ไม้กวาด พวงกุญแจ งานฝีมือ",
+   "กรีดยาง ชายหาดสงบ วิถีชุมชน"
+  ],
+  "memberIds": [
+   "OSM-KOHMAPRAO-01",
+   "OSM-KOHMAPRAO-02",
+   "OSM-KOHMAPRAO-03",
+   "LOMA-CBT-P034",
+   "LOMA-CBT-A081",
+   "LOMA-CBT-A080",
+   "LOMA-CBT-A079"
+  ],
+  "priceFrom": "฿350–500 / person (est.)",
+  "duration": "Half-day · flexible",
+  "schedule": [
+   "By appointment — contact the community"
+  ],
+  "phone": "Arrange via LOMA"
+ },
+ {
+  "id": "kamala",
+  "name": "ชุมชนกมลา",
+  "nameEn": "Kamala Community",
+  "area": "Kamala",
+  "emo": "🎨",
+  "img": "/providers/LOMA-CBT-A070.jpg",
+  "about": "Batik and tie-dye crafts, natural products and local sweets, framed by waterfalls, mountains, beaches and headlands.",
+  "activities": [
+   "งานบาติก มัดย้อม",
+   "ผลิตภัณฑ์ธรรมชาติ ขนมพื้นถิ่น",
+   "ส้มควาย",
+   "น้ำตก ภูเขา ชายหาด แหลม ภูผา"
+  ],
+  "memberIds": [
+   "OSM-KAMALA-01",
+   "OSM-KAMALA-02",
+   "OSM-KAMALA-03",
+   "LOMA-CBT-A070",
+   "LOMA-CBT-A075",
+   "LOMA-CBT-A068",
+   "LOMA-CBT-A078",
+   "LOMA-CBT-A076",
+   "LOMA-CBT-A073",
+   "LOMA-CBT-A071",
+   "LOMA-CBT-A069",
+   "LOMA-CBT-A077",
+   "LOMA-CBT-A074",
+   "LOMA-CBT-A072"
+  ],
+  "priceFrom": "฿350–500 / person (est.)",
+  "duration": "Half-day · flexible",
+  "schedule": [
+   "By appointment — contact the community"
+  ],
+  "phone": "Arrange via LOMA"
+ },
+ {
+  "id": "ban-kian",
+  "name": "ชุมชนบ้านเคียน",
+  "nameEn": "Ban Kian Community",
+  "area": "Thalang",
+  "emo": "🏛️",
+  "img": "/providers/LOMA-CBT-A043.jpg",
+  "about": "A Thalang heritage village — Wat Phra Nang Sang, the Nine Heroes memorial, and the historic Ya Chan / Ya Muk houses.",
+  "activities": [
+   "วัดพระนางสร้าง",
+   "อนุสรณ์สถาน 9 วีรชน",
+   "บ้านย่าจัน ย่ามุก"
+  ],
+  "memberIds": [
+   "OSM-BANKIAN-01",
+   "OSM-BANKIAN-02",
+   "OSM-BANKIAN-03",
+   "LOMA-CBT-A043",
+   "LOMA-CBT-A041",
+   "LOMA-CBT-A042",
+   "LOMA-CBT-A040",
+   "LOMA-CBT-A038",
+   "LOMA-CBT-A044",
+   "LOMA-CBT-A045",
+   "LOMA-CBT-P022",
+   "LOMA-CBT-A039",
+   "LOMA-CBT-P021",
+   "LOMA-CBT-P020",
+   "OSM-BANKIAN-112",
+   "OSM-BANKIAN-120",
+   "OSM-BANKIAN-133",
+   "OSM-BANKIAN-153",
+   "OSM-BANKIAN-185"
+  ],
+  "priceFrom": "฿350–500 / person (est.)",
+  "duration": "Half-day · flexible",
+  "schedule": [
+   "By appointment — contact the community"
+  ],
+  "phone": "Arrange via LOMA"
+ },
+ {
+  "id": "tha-chatchai",
+  "name": "ชุมชนบ้านท่าฉัตรชัย",
+  "nameEn": "Ban Tha Chatchai Community",
+  "area": "Mai Khao (Thalang)",
+  "emo": "🌉",
+  "img": "/providers/LOMA-CBT-A048.jpg",
+  "about": "The northern gateway by the Sarasin Bridge — mangrove forest, local fishing, and the Crystal Sand (Sai Kaew) beach.",
+  "activities": [
+   "สะพานสารสิน",
+   "ป่าชายเลน",
+   "ประมงพื้นบ้าน",
+   "หาดทรายแก้ว"
+  ],
+  "memberIds": [
+   "OSM-THACHATCHAI-01",
+   "OSM-THACHATCHAI-02",
+   "OSM-THACHATCHAI-03",
+   "LOMA-CBT-A048",
+   "LOMA-CBT-A047",
+   "LOMA-CBT-A052",
+   "LOMA-CBT-A049",
+   "LOMA-CBT-P024",
+   "LOMA-CBT-A051",
+   "LOMA-CBT-A046",
+   "LOMA-CBT-A050",
+   "LOMA-CBT-P023"
+  ],
+  "priceFrom": "฿350–500 / person (est.)",
+  "duration": "Half-day · flexible",
+  "schedule": [
+   "By appointment — contact the community"
+  ],
+  "phone": "Arrange via LOMA"
+ },
+ {
+  "id": "bang-tao",
+  "name": "ชุมชนบ้านบางเทา",
+  "nameEn": "Ban Bang Thao Community",
+  "area": "Bang Tao / Cherng Talay",
+  "emo": "🏖️",
+  "img": "/providers/LOMA-CBT-A060.jpg",
+  "about": "A quiet white-sand west coast, 25 min from the airport — seafront local operators for 10 km, fresh seafood and everyday village life.",
+  "activities": [
+   "หาดทรายขาว เงียบสงบ",
+   "ผู้ประกอบการตั้งหน้าหาด 10 กิโล",
+   "อาหารทะเลสด",
+   "วิถีชีวิตชุมชน"
+  ],
+  "memberIds": [
+   "OSM-BANGTAO-01",
+   "OSM-BANGTAO-02",
+   "OSM-BANGTAO-03",
+   "LOMA-CBT-A060",
+   "LOMA-CBT-P031",
+   "LOMA-CBT-P032",
+   "LOMA-CBT-P033",
+   "LOMA-CBT-A062",
+   "LOMA-CBT-A061",
+   "LOMA-CBT-A059",
+   "LOMA-CBT-A066",
+   "LOMA-CBT-A063",
+   "LOMA-CBT-A064",
+   "LOMA-CBT-A067",
+   "LOMA-CBT-A065",
+   "LOMA-CBT-P030",
+   "OSM-BANGTAO-116",
+   "OSM-BANGTAO-160"
+  ],
+  "priceFrom": "฿350–500 / person (est.)",
+  "duration": "Half-day · flexible",
+  "schedule": [
+   "By appointment — contact the community"
+  ],
+  "phone": "Arrange via LOMA"
+ },
+ {
+  "id": "bang-rong",
+  "name": "ชุมชนบ้านบางโรง",
+  "nameEn": "Ban Bang Rong Community",
+  "area": "Pa Khlok",
+  "emo": "🛶",
+  "img": "/providers/LOMA-CBT-P004.jpg",
+  "about": "A Muslim fishing village in the east-coast mangroves — batik craft and fresh seafood, with hands-on pineapple picking (→ jam) and rubber tapping (→ rubber sheets) alongside the farmers.",
+  "activities": [
+   "งานคราฟ ปาเต๊ะ",
+   "อาหารทะเลสด",
+   "กิจกรรมเก็บสับปะรดไปทำแยม",
+   "กิจกรรมกรีดยางไปทำยางแผ่น ร่วมกับชาวบ้าน"
+  ],
+  "memberIds": [
+   "OSM-BANGRONG-01",
+   "OSM-BANGRONG-02",
+   "OSM-BANGRONG-03",
+   "LOMA-CBT-P004",
+   "LOMA-CBT-A014",
+   "LOMA-CBT-A011",
+   "LOMA-CBT-A015",
+   "LOMA-CBT-A013",
+   "LOMA-CBT-P003",
+   "LOMA-CBT-A016",
+   "LOMA-CBT-A012"
+  ],
+  "priceFrom": "฿350–500 / person (est.)",
+  "duration": "Half-day · flexible",
+  "schedule": [
+   "By appointment — contact the community"
+  ],
+  "phone": "Arrange via LOMA"
+ },
+ {
+  "id": "ban-sakhu",
+  "name": "ชุมชนบ้านสาคู",
+  "nameEn": "Ban Sakhu Community",
+  "area": "Thalang",
+  "emo": "🐟",
+  "img": "/providers/OSM-BANSAKHU-01.jpg",
+  "about": "A community near the airport — som khwai, local fishing, organic farming and a lively fish-tossing market.",
+  "activities": [
+   "ใกล้สนามบิน",
+   "ส้มควาย",
+   "ประมง",
+   "เกษตรอินทรีย์",
+   "ตลาดชิงปลา"
+  ],
+  "memberIds": [
+   "OSM-BANSAKHU-01",
+   "OSM-BANSAKHU-02",
+   "OSM-BANSAKHU-03"
+  ],
+  "priceFrom": "฿350–500 / person (est.)",
+  "duration": "Half-day · flexible",
+  "schedule": [
+   "By appointment — contact the community"
+  ],
+  "phone": "Arrange via LOMA"
+ },
+ {
+  "id": "old-town",
+  "name": "ชุมชนย่านเมืองเก่าภูเก็ต",
+  "nameEn": "Phuket Old Town Community",
+  "area": "Old Town",
+  "emo": "🏘️",
+  "img": "/providers/LOMA-CBT-P002.jpg",
+  "about": "From tin mines to a Sino-European town — heritage shophouses, Phuket local food and dress, and the Sunday walking street (16:00–22:00).",
+  "activities": [
+   "อาคารเก่า ชิโน-ยูโรเปียน",
+   "อาหารพื้นเมือง",
+   "อาภรณ์พื้นเมืองภูเก็ต",
+   "ถนนคนเดิน วันอาทิตย์ 16.00–22.00"
+  ],
+  "memberIds": [
+   "OSM-OLDTOWN-01",
+   "OSM-OLDTOWN-02",
+   "OSM-OLDTOWN-03",
+   "LOMA-CBT-P002",
+   "LOMA-CBT-A009",
+   "LOMA-CBT-A006",
+   "LOMA-CBT-A001",
+   "LOMA-CBT-A008",
+   "LOMA-CBT-A004",
+   "LOMA-CBT-P001",
+   "LOMA-CBT-A002",
+   "LOMA-CBT-A003",
+   "LOMA-CBT-A010",
+   "LOMA-CBT-A005",
+   "LOMA-CBT-A007",
+   "OSM-OLDTOWN-102",
+   "OSM-OLDTOWN-103",
+   "OSM-OLDTOWN-104",
+   "OSM-OLDTOWN-108",
+   "OSM-OLDTOWN-109",
+   "OSM-OLDTOWN-110",
+   "OSM-OLDTOWN-111",
+   "OSM-OLDTOWN-113",
+   "OSM-OLDTOWN-114",
+   "OSM-OLDTOWN-115",
+   "OSM-OLDTOWN-117",
+   "OSM-OLDTOWN-118",
+   "OSM-OLDTOWN-121",
+   "OSM-OLDTOWN-124",
+   "OSM-OLDTOWN-126",
+   "OSM-OLDTOWN-127",
+   "OSM-OLDTOWN-129",
+   "OSM-OLDTOWN-132",
+   "OSM-OLDTOWN-138",
+   "OSM-OLDTOWN-139",
+   "OSM-OLDTOWN-140",
+   "OSM-OLDTOWN-142",
+   "OSM-OLDTOWN-144",
+   "OSM-OLDTOWN-145",
+   "OSM-OLDTOWN-146",
+   "OSM-OLDTOWN-150",
+   "OSM-OLDTOWN-151",
+   "OSM-OLDTOWN-152",
+   "OSM-OLDTOWN-154",
+   "OSM-OLDTOWN-155",
+   "OSM-OLDTOWN-156",
+   "OSM-OLDTOWN-158",
+   "OSM-OLDTOWN-159",
+   "OSM-OLDTOWN-161",
+   "OSM-OLDTOWN-165",
+   "OSM-OLDTOWN-166",
+   "OSM-OLDTOWN-167",
+   "OSM-OLDTOWN-168",
+   "OSM-OLDTOWN-169",
+   "OSM-OLDTOWN-171",
+   "OSM-OLDTOWN-173",
+   "OSM-OLDTOWN-175",
+   "OSM-OLDTOWN-177",
+   "OSM-OLDTOWN-178",
+   "OSM-OLDTOWN-182",
+   "OSM-OLDTOWN-183",
+   "OSM-OLDTOWN-184",
+   "OSM-OLDTOWN-186",
+   "OSM-OLDTOWN-187",
+   "OSM-OLDTOWN-188",
+   "OSM-OLDTOWN-189",
+   "OSM-OLDTOWN-191",
+   "OSM-OLDTOWN-193",
+   "OSM-OLDTOWN-194",
+   "OSM-OLDTOWN-195",
+   "OSM-OLDTOWN-196",
+   "OSM-OLDTOWN-197",
+   "OSM-OLDTOWN-199"
+  ],
+  "priceFrom": "฿350–500 / person (est.)",
+  "duration": "Half-day · flexible",
+  "schedule": [
+   "By appointment — contact the community"
+  ],
+  "phone": "Arrange via LOMA"
+ },
+ {
+  "id": "cape-panwa",
+  "name": "ชุมชนบ้านแหลมพันวา",
+  "nameEn": "Ban Laem Phanwa Community",
+  "area": "Cape Panwa",
+  "emo": "🏹",
+  "img": "/providers/LOMA-CBT-P036.jpg",
+  "about": "Just 9 km from town — a five-star coastline meets a fishing community with khao yam, community-grown vegetables and archery.",
+  "activities": [
+   "ห่างจากในเมืองแค่ 9 กิโล",
+   "ข้าวยำ ผักในชุมชน",
+   "กิจกรรมยิงธนู"
+  ],
+  "memberIds": [
+   "OSM-CAPEPANWA-01",
+   "OSM-CAPEPANWA-02",
+   "OSM-CAPEPANWA-03",
+   "LOMA-CBT-P036",
+   "LOMA-CBT-A083",
+   "LOMA-CBT-P037",
+   "LOMA-CBT-A082",
+   "LOMA-CBT-P035",
+   "LOMA-CBT-A084"
+  ],
+  "priceFrom": "฿350–500 / person (est.)",
+  "duration": "Half-day · flexible",
+  "schedule": [
+   "By appointment — contact the community"
+  ],
+  "phone": "Arrange via LOMA"
+ }
+]

@@ -1,0 +1,122 @@
+/* ============================================================
+   STAFF PERSONA — classes ported from LOMA-prototype.html
+   (uses design tokens from styles/tokens.css)
+   ============================================================ */
+
+/* ---- staff app bar (recommending-from header) ---- */
+.appbar .row1{display:flex;align-items:center;gap:10px;width:100%}
+.appbar .logo{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--primary),#19a89c);display:grid;place-items:center;color:#fff;font-weight:800;font-size:15px;flex:none}
+.appbar .where{flex:1;min-width:0}
+.appbar .where .t{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.4px}
+.appbar .where .p{font-size:14px;font-weight:700;display:flex;align-items:center;gap:5px}
+.appbar .where .p svg{width:15px;height:15px;flex:none;color:var(--primary)}
+.appbar .avatar{width:34px;height:34px;border-radius:50%;background:var(--accent-l);color:var(--accent);display:grid;place-items:center;font-weight:700;font-size:13px;border:1px solid var(--line);flex:none;cursor:pointer}
+
+/* ---- tab bar ---- */
+.tabbar{display:flex;border-top:1px solid var(--line);background:var(--surface);position:sticky;bottom:0;z-index:10;box-shadow:0 -4px 14px rgba(16,40,38,.05);margin-top:auto;flex:none}
+.tabbar button{flex:1;padding:9px 0 11px;font-size:10.5px;font-weight:600;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:3px}
+.tabbar button .ic{width:22px;height:22px;display:grid;place-items:center}
+.tabbar button.on{color:var(--primary)}
+.tabbar svg{width:21px;height:21px}
+
+/* ---- section headers / inputs ---- */
+.h-sec{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin:18px 0 9px}
+.pp-input{width:100%;border:1px solid var(--line);border-radius:12px;padding:14px;font-size:18px;font-weight:700;letter-spacing:3px;text-align:center;text-transform:uppercase;font-family:var(--f);color:var(--ink);background:var(--surface)}
+.pp-input.sm{font-size:15px;letter-spacing:0;font-weight:500;text-align:left;text-transform:none}
+.pp-input:focus{outline:none;border-color:var(--primary)}
+
+/* ---- search bar ---- */
+.search{display:flex;align-items:center;gap:9px;background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:11px 13px;color:var(--muted);font-size:14px}
+.search svg{width:18px;height:18px;flex:none;color:var(--muted)}
+
+/* ---- segmented control ---- */
+.segmented{display:flex;background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:4px;gap:4px}
+.segmented button{flex:1;font-size:12.5px;font-weight:600;color:var(--ink-2);padding:9px 6px;border-radius:9px;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;line-height:1.2}
+.segmented button .em{font-size:16px}
+.segmented button.on{background:var(--surface);color:var(--primary);box-shadow:var(--shadow)}
+
+/* ---- extra button variant ---- */
+.btn-soft{background:var(--primary-l);color:var(--primary-d)}
+.btn-ghost.saved{color:#E2452F;border-color:#F3C9C1;background:#FCEEEC}
+
+/* ---- chips (cat variant emoji) ---- */
+.chip.cat .emo{font-size:14px}
+
+/* ---- score ring ---- */
+.score{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:var(--ink-2)}
+.score .ring{--v:80;width:26px;height:26px;border-radius:50%;background:conic-gradient(var(--primary) calc(var(--v)*1%),var(--line) 0);display:grid;place-items:center}
+.score .ring i{width:19px;height:19px;border-radius:50%;background:var(--surface);display:grid;place-items:center;font-size:9px;font-style:normal;color:var(--primary-d);font-weight:800}
+
+/* ---- provider card extras ---- */
+.pcard .reason{font-size:12.5px;color:var(--ink-2);background:var(--surface-2);border-radius:9px;padding:8px 10px;margin-top:10px;line-height:1.4}
+.pcard .reason .lab{color:var(--primary);font-weight:700}
+.pcard .row-act{display:flex;gap:8px;margin-top:11px}
+.pcard-fav{position:absolute;bottom:8px;right:8px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.95);display:grid;place-items:center;box-shadow:var(--shadow);color:var(--ink-2);z-index:3;transition:color .12s,transform .1s}
+.pcard-fav svg{width:18px;height:18px}
+.pcard-fav.on{color:#E2452F}
+.pcard-fav:active{transform:scale(.88)}
+.pcard .score span[data-w]{display:none}
+
+/* ---- map ---- */
+.mapbox{position:relative;height:230px;background:linear-gradient(160deg,#dbe7e4,#cfe0db);overflow:hidden}
+.mapbox.lg{height:300px}
+.mapbox .water{position:absolute;inset:0;width:100%;height:100%}
+.pin{position:absolute;transform:translate(-50%,-100%);cursor:pointer;z-index:2}
+.pin .p{width:30px;height:30px;border-radius:50% 50% 50% 2px;transform:rotate(45deg);background:var(--primary);box-shadow:0 3px 8px rgba(0,0,0,.25);display:grid;place-items:center;border:2px solid #fff}
+.pin .p span{transform:rotate(-45deg);font-size:13px}
+.pin.sel .p{background:var(--accent);transform:rotate(45deg) scale(1.15)}
+.pin .lab{position:absolute;left:50%;top:-26px;transform:translateX(-50%);background:#fff;border:1px solid var(--line);font-size:10px;font-weight:700;padding:2px 6px;border-radius:6px;white-space:nowrap;box-shadow:var(--shadow)}
+.you{position:absolute;transform:translate(-50%,-50%);z-index:1}
+.you .core{width:14px;height:14px;border-radius:50%;background:var(--info);border:3px solid #fff;box-shadow:0 0 0 4px rgba(37,99,176,.25)}
+.maptag{position:absolute;top:10px;left:10px;right:10px;background:rgba(255,255,255,.95);border:1px solid var(--line);border-radius:9px;padding:6px 10px;font-size:11.5px;font-weight:600;color:var(--ink-2);display:flex;align-items:center;gap:6px;z-index:6;box-shadow:var(--shadow);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.maptag svg{width:15px;height:15px;flex:none}
+
+/* ---- provider row (list item) ---- */
+.prow{display:flex;gap:11px;padding:11px;border:1px solid var(--line);border-radius:12px;background:var(--surface);margin-bottom:9px;cursor:pointer;transition:.12s}
+.prow:hover{border-color:var(--primary);box-shadow:var(--shadow)}
+.prow .thumb{width:62px;height:62px;border-radius:10px;background-size:cover;background-position:center;flex:none;background-color:#dfe7e4}
+.prow .info{flex:1;min-width:0}
+.prow .info h3{font-size:14px}
+.prow .info .m{font-size:11.5px;color:var(--muted);margin-top:2px}
+.prow .info .bd{display:flex;gap:4px;margin-top:6px;flex-wrap:wrap}
+
+/* ---- detail extras ---- */
+.review{display:flex;gap:10px;align-items:center;background:var(--surface-2);border-radius:12px;padding:11px 13px;margin-top:12px}
+.review .big{font-size:24px;font-weight:800;color:var(--ink)}
+.starrow{color:#E0A93C;font-size:20px;letter-spacing:2px}
+.note-box{background:var(--warn-l);border-radius:12px;padding:11px 13px;margin-top:10px;font-size:13px;color:var(--warn)}
+.note-box .lab{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--warn);display:flex;align-items:center;gap:6px;margin-bottom:4px}
+.tag-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.tag{font-size:11.5px;font-weight:600;background:var(--surface-2);border:1px solid var(--line);color:var(--ink-2);padding:4px 9px;border-radius:99px}
+.hero .save{position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.92);display:grid;place-items:center;box-shadow:var(--shadow);transition:color .15s,transform .12s;cursor:pointer}
+.hero .save svg{width:18px;height:18px}
+.hero .save.on{color:#E2452F}
+.hero .save.on:active{transform:scale(.88)}
+
+/* ---- tiny status badges (recent) ---- */
+.tinybadge{font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:6px}
+.tinybadge.under{background:var(--warn-l);color:var(--warn)}
+.tinybadge.hot{background:var(--ok-l);color:var(--ok)}
+
+/* ---- modals ---- */
+.modal-overlay{position:absolute;inset:0;background:rgba(12,31,29,.55);z-index:60;display:flex;align-items:flex-end;justify-content:center}
+.modal{background:var(--surface);width:100%;border-radius:22px 22px 0 0;max-height:92%;overflow-y:auto;padding:8px 0 18px;animation:staff-up .25s ease}
+@keyframes staff-up{from{transform:translateY(40px);opacity:.6}to{transform:translateY(0);opacity:1}}
+.sheet-handle{width:38px;height:4px;border-radius:99px;background:var(--line);margin:9px auto 4px}
+.share-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.share-opt{border:1px solid var(--line);border-radius:13px;padding:13px 6px;display:flex;flex-direction:column;align-items:center;gap:7px;font-size:11.5px;font-weight:600;color:var(--ink-2);transition:.12s}
+.share-opt:hover{border-color:var(--primary);color:var(--primary);background:var(--surface-2)}
+.share-opt.sel{border-color:var(--primary);border-width:2px;color:var(--primary);background:var(--primary-l)}
+.share-opt .si{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;font-size:18px;color:#fff}
+.share-opt .si svg{width:20px;height:20px}
+.refcode{border:2px dashed var(--primary);border-radius:14px;padding:14px;text-align:center;background:var(--primary-l)}
+.refcode .lab{font-size:11px;font-weight:700;color:var(--primary);text-transform:uppercase;letter-spacing:.5px}
+.refcode .code{font-size:30px;font-weight:800;letter-spacing:4px;color:var(--accent);margin:5px 0}
+.qr{width:118px;height:118px;margin:8px auto;background:#fff;border:1px solid var(--line);border-radius:12px;padding:8px}
+.qr svg{width:100%;height:100%}
+
+/* ---- toast ---- */
+.staff-toast{position:absolute;left:50%;bottom:74px;transform:translateX(-50%);background:#0C1F1D;color:#fff;font-size:12.5px;font-weight:600;padding:9px 15px;border-radius:99px;z-index:90;box-shadow:var(--shadow-lg);white-space:nowrap;max-width:90%;overflow:hidden;text-overflow:ellipsis}
+
+/* ---- doc/consent toggle button when active ---- */
+.doc-ok{color:var(--ok)!important;border-color:#BFE6CF!important;background:var(--ok-l)!important}

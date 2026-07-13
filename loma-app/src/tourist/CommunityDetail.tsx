@@ -1,0 +1,169 @@
+import { community, commReady, READINESS_LEVELS } from "../v2data";
+import type { Community } from "../v2data";
+import Icon from "../components/Icon";
+import { LomaBadges } from "../components/AiScorePanel";
+import { communityMembers } from "../activeAccount";
+import { trackEvent } from "../impact";
+
+const READY_CLASS = ["b-price", "b-price", "b-ready", "b-verified"];
+const READY_EMOJI = ["📄", "📞", "✓", "💠"];
+
+// Readiness badge derived from commReady() + READINESS_LEVELS — reused by the
+// Community list, the Recommended landing and this detail screen.
+export function ReadinessBadge({ c }: { c: Community }) {
+  const r = commReady(c);
+  return (
+    <span className={`badge ${READY_CLASS[r]}`}>
+      {READY_EMOJI[r]} {READINESS_LEVELS[r]}
+    </span>
+  );
+}
+
+export default function CommunityDetail({
+  id,
+  onBack,
+}: {
+  id: string;
+  onBack: () => void;
+}) {
+  const c = community(id);
+  if (!c) return null;
+  const tel = c.phone.replace(/[^0-9]/g, "");
+  const inquire = () => trackEvent("community_inquiry_clicked", { community_id: c.id });
+  const members = communityMembers(c.memberIds);
+
+  return (
+    <div className="scroll">
+      <div className="hero" style={c.img ? { backgroundImage: `url(${c.img})` } : undefined}>
+        {!c.img && <div className="ph-emo">{c.emo}</div>}
+        <button className="back" onClick={onBack}>
+          ←
+        </button>
+      </div>
+      <div className="pad">
+        <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 8 }}>
+          <span className="badge b-pick">🛶 Community Experience</span>
+          <ReadinessBadge c={c} />
+          <span className="badge b-warn-s">📞 Contact Before Visiting</span>
+        </div>
+        <h2 style={{ fontSize: 22, lineHeight: 1.2 }}>{c.name}</h2>
+        <div style={{ fontSize: 13.5, color: "var(--ink-2)", fontWeight: 600 }}>{c.nameEn}</div>
+        <div style={{ fontSize: 13, color: "var(--muted)", marginTop: 3 }}>📍 {c.area}, Phuket</div>
+
+        <div className="t-modehint">
+          🛶 This is a <b>planned experience</b> run by the village itself — not a
+          walk-in shop. Contact the community first to confirm availability, group
+          size and price. You cannot just walk in.
+        </div>
+
+        <div className="cta2">
+          <a className="btn btn-primary" href={`tel:${tel}`} onClick={inquire}>
+            <Icon name="phone" size={17} /> Contact Community
+          </a>
+          <a className="btn btn-ghost" href={`tel:${tel}`} onClick={inquire}>
+            <Icon name="clock" size={17} /> Ask Availability
+          </a>
+        </div>
+
+        <p style={{ fontSize: 14, color: "var(--ink-2)", marginTop: 14, lineHeight: 1.6 }}>
+          {c.about}
+        </p>
+
+        <div className="sec-h">What you'll do</div>
+        <div style={{ marginTop: 8 }}>
+          {c.activities.map((a) => (
+            <div className="t-act" key={a}>
+              <span className="tick">✓</span>
+              <span className="tx">{a}</span>
+            </div>
+          ))}
+        </div>
+
+        <div className="sec-h">Good to know</div>
+        <div style={{ marginTop: 8 }}>
+          {c.schedule.map((s) => (
+            <div className="t-act" key={s}>
+              <span className="tick">·</span>
+              <span className="tx">{s}</span>
+            </div>
+          ))}
+        </div>
+
+        <div className="t-specs">
+          <div className="r">
+            <span className="k">Price from</span>
+            <span className="v">{c.priceFrom}</span>
+          </div>
+          <div className="r">
+            <span className="k">Duration</span>
+            <span className="v">{c.duration}</span>
+          </div>
+          <div className="r">
+            <span className="k">Readiness</span>
+            <span className="v">{READINESS_LEVELS[commReady(c)]}</span>
+          </div>
+        </div>
+
+        {members.length > 0 && (
+          <>
+            <div className="sec-h">
+              Local businesses in this community{" "}
+              <span style={{ fontWeight: 500, textTransform: "none", letterSpacing: 0, color: "var(--muted)" }}>
+                · {members.length} verified
+              </span>
+            </div>
+            {members.slice(0, 6).map((m) => (
+              <div className="prow" key={m.id} style={{ cursor: "default" }}>
+                <div
+                  className="thumb"
+                  style={{
+                    width: 54,
+                    height: 54,
+                    borderRadius: 10,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    backgroundImage: m.img ? `url(${m.img})` : undefined,
+                    backgroundColor: "#dfe7e4",
+                    flex: "none",
+                    display: "grid",
+                    placeItems: "center",
+                    fontSize: 22,
+                  }}
+                >
+                  {!m.img && m.emo}
+                </div>
+                <div className="info" style={{ flex: 1, minWidth: 0 }}>
+                  <h3 style={{ fontSize: 13.5 }}>{m.name}</h3>
+                  <div className="m" style={{ fontSize: 11.5, color: "var(--muted)" }}>
+                    {m.emo} {m.cat}
+                    {m.rating ? ` · ★ ${m.rating}` : ""}
+                  </div>
+                  <div className="bd" style={{ display: "flex", gap: 4, marginTop: 5, flexWrap: "wrap" }}>
+                    <LomaBadges ai={m.ai} />
+                  </div>
+                </div>
+              </div>
+            ))}
+            <div style={{ fontSize: 11.5, color: "var(--muted)", marginTop: 4 }}>
+              Every business here is community-run and vetted by LOMA — income stays in the village.
+            </div>
+          </>
+        )}
+
+        <div className="t-contactcard">
+          <div className="lab">Questions? Contact the community</div>
+          <div className="num">{c.phone}</div>
+          <div style={{ fontSize: 11.5, color: "var(--ink-2)", marginBottom: 12 }}>
+            Your visit is arranged directly with the community — no middleman.
+          </div>
+          <div className="cta2" style={{ marginTop: 0 }}>
+            <a className="btn btn-line" href={`tel:${tel}`} onClick={inquire}>
+              <Icon name="phone" size={16} /> Call
+            </a>
+          </div>
+        </div>
+        <div style={{ height: 16 }} />
+      </div>
+    </div>
+  );
+}

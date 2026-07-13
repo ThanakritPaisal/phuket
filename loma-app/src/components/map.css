@@ -1,0 +1,91 @@
+/* Real map (Leaflet + OpenStreetMap) — keeps the LOMA pin language. */
+/* position+z-index create a stacking context so Leaflet's internal z-indexes
+   (panes/controls, up to 1000) stay contained and don't cover overlays like
+   .maptag that sit above the map in the same box. */
+.realmap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+/* keep the zoom control clear of the .maptag overlay */
+.realmap .leaflet-top.leaflet-left {
+  margin-top: 40px;
+}
+.realmap .leaflet-container {
+  width: 100%;
+  height: 100%;
+  background: #cfe2de;
+  font-family: var(--f);
+}
+/* subdue OSM tiles so LOMA pins stay the focus */
+.realmap .leaflet-tile-pane {
+  filter: saturate(0.72) brightness(1.04);
+}
+.realmap .leaflet-control-attribution {
+  font-size: 9px;
+  background: rgba(255, 255, 255, 0.82);
+  color: var(--muted);
+}
+.realmap .leaflet-control-attribution a {
+  color: var(--primary);
+}
+
+/* teardrop pin, positioned by Leaflet (no absolute/transform of our own) */
+.lpin .p {
+  width: 30px;
+  height: 30px;
+  border-radius: 50% 50% 50% 2px;
+  transform: rotate(45deg);
+  background: var(--primary);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+  display: grid;
+  place-items: center;
+  border: 2px solid #fff;
+}
+.lpin .p span {
+  transform: rotate(-45deg);
+  font-size: 13px;
+  line-height: 1;
+}
+.lpin.sel .p {
+  background: var(--accent);
+  transform: rotate(45deg) scale(1.14);
+}
+.lpin .lab {
+  position: absolute;
+  left: 50%;
+  top: -22px;
+  transform: translateX(-50%);
+  background: #fff;
+  border: 1px solid var(--line);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 6px;
+  white-space: nowrap;
+  box-shadow: var(--shadow);
+  color: var(--ink);
+}
+
+/* "you are here" */
+.lyou .core {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--info);
+  border: 3px solid #fff;
+  box-shadow: 0 0 0 4px rgba(37, 99, 176, 0.25);
+}
+
+/* density bubble (admin) */
+.lbubble {
+  border-radius: 50%;
+  background: rgba(15, 118, 110, 0.34);
+  border: 2px solid var(--primary);
+  display: grid;
+  place-items: center;
+  color: var(--primary-d);
+  font-weight: 800;
+  font-size: 11px;
+}

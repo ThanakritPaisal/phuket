@@ -1,0 +1,66 @@
+[
+ {
+  "id": "seabreeze",
+  "name": "Sea Breeze Boutique Hotel",
+  "type": "Hotel",
+  "area": "Patong",
+  "user": "seabreeze",
+  "pass": "breeze2026",
+  "staff": "Jirawan D.",
+  "staffInit": "JD",
+  "staffCount": 3,
+  "x": 58,
+  "y": 60,
+  "status": "approved",
+  "level": "verified",
+  "kind": "org",
+  "inviteCode": "SEABREEZE24",
+  "housePicks": [
+   "BRT",
+   "OTH",
+   "PCH"
+  ]
+ },
+ {
+  "id": "kata",
+  "name": "Kata Backpackers Hostel",
+  "type": "Hostel",
+  "area": "Kata",
+  "user": "katahostel",
+  "pass": "kata2026",
+  "staff": "Nattapong S.",
+  "staffInit": "NS",
+  "staffCount": 2,
+  "x": 50,
+  "y": 74,
+  "status": "approved",
+  "level": "verified",
+  "kind": "org",
+  "inviteCode": "KATA24",
+  "housePicks": [
+   "RFE",
+   "BRT"
+  ]
+ },
+ {
+  "id": "rawai",
+  "name": "Rawai Scooter Rental",
+  "type": "Motorbike rental",
+  "area": "Rawai",
+  "user": "rawairental",
+  "pass": "rawai2026",
+  "staff": "Som P.",
+  "staffInit": "SP",
+  "staffCount": 1,
+  "x": 54,
+  "y": 82,
+  "status": "approved",
+  "level": "verified",
+  "kind": "org",
+  "inviteCode": "RAWAI24",
+  "housePicks": [
+   "BRT",
+   "RFE"
+  ]
+ }
+]

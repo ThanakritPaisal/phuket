@@ -1,0 +1,625 @@
+/* ============================================================
+   LOMA ADMIN DASHBOARD — desktop analytics console
+   Ported from LOMA-prototype.html; uses tokens.css variables.
+   ============================================================ */
+.admin-shell {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 28px 18px 60px;
+}
+
+.adash {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 0;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+.aside {
+  background: #0c1f1d;
+  color: #bcd4d0;
+  padding: 18px 14px;
+  min-height: 740px;
+}
+.aside .lg {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 4px;
+}
+.aside .lg .logo {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--primary), #19a89c);
+  display: grid;
+  place-items: center;
+  font-size: 14px;
+}
+.aside .role {
+  font-size: 11px;
+  color: #6f928e;
+  margin-bottom: 20px;
+  padding-left: 2px;
+}
+.aside nav button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 600;
+  color: #9fc0bc;
+  padding: 10px 12px;
+  border-radius: 9px;
+  margin-bottom: 2px;
+  transition: 0.12s;
+}
+.aside nav button:hover {
+  background: #15302d;
+  color: #fff;
+}
+.aside nav button.on {
+  background: var(--primary);
+  color: #fff;
+}
+.aside .div {
+  height: 1px;
+  background: #1c3a37;
+  margin: 14px 4px;
+}
+.amain {
+  padding: 22px 24px;
+  overflow: hidden;
+}
+
+.amain-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+.amain-head h1 {
+  font-size: 21px;
+  letter-spacing: -0.3px;
+}
+.amain-head .sb {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 3px;
+}
+.console-tag {
+  margin-top: 7px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: 99px;
+  padding: 3px 10px;
+}
+.daterange {
+  display: flex;
+  gap: 4px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 3px;
+}
+.daterange button {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-2);
+  padding: 6px 11px;
+  border-radius: 7px;
+}
+.daterange button.on {
+  background: var(--surface);
+  color: var(--primary);
+  box-shadow: var(--shadow);
+}
+.apanel {
+  display: block;
+}
+
+/* ---------- KPI tiles ---------- */
+.cards6 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 13px;
+}
+.mcard {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 15px 16px;
+  box-shadow: var(--shadow);
+}
+.mcard .lab {
+  font-size: 11.5px;
+  color: var(--muted);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.mcard .lab .i {
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  color: #fff;
+}
+.mcard .num {
+  font-size: 27px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  margin-top: 8px;
+}
+.mcard .delta {
+  font-size: 12px;
+  font-weight: 700;
+  margin-top: 3px;
+}
+.delta.up {
+  color: var(--ok);
+}
+.delta.down {
+  color: var(--danger);
+}
+
+/* ---------- layout grids & boxes ---------- */
+.grid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 14px;
+}
+.grid12 {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 14px;
+  margin-top: 14px;
+}
+.box {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 16px 17px;
+  box-shadow: var(--shadow);
+}
+.box h3 {
+  font-size: 14px;
+  margin-bottom: 3px;
+}
+.box .hint {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 13px;
+}
+.infonote {
+  font-size: 12px;
+  color: var(--muted);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  padding: 9px 11px;
+  margin-bottom: 12px;
+}
+.alertrow {
+  display: flex;
+  justify-content: space-between;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--line-2);
+}
+
+/* ---------- funnel ---------- */
+.funnel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.fstep {
+  position: relative;
+}
+.fstep .bar {
+  height: 42px;
+  border-radius: 9px;
+  background: linear-gradient(90deg, var(--primary), #1aa093);
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  color: #fff;
+  font-weight: 700;
+  font-size: 13px;
+  min-width: 120px;
+}
+.fstep .bar.b2 {
+  background: linear-gradient(90deg, #1f8f86, #36b0a4);
+}
+.fstep .bar.b3 {
+  background: linear-gradient(90deg, #2a9d8f, #52bdb0);
+}
+.fstep .bar.b4 {
+  background: linear-gradient(90deg, var(--accent), #eaa45f);
+}
+.fstep .bar.b5 {
+  background: linear-gradient(90deg, #c9821e, #e0a93c);
+}
+.fstep .meta {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-right: 4px;
+}
+.fstep .meta .pc {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+/* ---------- bar list ---------- */
+.blist {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+.brow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12.5px;
+}
+.brow .nm {
+  width: 150px;
+  flex: none;
+  font-weight: 600;
+  color: var(--ink-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.brow .track {
+  flex: 1;
+  height: 9px;
+  background: var(--surface-2);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.brow .fill {
+  height: 100%;
+  border-radius: 99px;
+  background: var(--primary);
+}
+.brow .fill.a {
+  background: var(--accent);
+}
+.brow .vv {
+  width: 54px;
+  text-align: right;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+/* ---------- line chart ---------- */
+.linewrap {
+  width: 100%;
+}
+.lchart {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.llegend {
+  display: flex;
+  gap: 18px;
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.llegend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.llegend i {
+  width: 18px;
+  height: 3px;
+  border-radius: 2px;
+  display: inline-block;
+}
+
+/* ---------- ring stat ---------- */
+.ringstat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.ringstat .rlabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-2);
+  text-align: center;
+}
+
+/* ---------- tables ---------- */
+table.t {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+}
+table.t th {
+  text-align: left;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  color: var(--muted);
+  padding: 8px 9px;
+  border-bottom: 1px solid var(--line);
+}
+table.t td {
+  padding: 9px 9px;
+  border-bottom: 1px solid var(--line-2);
+  vertical-align: middle;
+}
+table.t tr:last-child td {
+  border-bottom: none;
+}
+.tcell {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.tthumb {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: var(--surface-2);
+  display: grid;
+  place-items: center;
+  font-size: 15px;
+  flex: none;
+}
+.tinybadge {
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+.under {
+  background: var(--warn-l);
+  color: var(--warn);
+}
+.hot {
+  background: var(--ok-l);
+  color: var(--ok);
+}
+
+/* ---------- verification / approvals ---------- */
+.vqueue {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 13px;
+}
+.vcard {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 15px 16px;
+  box-shadow: var(--shadow);
+}
+.vbanner {
+  height: 84px;
+  border-radius: 10px;
+  background: var(--surface-2);
+  display: grid;
+  place-items: center;
+  font-size: 40px;
+  margin-bottom: 12px;
+}
+.vcard .vh {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+}
+.vcard .vh h3 {
+  font-size: 15px;
+}
+.vcard .vh .cat {
+  font-size: 12px;
+  color: var(--muted);
+}
+.vstat {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 7px;
+  white-space: nowrap;
+}
+.vs-pending {
+  background: var(--warn-l);
+  color: var(--warn);
+}
+.vs-review {
+  background: var(--info-l);
+  color: var(--info);
+}
+.vs-verified {
+  background: var(--ok-l);
+  color: var(--ok);
+}
+.vs-susp {
+  background: var(--danger-l);
+  color: var(--danger);
+}
+.scores4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin: 13px 0;
+}
+.sc {
+  background: var(--surface-2);
+  border-radius: 9px;
+  padding: 8px;
+  text-align: center;
+}
+.sc .sv {
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--primary-d);
+}
+.sc .sl {
+  font-size: 9.5px;
+  color: var(--muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.2px;
+  margin-top: 1px;
+}
+.evidence {
+  font-size: 11.5px;
+  color: var(--ink-2);
+  background: var(--surface-2);
+  border-radius: 9px;
+  padding: 9px 11px;
+  line-height: 1.7;
+}
+.evidence a {
+  color: var(--info);
+  font-weight: 600;
+  cursor: pointer;
+}
+.vact {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+.chkrow {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  padding: 3px 0;
+}
+
+/* ---------- integrity ---------- */
+.dealrow {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 12px 13px;
+  margin-bottom: 10px;
+  background: var(--surface);
+}
+
+/* ---------- buttons (local, mirrors tokens) ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-weight: 700;
+  font-size: 14.5px;
+  padding: 14px 18px;
+  border-radius: 13px;
+  transition: 0.15s;
+}
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+}
+.btn-primary:hover {
+  background: var(--primary-d);
+}
+.btn-line {
+  background: var(--surface);
+  color: var(--ink-2);
+  border: 1px solid var(--line);
+}
+.btn-sm {
+  padding: 9px 13px;
+  font-size: 13px;
+  border-radius: 10px;
+}
+
+/* ---------- map ---------- */
+.mapbox {
+  position: relative;
+  height: 230px;
+  background: linear-gradient(160deg, #dbe7e4, #cfe0db);
+  overflow: hidden;
+  border-radius: 12px;
+  margin-top: 6px;
+}
+/* Tall enough that fitBounds can frame Phuket (≈50 km N–S) at a useful zoom
+   instead of shrinking the island to a sliver in a short, wide box. */
+.mapbox.lg {
+  height: 520px;
+}
+.mapbox .water {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.maptag {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  padding: 6px 10px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--ink-2);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  z-index: 6;
+  box-shadow: var(--shadow);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.starrow {
+  color: #e0a93c;
+  font-size: 20px;
+  letter-spacing: 2px;
+}
+
+@media (max-width: 900px) {
+  .adash {
+    grid-template-columns: 1fr;
+  }
+  .aside {
+    min-height: auto;
+  }
+  .cards6,
+  .grid2,
+  .grid12,
+  .vqueue {
+    grid-template-columns: 1fr;
+  }
+}

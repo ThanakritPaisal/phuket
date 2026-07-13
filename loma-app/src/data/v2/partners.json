@@ -1,0 +1,50 @@
+[
+ {
+  "name": "Sea Breeze Boutique Hotel",
+  "type": "Hotel",
+  "area": "Patong",
+  "recs": 148,
+  "opens": 121,
+  "visits": 64
+ },
+ {
+  "name": "Kata Backpackers Hostel",
+  "type": "Hostel",
+  "area": "Kata",
+  "recs": 132,
+  "opens": 98,
+  "visits": 51
+ },
+ {
+  "name": "Rawai Scooter Rental",
+  "type": "Motorbike rental",
+  "area": "Rawai",
+  "recs": 119,
+  "opens": 84,
+  "visits": 47
+ },
+ {
+  "name": "Old Town Guesthouse",
+  "type": "Guesthouse",
+  "area": "Old Town",
+  "recs": 86,
+  "opens": 62,
+  "visits": 33
+ },
+ {
+  "name": "Bang Tao Villa Mgmt",
+  "type": "Villa manager",
+  "area": "Bang Tao",
+  "recs": 54,
+  "opens": 39,
+  "visits": 18
+ },
+ {
+  "name": "Chalong Car Hire",
+  "type": "Car rental",
+  "area": "Chalong",
+  "recs": 41,
+  "opens": 27,
+  "visits": 12
+ }
+]

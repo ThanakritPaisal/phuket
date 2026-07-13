@@ -1,0 +1,129 @@
+[
+ {
+  "prov": "OTH",
+  "stars": 5,
+  "when": "2h ago",
+  "tags": [
+   "Authentic",
+   "Friendly"
+  ],
+  "comment": "Best massage of our trip — so clean and professional.",
+  "photos": 1,
+  "ctx": "Couple · room 214"
+ },
+ {
+  "prov": "BRT",
+  "stars": 5,
+  "when": "Yesterday",
+  "tags": [
+   "Great value",
+   "Would recommend"
+  ],
+  "comment": "Amazing crab curry and the owners were lovely. Thanks for the tip!",
+  "photos": 2,
+  "ctx": "Family of 4"
+ },
+ {
+  "prov": "RFE",
+  "stars": 4,
+  "when": "2 days ago",
+  "tags": [
+   "Authentic"
+  ],
+  "comment": "Really special morning with the fishing community. A bit hard to find at first.",
+  "photos": 1,
+  "ctx": "Solo traveller"
+ },
+ {
+  "prov": "KLD",
+  "stars": 5,
+  "when": "3 days ago",
+  "tags": [
+   "Great value",
+   "Authentic"
+  ],
+  "comment": "Hidden gem! Loved the old Phuket desserts.",
+  "photos": 0,
+  "ctx": "Couple"
+ },
+ {
+  "prov": "BRT",
+  "stars": 4,
+  "when": "4 days ago",
+  "tags": [
+   "Friendly"
+  ],
+  "comment": "Good food, busy at dinner but worth it.",
+  "photos": 0,
+  "ctx": "Two guests"
+ },
+ {
+  "prov": "PCH",
+  "stars": 5,
+  "when": "5 days ago",
+  "tags": [
+   "Would recommend"
+  ],
+  "comment": "Bought a beautiful batik piece — real local craft.",
+  "photos": 1,
+  "ctx": "Couple · room 108"
+ },
+ {
+  "prov": "NYC",
+  "stars": 3,
+  "when": "6 days ago",
+  "tags": [
+   "Hard to find"
+  ],
+  "comment": "Fun workshop but the directions were confusing.",
+  "photos": 0,
+  "ctx": "Family"
+ },
+ {
+  "prov": "BRT",
+  "stars": 5,
+  "when": "1 week ago",
+  "tags": [
+   "Authentic",
+   "Great value"
+  ],
+  "comment": "Came back twice. The tom yum is unreal.",
+  "photos": 1,
+  "ctx": "Couple"
+ },
+ {
+  "prov": "OTH",
+  "stars": 5,
+  "when": "2 days ago",
+  "tags": [
+   "Friendly",
+   "Would recommend"
+  ],
+  "comment": "Therapists were so skilled. Booked again the next day.",
+  "photos": 0,
+  "ctx": "Solo · room 305"
+ },
+ {
+  "prov": "OTH",
+  "stars": 4,
+  "when": "5 days ago",
+  "tags": [
+   "Great value"
+  ],
+  "comment": "Relaxing and very fair price for the quality.",
+  "photos": 1,
+  "ctx": "Couple"
+ },
+ {
+  "prov": "RFE",
+  "stars": 5,
+  "when": "4 days ago",
+  "tags": [
+   "Authentic",
+   "Would recommend"
+  ],
+  "comment": "A real highlight of our Phuket trip. The family was wonderful.",
+  "photos": 2,
+  "ctx": "Two guests"
+ }
+]

@@ -1,0 +1,25 @@
+# --- secrets (never commit) ---
+.env
+
+# --- python ---
+.venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# --- editors ---
+.vscode/
+.idea/
+.DS_Store
+
+# --- logs & build/dev artifacts ---
+*.log
+loma-app/shots/
+
+# redundant — the unzipped LOMA-handover/ is kept instead
+LOMA-handover.zip
+
+# throwaway feasibility-test output (osm_phuket_candidates.json is KEPT)
+osm_sample_enriched.json
+
+# node_modules / dist are ignored by loma-app/.gitignore
