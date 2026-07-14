@@ -1,0 +1,26 @@
+LOMA frontend — start command
+================================
+
+First time (install dependencies):
+    cd loma-app
+    npm install
+
+Run the dev server:
+    cd loma-app
+    npm run dev
+
+Then open:  http://localhost:5173
+
+No API keys needed to run the app — images load from the public GCS bucket
+and all data ships as JSON in loma-app/src/data/.
+
+Other commands (run from loma-app/):
+    npm run build      # production build -> dist/
+    npm run preview    # serve the production build locally
+    npx tsc -p tsconfig.app.json --noEmit   # typecheck (root `tsc` is a no-op)
+
+Demo logins:
+    Staff      seabreeze / breeze2026
+    Provider   baanrimtalay / kitchen2026
+    Community  bangrong / bangrong2026
+    Admin & Tourist — no login
