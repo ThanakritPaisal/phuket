@@ -157,6 +157,133 @@ def ingest_batch(batch: EventBatch) -> dict[str, Any]:
 
 
 # --------------------------------------------------------------------------------------
+# Providers — the LOMA catalog. The web app pulls this at boot instead of local JSON.
+# --------------------------------------------------------------------------------------
+
+from db import PROVIDER_TABLE  # noqa: E402
+from psycopg.types.json import Json  # noqa: E402
+
+
+class ProviderBulk(BaseModel):
+    providers: list[dict[str, Any]]
+
+
+@app.get("/providers")
+def list_providers() -> list[dict[str, Any]]:
+    """Full catalog — returns each provider's record exactly as the web app expects."""
+    with get_conn() as conn:
+        rows = conn.execute(f"SELECT data FROM {PROVIDER_TABLE} ORDER BY id").fetchall()
+    return [r["data"] for r in rows]
+
+
+# --------------------------------------------------------------------------------------
+# Contextual matching — natural-language request → structured constraints (Layer B).
+# Gemini reads the request; the app's rule engine decides eligibility & ranking.
+# --------------------------------------------------------------------------------------
+
+import os as _os  # noqa: E402
+import json as _json  # noqa: E402
+import re as _re  # noqa: E402
+import urllib.request as _urlreq  # noqa: E402
+
+_GEMINI_KEY = _os.environ.get("GEMINI_API_KEY", "")
+_CATS = ["local_food", "cafe_dessert", "massage_spa", "souvenir_craft", "local_product", "community_experience", "wellness"]
+
+
+class NLQuery(BaseModel):
+    text: str
+
+
+def _gemini_parse(text: str) -> Optional[dict[str, Any]]:
+    if not _GEMINI_KEY:
+        return None
+    prompt = (
+        "Extract tourist search constraints from the request. Reply with ONLY compact JSON, "
+        'keys: {"category": one of ' + str(_CATS) + " or null, "
+        '"price_range": "budget"|"moderate"|"premium"|null, '
+        '"wheelchair_required": bool, "elderly_friendly": bool, "open_now": bool, '
+        '"max_minutes": integer total-time-budget or null}. '
+        "Convert hours to minutes. Set booleans false unless clearly implied.\n\nRequest: " + text
+    )
+    body = {
+        "contents": [{"parts": [{"text": prompt}]}],
+        "generationConfig": {"temperature": 0.1, "maxOutputTokens": 300, "thinkingConfig": {"thinkingBudget": 0}},
+    }
+    try:
+        req = _urlreq.Request(
+            f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={_GEMINI_KEY}",
+            data=_json.dumps(body).encode(), headers={"Content-Type": "application/json"}, method="POST",
+        )
+        with _urlreq.urlopen(req, timeout=20) as r:
+            d = _json.load(r)
+        raw = d["candidates"][0]["content"]["parts"][0]["text"].strip()
+        raw = _re.sub(r"^```(json)?|```$", "", raw, flags=_re.I | _re.M).strip()
+        parsed = _json.loads(raw)
+        parsed["_source"] = "gemini"
+        return parsed
+    except Exception:
+        return None
+
+
+def _keyword_parse(text: str) -> dict[str, Any]:
+    t = text.lower()
+    cat = None
+    for key, c in (("coffee", "cafe_dessert"), ("cafe", "cafe_dessert"), ("café", "cafe_dessert"),
+                   ("massage", "massage_spa"), ("spa", "massage_spa"), ("souvenir", "souvenir_craft"),
+                   ("craft", "souvenir_craft"), ("community", "community_experience"),
+                   ("food", "local_food"), ("eat", "local_food"), ("restaurant", "local_food"),
+                   ("อาหาร", "local_food"), ("นวด", "massage_spa"), ("กาแฟ", "cafe_dessert")):
+        if key in t:
+            cat = c
+            break
+    price = "budget" if _re.search(r"cheap|affordable|budget|ไม่แพง|ถูก", t) else (
+        "premium" if _re.search(r"luxur|premium|fine dining|หรู", t) else None)
+    m = _re.search(r"(\d+(?:\.\d+)?)\s*(hour|hr|ชั่วโมง)", t)
+    max_min = int(float(m.group(1)) * 60) if m else (
+        int(_re.search(r"(\d+)\s*(min|นาที)", t).group(1)) if _re.search(r"(\d+)\s*(min|นาที)", t) else None)
+    return {
+        "category": cat, "price_range": price,
+        "wheelchair_required": bool(_re.search(r"wheelchair|รถเข็น", t)),
+        "elderly_friendly": bool(_re.search(r"elder|old|grandmother|mother|senior|ผู้สูงอายุ|แม่|ยาย", t)),
+        "open_now": bool(_re.search(r"open now|right now|เปิดอยู่|ตอนนี้", t)),
+        "max_minutes": max_min, "_source": "keyword",
+    }
+
+
+@app.post("/nl-parse")
+def nl_parse(q: NLQuery) -> dict[str, Any]:
+    """Parse a natural-language tourist request into structured match constraints."""
+    return _gemini_parse(q.text) or _keyword_parse(q.text)
+
+
+@app.post("/providers/bulk")
+def upsert_providers(body: ProviderBulk) -> dict[str, Any]:
+    """Insert/update providers by id (idempotent — safe to re-run the seed)."""
+    n = 0
+    with get_conn() as conn:
+        for p in body.providers:
+            pid = p.get("id")
+            if not pid:
+                continue
+            conn.execute(
+                f"""
+                INSERT INTO {PROVIDER_TABLE}
+                    (id, name, category, area, lat, lng, source, community_slug, confidence, data, updated_at)
+                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s, now())
+                ON CONFLICT (id) DO UPDATE SET
+                    name=EXCLUDED.name, category=EXCLUDED.category, area=EXCLUDED.area,
+                    lat=EXCLUDED.lat, lng=EXCLUDED.lng, source=EXCLUDED.source,
+                    community_slug=EXCLUDED.community_slug, confidence=EXCLUDED.confidence,
+                    data=EXCLUDED.data, updated_at=now()
+                """,
+                (pid, p.get("name"), p.get("category"), p.get("area"), p.get("lat"), p.get("lng"),
+                 p.get("source"), p.get("communitySlug"), p.get("confidence"), Json(p)),
+            )
+            n += 1
+    return {"ok": True, "upserted": n}
+
+
+# --------------------------------------------------------------------------------------
 # Raw log access
 # --------------------------------------------------------------------------------------
 

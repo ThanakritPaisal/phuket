@@ -13,12 +13,14 @@ export function LomaBadges({
   return (
     <>
       {ai.is_hidden_gem && <span className="badge b-gem">💎 Hidden Gem</span>}
-      {ai.is_verified ? (
+      {/* Localness honesty: only claim "Verified Local" with strong evidence / human
+          sign-off; otherwise "Likely Local · needs verification". */}
+      {ai.locality_status === "verified_local" ? (
         <span className="badge b-verified">
           <Icon name="verified" size={12} /> Verified Local
         </span>
-      ) : ai.is_local ? (
-        <span className="badge b-local">🌿 Local</span>
+      ) : ai.locality_status === "likely_local" ? (
+        <span className="badge b-local">🌿 Likely Local · unverified</span>
       ) : null}
       {ai.is_tourist_ready && <span className="badge b-ready">✓ Tourist Ready</span>}
       {ai.is_community_experience && (
@@ -76,12 +78,46 @@ export function ScoreBars({ ai }: { ai: AiScore }) {
   );
 }
 
-// Convenience: the AI note + the five bars together.
+const LOCALITY_LABEL: Record<string, string> = {
+  verified_local: "Verified Local",
+  likely_local: "Likely Local — requires verification",
+  unclear: "Local status unclear",
+  not_local: "Not local",
+};
+const CONF_LABEL = (c: number) => (c >= 0.7 ? "High" : c >= 0.45 ? "Medium" : "Low");
+const STRENGTH_CLS: Record<string, string> = {
+  strong: "ev-strong", medium: "ev-medium", weak: "ev-weak", negative: "ev-neg",
+};
+
+// Localness verdict + evidence confidence + the tiered evidence list.
+export function LocalityEvidenceBox({ ai }: { ai: AiScore }) {
+  return (
+    <div className="evbox">
+      <div className="evhead">
+        <span className="evstatus">{LOCALITY_LABEL[ai.locality_status]}</span>
+        <span className={`badge conf-${CONF_LABEL(ai.locality_confidence).toLowerCase()}`}>
+          {CONF_LABEL(ai.locality_confidence)} confidence · {Math.round(ai.locality_confidence * 100)}%
+        </span>
+      </div>
+      <ul className="evlist">
+        {ai.locality_evidence.map((e, i) => (
+          <li key={i} className={STRENGTH_CLS[e.strength]}>
+            <span className="evstrength">{e.strength}</span>
+            {e.signal} <span className="evsrc">({e.source})</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+// Convenience: the AI note + the five bars + the localness evidence.
 export default function AiScorePanel({ ai }: { ai: AiScore }) {
   return (
     <>
       <AiBox ai={ai} />
       <ScoreBars ai={ai} />
+      <LocalityEvidenceBox ai={ai} />
     </>
   );
 }

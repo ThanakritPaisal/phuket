@@ -31,7 +31,9 @@ export default function QRCode({
     };
   }, [value, size]);
 
-  return (
+  // Render the img only once the QR data-URL is ready (avoids an empty-src warning
+  // and the browser refetching the page for src="").
+  return src ? (
     <img
       src={src}
       width={size}
@@ -40,5 +42,7 @@ export default function QRCode({
       className={className}
       style={{ width: size, height: size, display: "block", ...style }}
     />
+  ) : (
+    <div style={{ width: size, height: size, ...style }} className={className} />
   );
 }

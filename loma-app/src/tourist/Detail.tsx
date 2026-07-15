@@ -5,6 +5,7 @@ import { trackEvent } from "../impact";
 import { visitCode } from "../qr";
 import QRCode from "../components/QRCode";
 import AiScorePanel, { LomaBadges } from "../components/AiScorePanel";
+import AccessibilityInfo from "../components/AccessibilityInfo";
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
@@ -90,6 +91,8 @@ export default function Detail({
             <p>{p.summary}</p>
           </div>
         )}
+
+        <AccessibilityInfo p={p} />
 
         {p.hours.length > 0 && (
           <>

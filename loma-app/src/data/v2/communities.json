@@ -25,7 +25,9 @@
   "schedule": [
    "By appointment — contact the community"
   ],
-  "phone": "Arrange via LOMA"
+  "phone": "Arrange via LOMA",
+  "lat": 7.90748,
+  "lng": 98.350191
  },
  {
   "id": "koh-maprao",
@@ -57,7 +59,9 @@
   "schedule": [
    "By appointment — contact the community"
   ],
-  "phone": "Arrange via LOMA"
+  "phone": "Arrange via LOMA",
+  "lat": 7.934054,
+  "lng": 98.38354
  },
  {
   "id": "kamala",
@@ -94,7 +98,9 @@
   "schedule": [
    "By appointment — contact the community"
   ],
-  "phone": "Arrange via LOMA"
+  "phone": "Arrange via LOMA",
+  "lat": 7.948024,
+  "lng": 98.295737
  },
  {
   "id": "ban-kian",
@@ -135,7 +141,9 @@
   "schedule": [
    "By appointment — contact the community"
   ],
-  "phone": "Arrange via LOMA"
+  "phone": "Arrange via LOMA",
+  "lat": 8.026604,
+  "lng": 98.337714
  },
  {
   "id": "tha-chatchai",
@@ -170,7 +178,9 @@
   "schedule": [
    "By appointment — contact the community"
   ],
-  "phone": "Arrange via LOMA"
+  "phone": "Arrange via LOMA",
+  "lat": 8.096277,
+  "lng": 98.301738
  },
  {
   "id": "bang-tao",
@@ -211,7 +221,9 @@
   "schedule": [
    "By appointment — contact the community"
   ],
-  "phone": "Arrange via LOMA"
+  "phone": "Arrange via LOMA",
+  "lat": 7.979378,
+  "lng": 98.309377
  },
  {
   "id": "bang-rong",
@@ -245,7 +257,9 @@
   "schedule": [
    "By appointment — contact the community"
   ],
-  "phone": "Arrange via LOMA"
+  "phone": "Arrange via LOMA",
+  "lat": 8.030248,
+  "lng": 98.399489
  },
  {
   "id": "ban-sakhu",
@@ -272,7 +286,9 @@
   "schedule": [
    "By appointment — contact the community"
   ],
-  "phone": "Arrange via LOMA"
+  "phone": "Arrange via LOMA",
+  "lat": 8.100248,
+  "lng": 98.31129
  },
  {
   "id": "old-town",
@@ -368,7 +384,9 @@
   "schedule": [
    "By appointment — contact the community"
   ],
-  "phone": "Arrange via LOMA"
+  "phone": "Arrange via LOMA",
+  "lat": 7.886423,
+  "lng": 98.383606
  },
  {
   "id": "cape-panwa",
@@ -399,6 +417,8 @@
   "schedule": [
    "By appointment — contact the community"
   ],
-  "phone": "Arrange via LOMA"
+  "phone": "Arrange via LOMA",
+  "lat": 7.820217,
+  "lng": 98.404812
  }
 ]

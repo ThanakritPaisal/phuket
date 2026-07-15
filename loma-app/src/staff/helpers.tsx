@@ -23,7 +23,8 @@ export type StaffScreen =
   | "getverified"
   | "recommend"
   | "impact"
-  | "qrlink";
+  | "qrlink"
+  | "match";
 
 export type AuthScreen =
   | "login"
