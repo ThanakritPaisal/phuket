@@ -1,5 +1,5 @@
 import { useVersion } from "../store";
-import { bookingsFor } from "../bookings";
+import { bookingsFor, getCapacity, setCapacity, remainingSlots, setBookingStatus } from "../bookings";
 import { statusBadge, commStats } from "./lib";
 import type { CommScreenProps } from "./CommunityApp";
 
@@ -10,11 +10,21 @@ const fmtDate = (iso: string) => {
     : d.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" });
 };
 
-export default function CommunityBookings({ c, onGo }: CommScreenProps) {
+export default function CommunityBookings({ c, onGo, toast }: CommScreenProps) {
   useVersion();
   // DATA ISOLATION: only this community's bookings, sorted by date.
   const bookings = [...bookingsFor(c.id)].sort((a, b) => a.date.localeCompare(b.date));
   const st = commStats(c);
+  const cap = getCapacity(c.id);
+  const left = remainingSlots(c.id);
+  const confirm = (ref: string) => {
+    setBookingStatus(ref, "confirmed");
+    toast("Booking confirmed");
+  };
+  const cancel = (ref: string) => {
+    setBookingStatus(ref, "noshow"); // frees the seat; ฿0 recorded
+    toast("Booking cancelled — seat released");
+  };
 
   return (
     <>
@@ -40,6 +50,44 @@ export default function CommunityBookings({ c, onGo }: CommScreenProps) {
           <div className="mtile">
             <div className="v">{st.noshows}</div>
             <div className="k">No-shows</div>
+          </div>
+        </div>
+
+        {/* Manage published capacity — availability the tourist app reads live. */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 10,
+            border: "1px solid var(--line)",
+            borderRadius: 12,
+            padding: "12px 14px",
+            marginTop: 12,
+          }}
+        >
+          <div>
+            <div style={{ fontWeight: 800, fontSize: 14 }}>Seats published</div>
+            <div style={{ fontSize: 11.5, color: left <= 3 ? "var(--danger)" : "var(--muted)" }}>
+              {left} of {cap} available now
+            </div>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <button
+              className="btn btn-line btn-sm"
+              style={{ width: 38, padding: 0 }}
+              onClick={() => setCapacity(c.id, cap - 1)}
+            >
+              −
+            </button>
+            <span style={{ fontWeight: 800, fontSize: 16, minWidth: 22, textAlign: "center" }}>{cap}</span>
+            <button
+              className="btn btn-line btn-sm"
+              style={{ width: 38, padding: 0 }}
+              onClick={() => setCapacity(c.id, cap + 1)}
+            >
+              +
+            </button>
           </div>
         </div>
 
@@ -102,13 +150,21 @@ export default function CommunityBookings({ c, onGo }: CommScreenProps) {
                   </div>
                 </div>
                 {pending && (
-                  <div style={{ marginTop: 8, fontSize: 11.5, color: "var(--muted)" }}>
-                    A booking is not a visit yet.{" "}
+                  <div style={{ display: "flex", gap: 8, marginTop: 10, flexWrap: "wrap" }}>
+                    {b.status === "requested" && (
+                      <button className="btn btn-primary btn-sm" style={{ width: "auto" }} onClick={() => confirm(b.ref)}>
+                        Confirm
+                      </button>
+                    )}
+                    <button className="btn btn-line btn-sm" style={{ width: "auto" }} onClick={() => onGo("checkin")}>
+                      Check in →
+                    </button>
                     <button
-                      onClick={() => onGo("checkin")}
-                      style={{ color: "var(--primary)", fontWeight: 700 }}
+                      className="btn btn-line btn-sm"
+                      style={{ width: "auto", color: "var(--danger)" }}
+                      onClick={() => cancel(b.ref)}
                     >
-                      Check in on the day →
+                      Cancel
                     </button>
                   </div>
                 )}
