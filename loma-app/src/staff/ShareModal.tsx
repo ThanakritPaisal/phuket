@@ -1,8 +1,10 @@
 import { useState } from "react";
 import Icon from "../components/Icon";
 import type { IconName } from "../types";
+import { trackEvent } from "../impact";
+import { buildShareUrlFromIds, channelHref, channelHasQR, openShareChannel, copyLink } from "../qr";
+import QRCode from "../components/QRCode";
 import {
-  QrSVG,
   attribution,
   bg,
   filterCatalog,
@@ -58,10 +60,22 @@ function ShareOne({ id }: { id: string }) {
   const { partner, closeModal, markRecommended, toast } = useStaff();
   const p = prov(id);
   const [ch, setCh] = useState<string | null>(null);
-  const pick = (c: string) => {
+  const shareUrl = buildShareUrlFromIds([id], "assisted", partner);
+  const msg = `${p.name} — ${attribution(partner)}`;
+  const pick = async (c: string) => {
     setCh(c);
-    toast(c === "Copy link" ? "✓ Link copied" : "Shared via " + c);
+    trackEvent("link_shared", { provider_id: id, metadata: { channel: c } });
+    if (c === "Copy link") {
+      toast((await copyLink(shareUrl)) ? "✓ Link copied" : "Copy: " + shareUrl);
+    } else if (channelHasQR(c)) {
+      toast("Tourist scans this QR");
+    } else if (openShareChannel(c, shareUrl, msg)) {
+      toast("Opening " + c + "…");
+    }
   };
+  // The QR to display for the selected channel: WhatsApp/LINE encode their app deep link
+  // (scan → opens that app); "QR" encodes the plain link (scan → opens in browser).
+  const qrValue = ch === "QR" ? shareUrl : channelHasQR(ch || "") ? channelHref(ch!, shareUrl, msg) : null;
   return (
     <Sheet onClose={closeModal}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -108,6 +122,21 @@ function ShareOne({ id }: { id: string }) {
 
       <div className="h-sec">Share via</div>
       <ShareGrid onPick={pick} selected={ch} />
+
+      {qrValue && (
+        <div style={{ textAlign: "center", marginTop: 12 }}>
+          <div style={{ display: "inline-block", padding: 12, background: "#fff", borderRadius: 14, border: "1px solid var(--line)" }}>
+            <QRCode value={qrValue} size={168} />
+          </div>
+          <div style={{ fontSize: 11.5, color: "var(--muted)", marginTop: 6 }}>
+            {ch === "WhatsApp"
+              ? "Tourist scans → opens in WhatsApp"
+              : ch === "LINE"
+              ? "Tourist scans → opens in LINE"
+              : `Tourist scans with their camera — opens ${p.name} instantly`}
+          </div>
+        </div>
+      )}
 
       <div className="h-sec">Optional</div>
       <input className="pp-input sm" placeholder="Tourist name or room number (optional)" style={{ marginBottom: 8 }} />
@@ -157,6 +186,9 @@ function ShareSet() {
       : "Route toward " + routeDest;
   const word = planKind === "custom" ? "picks" : filter.mode === "halfday" ? "plan" : "route";
   const code = "LOMA-PLAN-" + (1000 + ((title.length * 611) % 9000));
+  const shareUrl = buildShareUrlFromIds(stops.map((s) => s.id), "assisted", partner);
+  const msg = `${title} — ${attribution(partner)}`;
+  const qrValue = ch === "QR" ? shareUrl : channelHasQR(ch || "") ? channelHref(ch!, shareUrl, msg) : null;
 
   return (
     <Sheet onClose={closeModal}>
@@ -192,12 +224,36 @@ function ShareSet() {
       </div>
       <div className="h-sec">Share via</div>
       <ShareGrid
-        onPick={(c) => {
+        onPick={async (c) => {
           setCh(c);
-          toast(c === "Copy link" ? "✓ Link copied" : "Shared via " + c);
+          trackEvent("link_shared", {
+            recommendation_list_id: code,
+            metadata: { channel: c, plan: title },
+          });
+          if (c === "Copy link") {
+            toast((await copyLink(shareUrl)) ? "✓ Link copied" : "Copy: " + shareUrl);
+          } else if (channelHasQR(c)) {
+            toast("Tourist scans this QR");
+          } else if (openShareChannel(c, shareUrl, msg)) {
+            toast("Opening " + c + "…");
+          }
         }}
         selected={ch}
       />
+      {qrValue && (
+        <div style={{ textAlign: "center", marginTop: 12 }}>
+          <div style={{ display: "inline-block", padding: 12, background: "#fff", borderRadius: 14, border: "1px solid var(--line)" }}>
+            <QRCode value={qrValue} size={168} />
+          </div>
+          <div style={{ fontSize: 11.5, color: "var(--muted)", marginTop: 6 }}>
+            {ch === "WhatsApp"
+              ? "Tourist scans → opens in WhatsApp"
+              : ch === "LINE"
+              ? "Tourist scans → opens in LINE"
+              : `Tourist scans with their camera — opens all ${stops.length} places`}
+          </div>
+        </div>
+      )}
       <div style={{ fontSize: 11.5, color: "var(--muted)", background: "var(--surface-2)", borderRadius: 9, padding: "9px 11px", marginTop: 12 }}>
         🔒 No tourist data required. The tourist sees an itinerary card · “{attribution(partner)}”.
       </div>
@@ -214,6 +270,9 @@ function ShareSet() {
 function CounterQR() {
   const { partner, saved, ssMode, setSsMode, closeModal, toast } = useStaff();
   const curated = (partner.housePicks || []).length + saved.size;
+  // Standee QR encodes the hotel's curated picks (house picks + saved) as a passive link.
+  const standeeIds = [...(partner.housePicks || []), ...saved];
+  const standeeUrl = buildShareUrlFromIds(standeeIds, "passive", partner);
   return (
     <Sheet onClose={closeModal}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -233,7 +292,7 @@ function CounterQR() {
         <div style={{ fontSize: 18, fontWeight: 800, margin: "5px 0 2px" }}>{partner.name}</div>
         <div style={{ fontSize: 12, color: "var(--muted)" }}>Trusted local food, cafés &amp; experiences near you</div>
         <div className="qr" style={{ width: 152, height: 152, margin: "14px auto" }}>
-          <QrSVG />
+          <QRCode value={standeeUrl} size={152} />
         </div>
         <div style={{ fontSize: 12.5, fontWeight: 700, color: "var(--primary-d)" }}>
           Scan with your camera · no app needed

@@ -1,6 +1,8 @@
 import { useState } from "react";
 import Icon from "../components/Icon";
 import type { CatalogProvider } from "../types";
+import { trackEvent } from "../impact";
+import QRScanner from "../components/QRScanner";
 import { refFor } from "./lib";
 import type { ProvScreen } from "./Chrome";
 
@@ -16,6 +18,7 @@ export function ProviderConfirm({
   const [code, setCode] = useState(refFor(p.id));
   const [spend, setSpend] = useState("");
   const [notes, setNotes] = useState("");
+  const [scanning, setScanning] = useState(false);
   return (
     <div className="pad">
       <h2 style={{ fontSize: 18 }}>Confirm tourist visit</h2>
@@ -25,10 +28,21 @@ export function ProviderConfirm({
       <div className="h-sec">Referral code</div>
       <input className="pp-input" value={code} onChange={(e) => setCode(e.target.value)} placeholder="LOMA-XXXX" />
       <div style={{ margin: "12px 0" }}>
-        <button className="btn btn-line" onClick={() => toast("Camera would open to scan QR")}>
+        <button className="btn btn-line" onClick={() => setScanning(true)}>
           <Icon name="qr" size={16} /> Scan QR instead
         </button>
       </div>
+      {scanning && (
+        <QRScanner
+          onClose={() => setScanning(false)}
+          onResult={(text) => {
+            setScanning(false);
+            setCode(text);
+            trackEvent("destination_scanned", { provider_id: p.id, metadata: { via: "qr", scanned: text } });
+            toast("Scanned: " + text);
+          }}
+        />
+      )}
       <div className="h-sec">Estimated spend (optional)</div>
       <input
         className="pp-input sm"
@@ -48,7 +62,17 @@ export function ProviderConfirm({
         onChange={(e) => setNotes(e.target.value)}
       />
       <div style={{ marginTop: 18 }}>
-        <button className="btn btn-primary" onClick={onConfirm}>
+        <button
+          className="btn btn-primary"
+          onClick={() => {
+            // The destination shop confirms the arriving tourist — the arrival "scan".
+            trackEvent("destination_scanned", {
+              provider_id: p.id,
+              metadata: { via: "code", code, spend: spend || null, notes: notes || null },
+            });
+            onConfirm();
+          }}
+        >
           <Icon name="check" size={16} /> Confirm visit
         </button>
       </div>

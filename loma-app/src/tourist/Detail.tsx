@@ -1,5 +1,9 @@
+import { useEffect, useState } from "react";
 import { byId } from "../data";
 import { activePick } from "../activeAccount";
+import { trackEvent } from "../impact";
+import { visitCode } from "../qr";
+import QRCode from "../components/QRCode";
 import AiScorePanel, { LomaBadges } from "../components/AiScorePanel";
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
@@ -11,6 +15,14 @@ export default function Detail({
   id: string;
   onBack: () => void;
 }) {
+  const [going, setGoing] = useState(false);
+
+  // A tourist opening a shop's full detail is the clearest "viewed this shop" signal.
+  useEffect(() => {
+    setGoing(false);
+    trackEvent("provider_card_viewed", { provider_id: id, metadata: { source: "detail" } });
+  }, [id]);
+
   const p = byId(id);
   if (!p) return null;
   // AI curation scores are property-independent, so any pick carries them.
@@ -102,10 +114,49 @@ export default function Detail({
             <p style={{ fontSize: 12.5, color: "var(--ink-2)", marginTop: 6 }}>{p.address}</p>
           </>
         )}
+
+        {/* Visit QR — the shop scans this at the counter to confirm the tourist's visit. */}
+        <div className="sec-h">Show this at {p.name}</div>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 14,
+            padding: 14,
+            background: "#fff",
+            border: "1px solid var(--line)",
+            borderRadius: 14,
+            marginTop: 6,
+            marginBottom: 12,
+          }}
+        >
+          <div style={{ padding: 8, background: "#fff", borderRadius: 10, border: "1px solid var(--line)" }}>
+            <QRCode value={visitCode(id)} size={96} />
+          </div>
+          <div>
+            <div style={{ fontSize: 11.5, color: "var(--muted)" }}>Your visit code</div>
+            <div style={{ fontSize: 16, fontWeight: 800, letterSpacing: ".5px", color: "var(--primary-d)" }}>
+              {visitCode(id)}
+            </div>
+            <div style={{ fontSize: 11.5, color: "var(--muted)", marginTop: 4 }}>
+              The shop scans this so your visit counts toward local impact.
+            </div>
+          </div>
+        </div>
       </div>
       <div className="stick-cta">
+        <button
+          className={`btn ${going ? "btn-ghost" : "btn-primary"}`}
+          disabled={going}
+          onClick={() => {
+            setGoing(true);
+            trackEvent("visit_marked", { provider_id: id });
+          }}
+        >
+          {going ? "✓ Marked — I'm going" : "I'm going"}
+        </button>
         {p.mapsUrl && (
-          <a className="btn btn-primary" href={p.mapsUrl} target="_blank" rel="noreferrer">
+          <a className="btn btn-ghost btn-sm" href={p.mapsUrl} target="_blank" rel="noreferrer" style={{ width: "auto" }}>
             Open in Google Maps
           </a>
         )}

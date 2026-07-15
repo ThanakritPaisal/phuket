@@ -15,8 +15,8 @@ const TABS: { id: Persona; label: string }[] = [
   { id: "admin", label: "Admin" },
 ];
 
-export default function App() {
-  const [persona, setPersona] = useState<Persona>("tourist");
+export default function App({ initialPersona }: { initialPersona?: Persona }) {
+  const [persona, setPersona] = useState<Persona>(initialPersona ?? "tourist");
 
   return (
     <>

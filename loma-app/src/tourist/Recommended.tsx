@@ -106,9 +106,17 @@ export default function Recommended({ onGoTab }: { onGoTab: (t: TouristTab) => v
   const hotel = getActiveAccount();
   const { provs, comms, assisted } = resolvePicks();
 
-  // Fire provider_card_viewed for each provider pick when the landing opens.
+  // When the QR/link landing opens: the tourist opened the link. If it resolves to a
+  // staff-shared recommendation list, the link was also successfully received.
   useEffect(() => {
-    provs.forEach((p) => trackEvent("provider_card_viewed", { provider_id: p.id }));
+    const rl = RECOMMENDATION_LISTS.length
+      ? RECOMMENDATION_LISTS[RECOMMENDATION_LISTS.length - 1]
+      : null;
+    if (rl) trackEvent("link_received", { recommendation_list_id: rl.id });
+    trackEvent("link_opened", { recommendation_list_id: rl?.id ?? null });
+    provs.forEach((p) =>
+      trackEvent("provider_card_viewed", { provider_id: p.id, metadata: { source: "recommended" } })
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
