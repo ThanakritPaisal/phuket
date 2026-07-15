@@ -2,7 +2,10 @@ import Icon from "../components/Icon";
 import { LomaBadges } from "../components/AiScorePanel";
 import { activePick } from "../activeAccount";
 import { recUrl } from "../recommendations";
-import { StaffAppbar, StaffTabbar, QrSVG, bg, useStaff } from "./helpers";
+import { trackEvent } from "../impact";
+import { buildShareUrl } from "../qr";
+import QRCode from "../components/QRCode";
+import { StaffAppbar, StaffTabbar, bg, useStaff } from "./helpers";
 import "./impact.css";
 
 /** The generated QR / shareable link for a recommendation list (assisted or passive). */
@@ -68,7 +71,7 @@ export default function StaffQRLink() {
 
         <div className="qrblock">
           <div className="frame">
-            <QrSVG />
+            <QRCode value={buildShareUrl(rl)} size={180} />
           </div>
           <div className="cap">{passive ? "Recommended by this hotel" : "Local picks recommended for you"}</div>
           <div className="url">{recUrl(rl)}</div>
@@ -76,14 +79,42 @@ export default function StaffQRLink() {
             <button
               className="btn btn-line btn-sm"
               style={{ flex: 1 }}
-              onClick={() => toast("Link copied — " + recUrl(rl))}
+              onClick={async () => {
+                const url = buildShareUrl(rl);
+                trackEvent("link_shared", {
+                  recommendation_list_id: rl.id,
+                  metadata: { channel: "Copy link", kind: rl.kind },
+                });
+                try {
+                  await navigator.clipboard?.writeText(url);
+                  toast("Link copied — opens these picks on any phone");
+                } catch {
+                  toast("Copy this link: " + url);
+                }
+              }}
             >
               <Icon name="copy" size={15} /> Copy link
             </button>
             <button
               className="btn btn-line btn-sm"
               style={{ flex: 1 }}
-              onClick={() => toast("Sending to the guest…")}
+              onClick={async () => {
+                const url = buildShareUrl(rl);
+                trackEvent("link_sent", {
+                  recommendation_list_id: rl.id,
+                  metadata: { kind: rl.kind },
+                });
+                // Use the native share sheet when available (real send on mobile).
+                try {
+                  if (navigator.share) {
+                    await navigator.share({ title: "Local picks for you", url });
+                    return;
+                  }
+                } catch {
+                  /* user cancelled share — fall through */
+                }
+                toast("Sending to the guest…");
+              }}
             >
               <Icon name="share" size={15} /> Send
             </button>

@@ -1,0 +1,23 @@
+services:
+  backend:
+    build: .
+    image: loma-logging-api
+    container_name: loma-logging-api
+    ports:
+      - "8000:8000"
+    # Pull POSTGRESQL_CONNECTING_STRING (and the other keys) from the repo-root .env.
+    # DB is external (DigitalOcean managed Postgres) — no db service needed here.
+    env_file:
+      - ../../.env
+    environment:
+      # Optional overrides; defaults live in db.py / main.py.
+      LOMA_DB_NAME: loma
+      LOMA_ADMIN_DB: defaultdb
+      LOMA_LOG_CORS: "*"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0) if urllib.request.urlopen('http://localhost:8000/health').status==200 else sys.exit(1)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s

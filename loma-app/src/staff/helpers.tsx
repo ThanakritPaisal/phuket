@@ -409,26 +409,3 @@ export function MapSVG() {
     </svg>
   );
 }
-
-export function QrSVG() {
-  const n = 11;
-  const seed = [1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1];
-  const cells: ReactNode[] = [];
-  for (let y = 0; y < n; y++)
-    for (let x = 0; x < n; x++) {
-      const corner = (x < 3 && y < 3) || (x > n - 4 && y < 3) || (x < 3 && y > n - 4);
-      const on = corner
-        ? x === 0 || x === 2 || x === n - 3 || x === n - 1 || y === 0 || y === 2 || y === n - 3 || y === n - 1
-          ? 1
-          : (x === 1 && y === 1) || (x === n - 2 && y === 1) || (x === 1 && y === n - 2)
-          ? 1
-          : 0
-        : seed[(x * 3 + y * 5) % n] ^ ((x + y) % 2);
-      if (on) cells.push(<rect key={`${x}-${y}`} x={x * 9} y={y * 9} width="9" height="9" />);
-    }
-  return (
-    <svg viewBox={`0 0 ${n * 9} ${n * 9}`} fill="#0C1F1D">
-      {cells}
-    </svg>
-  );
-}

@@ -5,6 +5,7 @@ import { activePick } from "./activeAccount";
 import { getActiveAccount } from "./activeAccount";
 import { community, commReady, PARTNERS, UNDER_SERVED } from "./v2data";
 import { bumpVersion } from "./store";
+import { logEvent } from "./logger";
 
 export interface TrackingEvent {
   id: string;
@@ -160,6 +161,9 @@ export function trackEvent(event_type: string, opt: TrackOpts = {}): TrackingEve
     metadata: { multipliers: tags, base_points: base, ...(opt.metadata || {}) },
   };
   TRACKING_EVENTS.push(ev);
+  // Persist every event to the FastAPI logging backend (fire-and-forget).
+  const { id, ...rest } = ev;
+  logEvent({ ...rest, event_id: id });
   bumpVersion();
   return ev;
 }
