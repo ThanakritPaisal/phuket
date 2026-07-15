@@ -26,6 +26,7 @@ import StaffVerify from "./StaffVerify";
 import StaffRecommend from "./StaffRecommend";
 import StaffImpact from "./StaffImpact";
 import StaffQRLink from "./StaffQRLink";
+import StaffMatch from "./StaffMatch";
 import { CounterQR, ShareOne, ShareSet } from "./ShareModal";
 import type { RecList } from "../recommendations";
 
@@ -199,6 +200,7 @@ export default function StaffApp() {
     route: <StaffRoute />,
     halfday: <StaffHalfday />,
     getverified: <StaffVerify />,
+    match: <StaffMatch />,
     recommend: <StaffRecommend />,
     impact: <StaffImpact />,
     qrlink: <StaffQRLink />,

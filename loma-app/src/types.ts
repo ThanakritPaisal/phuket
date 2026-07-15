@@ -24,7 +24,35 @@ export interface Provider {
   placeId: string;
   confidence: "HIGH" | "MEDIUM" | "LOW" | "NONE";
   aka?: string[]; // other seed names merged into this place during dedupe
+  // Spec fields. "unknown" is the honest default — never inferred from photos/reviews.
+  estimated_visit_duration_min?: number; // minutes (at the venue, excl. travel)
+  estimated_visit_duration_max?: number;
+  wheelchair_accessibility?: WheelchairAccessibility;
+  elderly_suitability?: ElderlySuitability;
+  verification_status?: VerificationStatus;
+  price_range?: PriceRange;
+  contact_method?: ContactMethod;
+  opening_hours?: OpeningHours;
 }
+
+export type PriceRange = "budget" | "moderate" | "premium" | "unknown";
+export interface ContactMethod {
+  type: "phone" | "line" | "whatsapp" | "facebook" | "website" | "none";
+  value: string;
+}
+export interface OpeningHours {
+  open_time: string | null; // "HH:MM"
+  close_time: string | null;
+  closed_days: string[]; // ["monday", ...]
+}
+
+export type WheelchairAccessibility = "full" | "partial" | "not_accessible" | "unknown";
+export type ElderlySuitability = "suitable" | "conditional" | "not_suitable" | "unknown";
+export type VerificationStatus =
+  | "unverified"
+  | "provider_declared"
+  | "hotel_verified"
+  | "loma_verified";
 
 // ---------- Mock catalog provider (rich prototype card) ----------
 export interface CatalogProvider {

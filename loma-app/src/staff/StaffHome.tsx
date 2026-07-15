@@ -131,6 +131,15 @@ export default function StaffHome() {
         <span>What is the tourist looking for?</span>
       </div>
 
+      <button
+        className="btn btn-primary"
+        style={{ marginTop: 12, justifyContent: "space-between" }}
+        onClick={() => go("match")}
+      >
+        <span><Icon name="spark" size={16} /> Match by guest need</span>
+        <span style={{ fontWeight: 500, fontSize: 12, opacity: 0.85 }}>accessibility · time · budget →</span>
+      </button>
+
       <div className="h-sec">
         Quick intent{" "}
         <span style={{ fontWeight: 500, textTransform: "none", letterSpacing: 0, color: "var(--muted)" }}>

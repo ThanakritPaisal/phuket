@@ -50,10 +50,24 @@ export interface ScoreInput {
   sourceType?: SourceType;
 }
 
+export type EvidenceStrength = "strong" | "medium" | "weak" | "negative";
+export type LocalityStatus = "verified_local" | "likely_local" | "unclear" | "not_local";
+export interface LocalityEvidence {
+  signal: string;
+  source: string;
+  strength: EvidenceStrength;
+}
+
 export interface AiScore {
   loma_cat: string;
   source_type: SourceType;
   locality_score: number;
+  // Localness is a SCORE + a CONFIDENCE + evidence — a high score with weak
+  // evidence is NOT proof of ownership. AI may say "Likely Local — requires
+  // verification" but never "Verified Local" without strong evidence / human sign-off.
+  locality_confidence: number; // 0–1
+  locality_status: LocalityStatus;
+  locality_evidence: LocalityEvidence[];
   quality_score: number;
   visibility_gap_score: number;
   readiness_score: number;
@@ -246,6 +260,50 @@ function aiExplain(p: ScoreInput, s: Omit<AiScore, "ai_summary">): string {
   return bits.join(", ") + "." + tail;
 }
 
+// ---------- Localness evidence, confidence & status ----------
+// Reviews/keywords are only WEAK evidence of "local"; ownership/registry/partner
+// confirmation is STRONG. We tier evidence by provenance (source_type) + signals,
+// derive a confidence, and only call something "verified_local" with strong evidence.
+const SRC_EVIDENCE: Record<SourceType, LocalityEvidence> = {
+  community_nominated: { signal: "Listed in the community-based-tourism (CBT) registry", source: "cbt_registry", strength: "strong" },
+  hotel_nominated: { signal: "Nominated by a hotel partner", source: "hotel", strength: "strong" },
+  admin_added: { signal: "Added by a LOMA operator", source: "loma", strength: "strong" },
+  self_registered: { signal: "Self-registered by the business", source: "provider", strength: "medium" },
+  ai_discovered: { signal: "Discovered from public data (Google Maps / OSM)", source: "public_data", strength: "weak" },
+};
+
+function localness(
+  p: ScoreInput,
+  source_type: SourceType,
+  locality_score: number,
+  approved: boolean
+): { confidence: number; status: LocalityStatus; evidence: LocalityEvidence[] } {
+  const ev: LocalityEvidence[] = [SRC_EVIDENCE[source_type]];
+  if (p.branches === 1) ev.push({ signal: "Single location — no branches", source: "maps_data", strength: "medium" });
+  if (/Community|Craft|Market|Souvenir/i.test(p.cat))
+    ev.push({ signal: "Community / craft / market category", source: "category", strength: "medium" });
+  if (THAI_SCRIPT.test(p.name || ""))
+    ev.push({ signal: "Thai-script business name", source: "name", strength: "weak" });
+  if (/starbucks|7-eleven|mcdonald|franchise|chain|group co/i.test(p.name || ""))
+    ev.push({ signal: "Matches a chain / franchise name pattern", source: "name", strength: "negative" });
+
+  const n = (s: EvidenceStrength) => ev.filter((e) => e.strength === s).length;
+  const strong = n("strong"), medium = n("medium"), weak = n("weak"), neg = n("negative");
+  let c =
+    strong > 0 ? 0.72 + 0.06 * (strong - 1) + 0.03 * medium :
+    medium > 0 ? 0.44 + 0.06 * medium + 0.02 * weak :
+    weak > 0 ? 0.24 + 0.04 * weak : 0.15;
+  c -= 0.25 * neg;
+  const confidence = Math.max(0.05, Math.min(0.95, Math.round(c * 100) / 100));
+
+  let status: LocalityStatus;
+  if (neg > 0 || locality_score < 40) status = "not_local";
+  else if (approved || (strong > 0 && locality_score >= 75)) status = "verified_local";
+  else if (locality_score >= 65 && strong + medium > 0 && confidence >= 0.4) status = "likely_local";
+  else status = "unclear";
+  return { confidence, status, evidence: ev };
+}
+
 // Fixed reference date keeps freshness deterministic across reloads (demo-stable).
 const NOW = new Date("2026-07-13T09:00:00Z");
 const dstr = (d: Date) => d.toISOString().slice(0, 10);
@@ -283,6 +341,7 @@ export function aiScore(p: ScoreInput, approvals?: ApprovalState): AiScore {
     risk_score,
   });
   const is_community_experience = loma_cat === "Community Experience";
+  const loc = localness(p, source_type, locality_score, !!approvals?.approved.has(p.id));
 
   const hA = hsh("age|" + p.id) % 100,
     hB = hsh("agf|" + p.id);
@@ -308,6 +367,9 @@ export function aiScore(p: ScoreInput, approvals?: ApprovalState): AiScore {
     loma_cat,
     source_type,
     locality_score,
+    locality_confidence: loc.confidence,
+    locality_status: loc.status,
+    locality_evidence: loc.evidence,
     quality_score,
     visibility_gap_score,
     readiness_score,

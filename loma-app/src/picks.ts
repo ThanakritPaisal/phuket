@@ -8,7 +8,7 @@ import type { CatalogProvider, Provider, RealAccount } from "./types";
 import { CATALOG } from "./data";
 import { haversineKm, distLabel, distMinutes, project } from "./geo";
 import { reasonFor, whyLocalFor, bestForFor, scoresFor } from "./copy";
-import { aiScore, type AiScore } from "./scoring";
+import { aiScore, type AiScore, type SourceType } from "./scoring";
 
 export const CAT_EMO: Record<string, string> = {
   "Community Experience": "🛶",
@@ -24,6 +24,13 @@ export interface Pick extends CatalogProvider {
   lat: number;
   lng: number;
   ai: AiScore;
+  // spec fields carried through for contextual matching (Layer B)
+  wheelchair: Provider["wheelchair_accessibility"];
+  elderly: Provider["elderly_suitability"];
+  durationMin: number;
+  durationMax: number;
+  priceRange: Provider["price_range"];
+  verification: Provider["verification_status"];
 }
 
 /** Adapt one real provider into the card shape, relative to a partner property. */
@@ -33,8 +40,16 @@ export function toPick(p: Provider, from: RealAccount, isHousePick = false): Pic
   const s = scoresFor(p);
   const xy = project({ lat: p.lat!, lng: p.lng! });
   const hours = p.hours.length ? p.hours[0].replace(/^\w+:\s*/, "") : "See Google Maps";
+  // Real provenance drives localness evidence strength: CBT-seed providers come from
+  // the community-based-tourism registry (strong); OSM-discovered ones are public data (weak).
+  const src = (p as Provider & { source?: string }).source;
+  const sourceType: SourceType =
+    src === "osm_bulk" || src === "osm_sample" ? "ai_discovered" : "community_nominated";
 
-  const card: CatalogProvider & { km: number; minutes: number; lat: number; lng: number } = {
+  const card: CatalogProvider & {
+    km: number; minutes: number; lat: number; lng: number; sourceType: SourceType;
+  } = {
+    sourceType,
     id: p.id,
     name: p.name,
     cat: p.category,
@@ -76,7 +91,16 @@ export function toPick(p: Provider, from: RealAccount, isHousePick = false): Pic
     lng: p.lng!,
   };
   // Run the real AI Curation Engine over the card's signals.
-  return { ...card, ai: aiScore(card) };
+  return {
+    ...card,
+    ai: aiScore({ ...card, sourceType }),
+    wheelchair: p.wheelchair_accessibility ?? "unknown",
+    elderly: p.elderly_suitability ?? "unknown",
+    durationMin: p.estimated_visit_duration_min ?? 45,
+    durationMax: p.estimated_visit_duration_max ?? 75,
+    priceRange: p.price_range ?? "unknown",
+    verification: p.verification_status ?? "unverified",
+  };
 }
 
 /** All real providers as picks for a property, nearest first. */

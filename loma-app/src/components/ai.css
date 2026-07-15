@@ -89,3 +89,20 @@
   text-align: right;
   color: var(--ink);
 }
+
+/* Localness evidence box */
+.evbox { margin-top: 12px; border: 1px solid var(--line); border-radius: 10px; padding: 10px 11px; background: var(--surface); }
+.evhead { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 7px; }
+.evstatus { font-size: 12.5px; font-weight: 800; color: var(--ink); }
+.badge.conf-high { background: var(--ok-l); color: var(--ok-d); }
+.badge.conf-medium { background: var(--warn-l); color: var(--warn-d); }
+.badge.conf-low { background: var(--surface-2); color: var(--muted); }
+.evlist { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.evlist li { font-size: 11.5px; color: var(--ink-2); line-height: 1.4; }
+.evstrength { display: inline-block; font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: .3px; padding: 1px 5px; border-radius: 5px; margin-right: 6px; vertical-align: 1px; }
+.ev-strong .evstrength { background: var(--ok-l); color: var(--ok-d); }
+.ev-medium .evstrength { background: var(--primary-l); color: var(--primary); }
+.ev-weak .evstrength { background: var(--surface-2); color: var(--muted); }
+.ev-neg .evstrength { background: var(--danger-l); color: var(--danger); }
+.ev-neg { color: var(--danger); }
+.evsrc { color: var(--muted); }

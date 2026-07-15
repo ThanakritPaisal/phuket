@@ -113,11 +113,42 @@ def init_schema() -> None:
             )
 
 
+PROVIDER_TABLE = "provider"
+
+
+def init_provider_schema() -> None:
+    """Create the `provider` table (LOMA catalog). Key columns for querying + a full
+    JSONB record the web app consumes as-is."""
+    with get_conn() as conn:
+        conn.execute(
+            f"""
+            CREATE TABLE IF NOT EXISTS {PROVIDER_TABLE} (
+                id             TEXT PRIMARY KEY,
+                name           TEXT,
+                category       TEXT,
+                area           TEXT,
+                lat            DOUBLE PRECISION,
+                lng            DOUBLE PRECISION,
+                source         TEXT,
+                community_slug TEXT,
+                confidence     TEXT,
+                data           JSONB NOT NULL,
+                updated_at     TIMESTAMPTZ NOT NULL DEFAULT now()
+            )
+            """
+        )
+        for col in ("category", "area", "community_slug", "source"):
+            conn.execute(
+                f"CREATE INDEX IF NOT EXISTS idx_{PROVIDER_TABLE}_{col} ON {PROVIDER_TABLE} ({col})"
+            )
+
+
 def setup() -> None:
     """One-shot: create the database (if needed) then the schema."""
     created = ensure_database()
     init_schema()
-    print(f"database '{DB_NAME}': {'created' if created else 'already existed'}; table '{LOG_TABLE}' ready")
+    init_provider_schema()
+    print(f"database '{DB_NAME}': {'created' if created else 'already existed'}; tables '{LOG_TABLE}', '{PROVIDER_TABLE}' ready")
 
 
 if __name__ == "__main__":

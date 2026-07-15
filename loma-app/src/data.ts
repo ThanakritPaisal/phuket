@@ -2,12 +2,16 @@ import raw from "./data/providers.json";
 import type { Provider } from "./types";
 import { assetUrl } from "./assets";
 
-// Photos are hosted in a GCS bucket; resolve the stored "/providers/*.jpg" paths
-// to their full URLs at load time so every downstream consumer gets a real link.
-export const PROVIDERS = (raw as Provider[]).map((p) => ({
-  ...p,
-  photo: assetUrl(p.photo),
-}));
+// Providers now live in Postgres (served by the logging API) and are hydrated at
+// boot via setProviders() — see providersApi.ts / main.tsx. The bundled JSON is the
+// initial value AND the offline fallback if the API is unreachable, so the app always
+// renders. These are `let` bindings so hydration updates every live import.
+function prep(rows: Provider[]): Provider[] {
+  // Photos are hosted in a GCS bucket; resolve stored "/providers/*.jpg" paths.
+  return rows.map((p) => ({ ...p, photo: assetUrl(p.photo) }));
+}
+
+export let PROVIDERS: Provider[] = prep(raw as Provider[]);
 
 const confRank = (c: Provider["confidence"]) =>
   c === "HIGH" ? 0 : c === "MEDIUM" ? 1 : c === "LOW" ? 2 : 3;
@@ -54,12 +58,22 @@ function dedupeByPlace(rows: Provider[]): Provider[] {
 
 // Catalog for the tourist demo: all reliable (HIGH/MEDIUM) matches, deduped by place.
 // Photo/rating are optional — cards fall back to an emoji and hide the rating badge.
-export const CATALOG = dedupeByPlace(
-  PROVIDERS.filter((p) => p.confidence === "HIGH" || p.confidence === "MEDIUM")
-);
+export let CATALOG: Provider[] = [];
+export let AREAS: string[] = [];
+export let CATEGORIES: string[] = [];
 
-export const AREAS = Array.from(new Set(CATALOG.map((p) => p.area))).sort();
-export const CATEGORIES = Array.from(new Set(CATALOG.map((p) => p.category))).sort();
+function recompute(): void {
+  CATALOG = dedupeByPlace(PROVIDERS.filter((p) => p.confidence === "HIGH" || p.confidence === "MEDIUM"));
+  AREAS = Array.from(new Set(CATALOG.map((p) => p.area))).sort();
+  CATEGORIES = Array.from(new Set(CATALOG.map((p) => p.category))).sort();
+}
+recompute(); // initial catalog from the bundled JSON
+
+/** Replace the catalog with providers loaded from the database (called at boot). */
+export function setProviders(rows: Provider[]): void {
+  PROVIDERS = prep(rows);
+  recompute();
+}
 
 export function byId(id: string): Provider | undefined {
   return PROVIDERS.find((p) => p.id === id);

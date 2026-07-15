@@ -24,7 +24,22 @@
   "placeId": "ChIJwfKsZ246UDARfCbO286Ud_I",
   "confidence": "HIGH",
   "community": "ชุมชนท่องเที่ยวบ้านกมลา",
-  "communitySlug": "kamala"
+  "communitySlug": "kamala",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "not_suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A047",
@@ -59,7 +74,30 @@
   "placeId": "ChIJy60ZdPxFUDAR8otQ-dUA37k",
   "confidence": "HIGH",
   "community": "ชุมชนท่องเที่ยวบ้านท่าฉัตรไชย",
-  "communitySlug": "tha-chatchai"
+  "communitySlug": "tha-chatchai",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "not_accessible",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": [
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+    "sunday"
+   ]
+  }
  },
  {
   "id": "LOMA-CBT-A055",
@@ -94,7 +132,30 @@
   "placeId": "ChIJQQYp8Y4uUDARCSWrRNvJdt4",
   "confidence": "HIGH",
   "community": "ชุมชนท่องเที่ยวบ้านบ่อแร่",
-  "communitySlug": null
+  "communitySlug": null,
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "partial",
+  "elderly_suitability": "not_suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": [
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+    "sunday"
+   ]
+  }
  },
  {
   "id": "LOMA-CBT-P026",
@@ -121,7 +182,22 @@
   "placeId": "ChIJH27yJQwxUDARC4fqbC1JB3s",
   "confidence": "HIGH",
   "community": "ชุมชนท่องเที่ยวบ้านบ่อแร่",
-  "communitySlug": null
+  "communitySlug": null,
+  "estimated_visit_duration_min": 20,
+  "estimated_visit_duration_max": 45,
+  "wheelchair_accessibility": "partial",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A061",
@@ -148,7 +224,22 @@
   "placeId": "ChIJaRvXb4w4UDARikkUpjqscJI",
   "confidence": "HIGH",
   "community": "ชุมชนท่องเที่ยวบ้านบางเทา",
-  "communitySlug": "bang-tao"
+  "communitySlug": "bang-tao",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "partial",
+  "elderly_suitability": "not_suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A085",
@@ -175,7 +266,22 @@
   "placeId": "ChIJ9XSzgbw6UDARGAfneb5s7kw",
   "confidence": "HIGH",
   "community": "ชุมชนท่องเที่ยวบ้านป่าตอง",
-  "communitySlug": null
+  "communitySlug": null,
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "not_suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-P036",
@@ -202,7 +308,22 @@
   "placeId": "ChIJC_daUvctUDARyS6XTwWktwI",
   "confidence": "HIGH",
   "community": "ชุมชนท่องเที่ยวบ้านแหลมพันวา",
-  "communitySlug": "cape-panwa"
+  "communitySlug": "cape-panwa",
+  "estimated_visit_duration_min": 20,
+  "estimated_visit_duration_max": 45,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "089 871 6771"
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A038",
@@ -237,7 +358,22 @@
   "placeId": "ChIJfS0bkL83UDARNUIGX3mgWaA",
   "confidence": "HIGH",
   "community": "วิสาหกิจชุมชนท่องเที่ยวบ้านเคียน",
-  "communitySlug": "ban-kian"
+  "communitySlug": "ban-kian",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "not_accessible",
+  "elderly_suitability": "not_suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "076 311 084"
+  },
+  "opening_hours": {
+   "open_time": "07:00",
+   "close_time": "18:00",
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A040",
@@ -264,7 +400,22 @@
   "placeId": "ChIJv2uquJI3UDARvalYpyA0lYw",
   "confidence": "HIGH",
   "community": "วิสาหกิจชุมชนท่องเที่ยวบ้านเคียน",
-  "communitySlug": "ban-kian"
+  "communitySlug": "ban-kian",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A041",
@@ -291,7 +442,22 @@
   "placeId": "ChIJzc7Qkus3UDARryM9QSNVfRQ",
   "confidence": "HIGH",
   "community": "วิสาหกิจชุมชนท่องเที่ยวบ้านเคียน",
-  "communitySlug": "ban-kian"
+  "communitySlug": "ban-kian",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "not_suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A042",
@@ -318,7 +484,22 @@
   "placeId": "ChIJfRT7FcQ3UDARh2ZVydADqls",
   "confidence": "HIGH",
   "community": "วิสาหกิจชุมชนท่องเที่ยวบ้านเคียน",
-  "communitySlug": "ban-kian"
+  "communitySlug": "ban-kian",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "not_suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A016",
@@ -353,7 +534,22 @@
   "placeId": "ChIJlyok0wY2UDARz8X2fl5Wt8s",
   "confidence": "HIGH",
   "community": "วิสาหกิจชุมชนท่องเที่ยวบ้านบางโรง",
-  "communitySlug": "bang-rong"
+  "communitySlug": "bang-rong",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "partial",
+  "elderly_suitability": "not_suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "088 590 9714"
+  },
+  "opening_hours": {
+   "open_time": "09:00",
+   "close_time": "16:00",
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A002",
@@ -380,7 +576,22 @@
   "placeId": "ChIJmSwFvfkxUDARsvyjrZKfnMg",
   "confidence": "HIGH",
   "community": "วิสาหกิจชุมชนท่องเที่ยวย่านเมืองเก่าภูเก็ต",
-  "communitySlug": "old-town"
+  "communitySlug": "old-town",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "partial",
+  "elderly_suitability": "conditional",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A003",
@@ -415,7 +626,22 @@
   "placeId": "ChIJW_ZuovoxUDARO9tP_1sCA30",
   "confidence": "HIGH",
   "community": "วิสาหกิจชุมชนท่องเที่ยวย่านเมืองเก่าภูเก็ต",
-  "communitySlug": "old-town"
+  "communitySlug": "old-town",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "partial",
+  "elderly_suitability": "conditional",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "076 211 224"
+  },
+  "opening_hours": {
+   "open_time": "09:00",
+   "close_time": "17:00",
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A022",
@@ -450,7 +676,29 @@
   "placeId": "ChIJKyPm1cI2UDARPZ3DupfOU5k",
   "confidence": "HIGH",
   "community": "วิสาหกิจท่องเที่ยวชุมชนบ้านลิพอนใต้ศรีสุนทร",
-  "communitySlug": null
+  "communitySlug": null,
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": "16:45",
+   "close_time": "17:45",
+   "closed_days": [
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+    "sunday"
+   ]
+  }
  },
  {
   "id": "LOMA-CBT-A034",
@@ -485,7 +733,30 @@
   "placeId": "ChIJu9hSF383UDAR-7-Szao5PHA",
   "confidence": "HIGH",
   "community": "ศูนย์เรียนรู้ปรัชญาของเศรษฐกิจพอเพียงบ้านม่าหนิก",
-  "communitySlug": null
+  "communitySlug": null,
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "conditional",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": [
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+    "sunday"
+   ]
+  }
  },
  {
   "id": "LOMA-CBT-A035",
@@ -520,7 +791,22 @@
   "placeId": "ChIJuxopxNgxUDARBW7vFIq5_N0",
   "confidence": "HIGH",
   "community": "ศูนย์เรียนรู้ปรัชญาของเศรษฐกิจพอเพียงบ้านม่าหนิก",
-  "communitySlug": null
+  "communitySlug": null,
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "conditional",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": "05:00",
+   "close_time": "22:00",
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A026",
@@ -547,7 +833,22 @@
   "placeId": "ChIJzc7Qkus3UDARryM9QSNVfRQ",
   "confidence": "HIGH",
   "community": "หมู่บ้านวัฒนธรรมถลาง บ้านแขนน",
-  "communitySlug": null
+  "communitySlug": null,
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "partial",
+  "elderly_suitability": "conditional",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A028",
@@ -574,7 +875,22 @@
   "placeId": "ChIJN3-iYgA3UDARUIoxEm6AYuk",
   "confidence": "HIGH",
   "community": "หมู่บ้านวัฒนธรรมถลาง บ้านแขนน",
-  "communitySlug": null
+  "communitySlug": null,
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "partial",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A001",
@@ -609,7 +925,29 @@
   "placeId": "ChIJQwdCFvoxUDAR4XNViLYibc4",
   "confidence": "HIGH",
   "community": "วิสาหกิจชุมชนท่องเที่ยวย่านเมืองเก่าภูเก็ต",
-  "communitySlug": "old-town"
+  "communitySlug": "old-town",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "not_suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "website",
+   "value": "http://phuketwalkingstreet.com/"
+  },
+  "opening_hours": {
+   "open_time": "16:00",
+   "close_time": "23:00",
+   "closed_days": [
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday"
+   ]
+  }
  },
  {
   "id": "LOMA-CBT-A025",
@@ -644,7 +982,29 @@
   "placeId": "ChIJKyPm1cI2UDARPZ3DupfOU5k",
   "confidence": "HIGH",
   "community": "หมู่บ้านวัฒนธรรมถลาง บ้านแขนน",
-  "communitySlug": null
+  "communitySlug": null,
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "not_accessible",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": "16:45",
+   "close_time": "17:45",
+   "closed_days": [
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+    "sunday"
+   ]
+  }
  },
  {
   "id": "LOMA-CBT-A004",
@@ -679,7 +1039,22 @@
   "placeId": "ChIJF5D27qQ3UDAROS8BJgnPxuA",
   "confidence": "HIGH",
   "community": "วิสาหกิจชุมชนท่องเที่ยวย่านเมืองเก่าภูเก็ต",
-  "communitySlug": "old-town"
+  "communitySlug": "old-town",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "partial",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "076 313 556"
+  },
+  "opening_hours": {
+   "open_time": "09:00",
+   "close_time": "18:00",
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A046",
@@ -714,7 +1089,22 @@
   "placeId": "ChIJUSTBCG1FUDARsyKLmLMyim8",
   "confidence": "HIGH",
   "community": "ชุมชนท่องเที่ยวบ้านท่าฉัตรไชย",
-  "communitySlug": "tha-chatchai"
+  "communitySlug": "tha-chatchai",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "not_accessible",
+  "elderly_suitability": "conditional",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "076 348 526"
+  },
+  "opening_hours": {
+   "open_time": "08:30",
+   "close_time": "16:30",
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A082",
@@ -749,7 +1139,22 @@
   "placeId": "ChIJBx6OpxAsUDAR2Fl2L5Fx-Vc",
   "confidence": "HIGH",
   "community": "ชุมชนท่องเที่ยวบ้านแหลมพันวา",
-  "communitySlug": "cape-panwa"
+  "communitySlug": "cape-panwa",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "conditional",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "076 391 126"
+  },
+  "opening_hours": {
+   "open_time": "08:30",
+   "close_time": "16:30",
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A006",
@@ -776,7 +1181,22 @@
   "placeId": "ChIJP6VoivoxUDARqCFIgqAIX90",
   "confidence": "HIGH",
   "community": "วิสาหกิจชุมชนท่องเที่ยวย่านเมืองเก่าภูเก็ต",
-  "communitySlug": "old-town"
+  "communitySlug": "old-town",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "not_accessible",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "moderate",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-P023",
@@ -811,7 +1231,22 @@
   "placeId": "ChIJvw0K34cvUDAROopns3Ky9X8",
   "confidence": "HIGH",
   "community": "ชุมชนท่องเที่ยวบ้านท่าฉัตรไชย",
-  "communitySlug": "tha-chatchai"
+  "communitySlug": "tha-chatchai",
+  "estimated_visit_duration_min": 20,
+  "estimated_visit_duration_max": 45,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "061 825 9225"
+  },
+  "opening_hours": {
+   "open_time": "10:00",
+   "close_time": "22:00",
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-P029",
@@ -838,7 +1273,22 @@
   "placeId": "ChIJ5d3qd7M3UDARNqQbTVp3wcQ",
   "confidence": "HIGH",
   "community": "ชุมชนท่องเที่ยวบ้านบ่อแร่",
-  "communitySlug": null
+  "communitySlug": null,
+  "estimated_visit_duration_min": 20,
+  "estimated_visit_duration_max": 45,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "091 531 2257"
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-P020",
@@ -865,7 +1315,22 @@
   "placeId": "ChIJ5d3qd7M3UDARNqQbTVp3wcQ",
   "confidence": "HIGH",
   "community": "วิสาหกิจชุมชนท่องเที่ยวบ้านเคียน",
-  "communitySlug": "ban-kian"
+  "communitySlug": "ban-kian",
+  "estimated_visit_duration_min": 20,
+  "estimated_visit_duration_max": 45,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "conditional",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "091 531 2257"
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A070",
@@ -900,7 +1365,24 @@
   "placeId": "ChIJ64HBCHo5UDAR4EX_-pg5XHs",
   "confidence": "HIGH",
   "community": "ชุมชนท่องเที่ยวบ้านกมลา",
-  "communitySlug": "kamala"
+  "communitySlug": "kamala",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "not_accessible",
+  "elderly_suitability": "not_suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "095 256 1452"
+  },
+  "opening_hours": {
+   "open_time": "10:00",
+   "close_time": "18:30",
+   "closed_days": [
+    "monday"
+   ]
+  }
  },
  {
   "id": "LOMA-CBT-A059",
@@ -935,7 +1417,24 @@
   "placeId": "ChIJ64HBCHo5UDAR4EX_-pg5XHs",
   "confidence": "HIGH",
   "community": "ชุมชนท่องเที่ยวบ้านบางเทา",
-  "communitySlug": "bang-tao"
+  "communitySlug": "bang-tao",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "conditional",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "095 256 1452"
+  },
+  "opening_hours": {
+   "open_time": "10:00",
+   "close_time": "18:30",
+   "closed_days": [
+    "monday"
+   ]
+  }
  },
  {
   "id": "LOMA-CBT-A088",
@@ -962,7 +1461,22 @@
   "placeId": "ChIJ80_lP3UwUDARNVvPY32pHms",
   "confidence": "HIGH",
   "community": "ชุมชนท่องเที่ยวบ้านป่าตอง",
-  "communitySlug": null
+  "communitySlug": null,
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "not_suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A062",
@@ -989,7 +1503,22 @@
   "placeId": "ChIJycQP1O45UDAR-OegrfepryM",
   "confidence": "HIGH",
   "community": "ชุมชนท่องเที่ยวบ้านบางเทา",
-  "communitySlug": "bang-tao"
+  "communitySlug": "bang-tao",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "098 519 5229"
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A083",
@@ -1024,7 +1553,22 @@
   "placeId": "ChIJZebcjxksUDARuucKS1jSSXk",
   "confidence": "HIGH",
   "community": "ชุมชนท่องเที่ยวบ้านแหลมพันวา",
-  "communitySlug": "cape-panwa"
+  "communitySlug": "cape-panwa",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "081 272 1122"
+  },
+  "opening_hours": {
+   "open_time": "08:30",
+   "close_time": "16:30",
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-P035",
@@ -1059,7 +1603,22 @@
   "placeId": "ChIJNdtdc-YxUDARtzS0intZCY8",
   "confidence": "HIGH",
   "community": "ชุมชนท่องเที่ยวบ้านแหลมพันวา",
-  "communitySlug": "cape-panwa"
+  "communitySlug": "cape-panwa",
+  "estimated_visit_duration_min": 20,
+  "estimated_visit_duration_max": 45,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "076 202 460"
+  },
+  "opening_hours": {
+   "open_time": "09:30",
+   "close_time": "17:30",
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-P021",
@@ -1094,7 +1653,22 @@
   "placeId": "ChIJNdtdc-YxUDARtzS0intZCY8",
   "confidence": "HIGH",
   "community": "วิสาหกิจชุมชนท่องเที่ยวบ้านเคียน",
-  "communitySlug": "ban-kian"
+  "communitySlug": "ban-kian",
+  "estimated_visit_duration_min": 20,
+  "estimated_visit_duration_max": 45,
+  "wheelchair_accessibility": "partial",
+  "elderly_suitability": "conditional",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "076 202 460"
+  },
+  "opening_hours": {
+   "open_time": "09:30",
+   "close_time": "17:30",
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-P006",
@@ -1129,7 +1703,30 @@
   "placeId": "ChIJ9y9w_UYzUDARGyoH1vgT79U",
   "confidence": "HIGH",
   "community": "วิสาหกิจท่องเที่ยวชุมชนบ้านลิพอนใต้ศรีสุนทร",
-  "communitySlug": null
+  "communitySlug": null,
+  "estimated_visit_duration_min": 20,
+  "estimated_visit_duration_max": 45,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "086 282 2997"
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": [
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+    "sunday"
+   ]
+  }
  },
  {
   "id": "LOMA-CBT-A075",
@@ -1156,7 +1753,22 @@
   "placeId": "ChIJTTc2L58uUDAR2RhIMgwRAP8",
   "confidence": "HIGH",
   "community": "ชุมชนท่องเที่ยวบ้านกมลา",
-  "communitySlug": "kamala"
+  "communitySlug": "kamala",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "conditional",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-P022",
@@ -1191,7 +1803,30 @@
   "placeId": "ChIJ9y9w_UYzUDARGyoH1vgT79U",
   "confidence": "HIGH",
   "community": "วิสาหกิจชุมชนท่องเที่ยวบ้านเคียน",
-  "communitySlug": "ban-kian"
+  "communitySlug": "ban-kian",
+  "estimated_visit_duration_min": 20,
+  "estimated_visit_duration_max": 45,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "086 282 2997"
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": [
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+    "sunday"
+   ]
+  }
  },
  {
   "id": "LOMA-CBT-A012",
@@ -1218,7 +1853,22 @@
   "placeId": "ChIJLc8Ke3K2UTARQ3mozK_vSZU",
   "confidence": "HIGH",
   "community": "วิสาหกิจชุมชนท่องเที่ยวบ้านบางโรง",
-  "communitySlug": "bang-rong"
+  "communitySlug": "bang-rong",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "conditional",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "076 597 330"
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A077",
@@ -1245,7 +1895,22 @@
   "placeId": "ChIJYaUQ4oFFUDARoJh_IZLgue0",
   "confidence": "HIGH",
   "community": "ชุมชนท่องเที่ยวบ้านกมลา",
-  "communitySlug": "kamala"
+  "communitySlug": "kamala",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "partial",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A043",
@@ -1280,7 +1945,22 @@
   "placeId": "ChIJ3feuo-g3UDARmkDwOXGAh1Q",
   "confidence": "HIGH",
   "community": "วิสาหกิจชุมชนท่องเที่ยวบ้านเคียน",
-  "communitySlug": "ban-kian"
+  "communitySlug": "ban-kian",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "not_suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "061 131 7887"
+  },
+  "opening_hours": {
+   "open_time": "09:00",
+   "close_time": "16:30",
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A005",
@@ -1307,7 +1987,22 @@
   "placeId": "ChIJx_IcSfoxUDARlwyhi6NKjII",
   "confidence": "HIGH",
   "community": "วิสาหกิจชุมชนท่องเที่ยวย่านเมืองเก่าภูเก็ต",
-  "communitySlug": "old-town"
+  "communitySlug": "old-town",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "not_accessible",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A060",
@@ -1342,7 +2037,30 @@
   "placeId": "ChIJyVwQ8rc5UDARZBU8Z0uy37k",
   "confidence": "HIGH",
   "community": "ชุมชนท่องเที่ยวบ้านบางเทา",
-  "communitySlug": "bang-tao"
+  "communitySlug": "bang-tao",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "partial",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "089 591 1717"
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": [
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+    "sunday"
+   ]
+  }
  },
  {
   "id": "LOMA-CBT-P031",
@@ -1377,7 +2095,22 @@
   "placeId": "ChIJLbaQn_sxUDAR41WCiqtt6Gs",
   "confidence": "HIGH",
   "community": "ชุมชนท่องเที่ยวบ้านบางเทา",
-  "communitySlug": "bang-tao"
+  "communitySlug": "bang-tao",
+  "estimated_visit_duration_min": 20,
+  "estimated_visit_duration_max": 45,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "083 019 1947"
+  },
+  "opening_hours": {
+   "open_time": "09:30",
+   "close_time": "19:30",
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-P018",
@@ -1412,7 +2145,22 @@
   "placeId": "ChIJLbaQn_sxUDAR41WCiqtt6Gs",
   "confidence": "HIGH",
   "community": "ศูนย์เรียนรู้ปรัชญาของเศรษฐกิจพอเพียงบ้านม่าหนิก",
-  "communitySlug": null
+  "communitySlug": null,
+  "estimated_visit_duration_min": 20,
+  "estimated_visit_duration_max": 45,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "083 019 1947"
+  },
+  "opening_hours": {
+   "open_time": "09:30",
+   "close_time": "19:30",
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A027",
@@ -1439,7 +2187,22 @@
   "placeId": "ChIJfRT7FcQ3UDARh2ZVydADqls",
   "confidence": "HIGH",
   "community": "หมู่บ้านวัฒนธรรมถลาง บ้านแขนน",
-  "communitySlug": null
+  "communitySlug": null,
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "not_accessible",
+  "elderly_suitability": "conditional",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A057",
@@ -1466,7 +2229,22 @@
   "placeId": "ChIJK_pnaG8uUDAR8Vv9pHEmjvg",
   "confidence": "HIGH",
   "community": "ชุมชนท่องเที่ยวบ้านบ่อแร่",
-  "communitySlug": null
+  "communitySlug": null,
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "partial",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A017",
@@ -1501,7 +2279,22 @@
   "placeId": "ChIJud8rJsQ2UDARnemJEGjqKFs",
   "confidence": "HIGH",
   "community": "วิสาหกิจท่องเที่ยวชุมชนบ้านลิพอนใต้ศรีสุนทร",
-  "communitySlug": null
+  "communitySlug": null,
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "partial",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "website",
+   "value": "https://www.facebook.com/Festivalphuket"
+  },
+  "opening_hours": {
+   "open_time": "08:00",
+   "close_time": "17:00",
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-P013",
@@ -1536,7 +2329,24 @@
   "placeId": "ChIJaxtZGiU3UDARyPsN_BQwlnw",
   "confidence": "HIGH",
   "community": "หมู่บ้านวัฒนธรรมถลาง บ้านแขนน",
-  "communitySlug": null
+  "communitySlug": null,
+  "estimated_visit_duration_min": 20,
+  "estimated_visit_duration_max": 45,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "moderate",
+  "contact_method": {
+   "type": "phone",
+   "value": "095 225 4751"
+  },
+  "opening_hours": {
+   "open_time": "12:00",
+   "close_time": "23:00",
+   "closed_days": [
+    "monday"
+   ]
+  }
  },
  {
   "id": "LOMA-CBT-A066",
@@ -1571,7 +2381,22 @@
   "placeId": "ChIJIWZ3a45JUDARWTYkz78N7mM",
   "confidence": "HIGH",
   "community": "ชุมชนท่องเที่ยวบ้านบางเทา",
-  "communitySlug": "bang-tao"
+  "communitySlug": "bang-tao",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "not_accessible",
+  "elderly_suitability": "not_suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "094 790 9390"
+  },
+  "opening_hours": {
+   "open_time": "09:00",
+   "close_time": "17:00",
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A039",
@@ -1598,7 +2423,22 @@
   "placeId": "ChIJ_ds31K43UDARrwIVvWhz5s4",
   "confidence": "HIGH",
   "community": "วิสาหกิจชุมชนท่องเที่ยวบ้านเคียน",
-  "communitySlug": "ban-kian"
+  "communitySlug": "ban-kian",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "partial",
+  "elderly_suitability": "not_suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "076 311 381"
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A029",
@@ -1625,7 +2465,22 @@
   "placeId": "ChIJWdkAO9ZJUDARy3q_oIeD1Ak",
   "confidence": "HIGH",
   "community": "หมู่บ้านวัฒนธรรมถลาง บ้านแขนน",
-  "communitySlug": null
+  "communitySlug": null,
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "not_accessible",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A071",
@@ -1652,7 +2507,22 @@
   "placeId": "ChIJd5cQ9GI7UDAR5ldLuNxtAFY",
   "confidence": "HIGH",
   "community": "ชุมชนท่องเที่ยวบ้านกมลา",
-  "communitySlug": "kamala"
+  "communitySlug": "kamala",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "not_accessible",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "084 376 6746"
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-P032",
@@ -1687,7 +2557,24 @@
   "placeId": "ChIJ3ZsYirwxUDARunZ2AghC5-U",
   "confidence": "HIGH",
   "community": "ชุมชนท่องเที่ยวบ้านบางเทา",
-  "communitySlug": "bang-tao"
+  "communitySlug": "bang-tao",
+  "estimated_visit_duration_min": 20,
+  "estimated_visit_duration_max": 45,
+  "wheelchair_accessibility": "partial",
+  "elderly_suitability": "conditional",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "086 277 7166"
+  },
+  "opening_hours": {
+   "open_time": "08:00",
+   "close_time": "18:00",
+   "closed_days": [
+    "sunday"
+   ]
+  }
  },
  {
   "id": "LOMA-CBT-A015",
@@ -1722,7 +2609,22 @@
   "placeId": "ChIJz6XXrjg3UDAROloJAaBHiws",
   "confidence": "HIGH",
   "community": "วิสาหกิจชุมชนท่องเที่ยวบ้านบางโรง",
-  "communitySlug": "bang-rong"
+  "communitySlug": "bang-rong",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "partial",
+  "elderly_suitability": "not_suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "089 973 2394"
+  },
+  "opening_hours": {
+   "open_time": "08:00",
+   "close_time": "17:00",
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A007",
@@ -1749,7 +2651,22 @@
   "placeId": "ChIJz5nFOABJUDARY0swF5UBmxI",
   "confidence": "HIGH",
   "community": "วิสาหกิจชุมชนท่องเที่ยวย่านเมืองเก่าภูเก็ต",
-  "communitySlug": "old-town"
+  "communitySlug": "old-town",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "not_accessible",
+  "elderly_suitability": "not_suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A036",
@@ -1784,7 +2701,22 @@
   "placeId": "ChIJIWZ3a45JUDARWTYkz78N7mM",
   "confidence": "HIGH",
   "community": "ศูนย์เรียนรู้ปรัชญาของเศรษฐกิจพอเพียงบ้านม่าหนิก",
-  "communitySlug": null
+  "communitySlug": null,
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "094 790 9390"
+  },
+  "opening_hours": {
+   "open_time": "09:00",
+   "close_time": "17:00",
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A033",
@@ -1819,7 +2751,22 @@
   "placeId": "ChIJhZ6uFb43UDARUa3lzr82TjA",
   "confidence": "MEDIUM",
   "community": "ศูนย์เรียนรู้ปรัชญาของเศรษฐกิจพอเพียงบ้านม่าหนิก",
-  "communitySlug": null
+  "communitySlug": null,
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "partial",
+  "elderly_suitability": "not_suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "082 417 3661"
+  },
+  "opening_hours": {
+   "open_time": "08:00",
+   "close_time": "17:00",
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A054",
@@ -1854,7 +2801,22 @@
   "placeId": "ChIJ-5q9H6cBUTARL03n6SrRZbM",
   "confidence": "MEDIUM",
   "community": "ชุมชนท่องเที่ยวบ้านบ่อแร่",
-  "communitySlug": null
+  "communitySlug": null,
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "not_accessible",
+  "elderly_suitability": "not_suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "093 578 2709"
+  },
+  "opening_hours": {
+   "open_time": "08:00",
+   "close_time": "18:00",
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A018",
@@ -1889,7 +2851,30 @@
   "placeId": "ChIJR88npMY2UDARu0z0YMfc128",
   "confidence": "MEDIUM",
   "community": "วิสาหกิจท่องเที่ยวชุมชนบ้านลิพอนใต้ศรีสุนทร",
-  "communitySlug": null
+  "communitySlug": null,
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": [
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+    "sunday"
+   ]
+  }
  },
  {
   "id": "LOMA-CBT-P016",
@@ -1916,7 +2901,22 @@
   "placeId": "ChIJkfoiRDo6UDARuQGcmIw2ohU",
   "confidence": "MEDIUM",
   "community": "หมู่บ้านวัฒนธรรมถลาง บ้านแขนน",
-  "communitySlug": null
+  "communitySlug": null,
+  "estimated_visit_duration_min": 20,
+  "estimated_visit_duration_max": 45,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "076 341 851"
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-P005",
@@ -1951,7 +2951,30 @@
   "placeId": "ChIJWVHsW0oxUDARbJVDKdvirRU",
   "confidence": "MEDIUM",
   "community": "วิสาหกิจท่องเที่ยวชุมชนบ้านลิพอนใต้ศรีสุนทร",
-  "communitySlug": null
+  "communitySlug": null,
+  "estimated_visit_duration_min": 20,
+  "estimated_visit_duration_max": 45,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "089 970 3925"
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": [
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+    "sunday"
+   ]
+  }
  },
  {
   "id": "LOMA-CBT-A076",
@@ -1978,7 +3001,22 @@
   "placeId": "ChIJp7FFZjs6UDAR2F4cpzJ894o",
   "confidence": "MEDIUM",
   "community": "ชุมชนท่องเที่ยวบ้านกมลา",
-  "communitySlug": "kamala"
+  "communitySlug": "kamala",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "partial",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-P027",
@@ -2013,7 +3051,22 @@
   "placeId": "ChIJwQQiXotHUDARYioPgsrgunE",
   "confidence": "MEDIUM",
   "community": "ชุมชนท่องเที่ยวบ้านบ่อแร่",
-  "communitySlug": null
+  "communitySlug": null,
+  "estimated_visit_duration_min": 20,
+  "estimated_visit_duration_max": 45,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "088 825 3352"
+  },
+  "opening_hours": {
+   "open_time": "05:00",
+   "close_time": "12:00",
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A084",
@@ -2040,7 +3093,22 @@
   "placeId": "ChIJKRHzI4QuUDARtJanv2vRpvE",
   "confidence": "MEDIUM",
   "community": "ชุมชนท่องเที่ยวบ้านแหลมพันวา",
-  "communitySlug": "cape-panwa"
+  "communitySlug": "cape-panwa",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A063",
@@ -2075,7 +3143,22 @@
   "placeId": "ChIJz6XXrjg3UDAROloJAaBHiws",
   "confidence": "MEDIUM",
   "community": "ชุมชนท่องเที่ยวบ้านบางเทา",
-  "communitySlug": "bang-tao"
+  "communitySlug": "bang-tao",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "089 973 2394"
+  },
+  "opening_hours": {
+   "open_time": "08:00",
+   "close_time": "17:00",
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A078",
@@ -2110,7 +3193,30 @@
   "placeId": "ChIJ0aCnPE47UDARuTtrO-bNnN8",
   "confidence": "MEDIUM",
   "community": "ชุมชนท่องเที่ยวบ้านกมลา",
-  "communitySlug": "kamala"
+  "communitySlug": "kamala",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "not_suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": [
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+    "sunday"
+   ]
+  }
  },
  {
   "id": "LOMA-CBT-A051",
@@ -2145,7 +3251,25 @@
   "placeId": "ChIJ6SLkvRAsUDARSpoL0XaAgSs",
   "confidence": "MEDIUM",
   "community": "ชุมชนท่องเที่ยวบ้านท่าฉัตรไชย",
-  "communitySlug": "tha-chatchai"
+  "communitySlug": "tha-chatchai",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": "08:30",
+   "close_time": "16:30",
+   "closed_days": [
+    "saturday",
+    "sunday"
+   ]
+  }
  },
  {
   "id": "LOMA-CBT-A086",
@@ -2180,7 +3304,22 @@
   "placeId": "ChIJm3LNxQowUDARykMrwj0Axsc",
   "confidence": "MEDIUM",
   "community": "ชุมชนท่องเที่ยวบ้านป่าตอง",
-  "communitySlug": null
+  "communitySlug": null,
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "partial",
+  "elderly_suitability": "not_suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "076 342 078"
+  },
+  "opening_hours": {
+   "open_time": "08:00",
+   "close_time": "16:30",
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A068",
@@ -2207,7 +3346,22 @@
   "placeId": "ChIJ37VX0z86UDAR3PgiEOyuEVk",
   "confidence": "MEDIUM",
   "community": "ชุมชนท่องเที่ยวบ้านกมลา",
-  "communitySlug": "kamala"
+  "communitySlug": "kamala",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "not_suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-P033",
@@ -2242,7 +3396,24 @@
   "placeId": "ChIJ3ZsYirwxUDARunZ2AghC5-U",
   "confidence": "MEDIUM",
   "community": "ชุมชนท่องเที่ยวบ้านบางเทา",
-  "communitySlug": "bang-tao"
+  "communitySlug": "bang-tao",
+  "estimated_visit_duration_min": 20,
+  "estimated_visit_duration_max": 45,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "conditional",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "086 277 7166"
+  },
+  "opening_hours": {
+   "open_time": "08:00",
+   "close_time": "18:00",
+   "closed_days": [
+    "sunday"
+   ]
+  }
  },
  {
   "id": "LOMA-CBT-A008",
@@ -2277,7 +3448,22 @@
   "placeId": "ChIJ391Xd_AxUDARQufJGz3NUlY",
   "confidence": "MEDIUM",
   "community": "วิสาหกิจชุมชนท่องเที่ยวย่านเมืองเก่าภูเก็ต",
-  "communitySlug": "old-town"
+  "communitySlug": "old-town",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "conditional",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": "09:00",
+   "close_time": "18:00",
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A032",
@@ -2312,7 +3498,22 @@
   "placeId": "ChIJ13VgB4MxUDARHYMSNqPlQo8",
   "confidence": "MEDIUM",
   "community": "หมู่บ้านวัฒนธรรมถลาง บ้านแขนน",
-  "communitySlug": null
+  "communitySlug": null,
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "076 215 406"
+  },
+  "opening_hours": {
+   "open_time": "09:00",
+   "close_time": "20:00",
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-P025",
@@ -2347,7 +3548,22 @@
   "placeId": "ChIJIWZ3a45JUDARWTYkz78N7mM",
   "confidence": "MEDIUM",
   "community": "ชุมชนท่องเที่ยวบ้านบ่อแร่",
-  "communitySlug": null
+  "communitySlug": null,
+  "estimated_visit_duration_min": 20,
+  "estimated_visit_duration_max": 45,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "094 790 9390"
+  },
+  "opening_hours": {
+   "open_time": "09:00",
+   "close_time": "17:00",
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-P028",
@@ -2382,7 +3598,24 @@
   "placeId": "ChIJt7xt-jIvUDARFz0qbsvck0w",
   "confidence": "MEDIUM",
   "community": "ชุมชนท่องเที่ยวบ้านบ่อแร่",
-  "communitySlug": null
+  "communitySlug": null,
+  "estimated_visit_duration_min": 20,
+  "estimated_visit_duration_max": 45,
+  "wheelchair_accessibility": "partial",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "081 425 6195"
+  },
+  "opening_hours": {
+   "open_time": "08:00",
+   "close_time": "18:00",
+   "closed_days": [
+    "sunday"
+   ]
+  }
  },
  {
   "id": "LOMA-CBT-P002",
@@ -2417,7 +3650,22 @@
   "placeId": "ChIJRyJSVA0xUDARNLEgapb1BZE",
   "confidence": "MEDIUM",
   "community": "วิสาหกิจชุมชนท่องเที่ยวย่านเมืองเก่าภูเก็ต",
-  "communitySlug": "old-town"
+  "communitySlug": "old-town",
+  "estimated_visit_duration_min": 20,
+  "estimated_visit_duration_max": 45,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "098 671 4856"
+  },
+  "opening_hours": {
+   "open_time": "09:00",
+   "close_time": "20:00",
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-P009",
@@ -2452,7 +3700,22 @@
   "placeId": "ChIJZZkBMgA5UDARB-nMx--grRM",
   "confidence": "MEDIUM",
   "community": "วิสาหกิจท่องเที่ยวชุมชนบ้านลิพอนใต้ศรีสุนทร",
-  "communitySlug": null
+  "communitySlug": null,
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 120,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "087 573 4959"
+  },
+  "opening_hours": {
+   "open_time": "11:00",
+   "close_time": "10:30",
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-P007",
@@ -2479,7 +3742,22 @@
   "placeId": "ChIJvbiR_gIxUDAREwS08BmI9KQ",
   "confidence": "MEDIUM",
   "community": "วิสาหกิจท่องเที่ยวชุมชนบ้านลิพอนใต้ศรีสุนทร",
-  "communitySlug": null
+  "communitySlug": null,
+  "estimated_visit_duration_min": 20,
+  "estimated_visit_duration_max": 45,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "083 156 6002"
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A013",
@@ -2514,7 +3792,27 @@
   "placeId": "ChIJg0M0KAc2UDARhJsB5CAeLFw",
   "confidence": "MEDIUM",
   "community": "วิสาหกิจชุมชนท่องเที่ยวบ้านบางโรง",
-  "communitySlug": "bang-rong"
+  "communitySlug": "bang-rong",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "conditional",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "088 590 9714"
+  },
+  "opening_hours": {
+   "open_time": "12:30",
+   "close_time": "13:30",
+   "closed_days": [
+    "tuesday",
+    "wednesday",
+    "friday",
+    "sunday"
+   ]
+  }
  },
  {
   "id": "LOMA-CBT-P004",
@@ -2549,7 +3847,24 @@
   "placeId": "ChIJ3ZsYirwxUDARunZ2AghC5-U",
   "confidence": "MEDIUM",
   "community": "วิสาหกิจชุมชนท่องเที่ยวบ้านบางโรง",
-  "communitySlug": "bang-rong"
+  "communitySlug": "bang-rong",
+  "estimated_visit_duration_min": 20,
+  "estimated_visit_duration_max": 45,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "086 277 7166"
+  },
+  "opening_hours": {
+   "open_time": "08:00",
+   "close_time": "18:00",
+   "closed_days": [
+    "sunday"
+   ]
+  }
  },
  {
   "id": "LOMA-CBT-A031",
@@ -2584,7 +3899,22 @@
   "placeId": "ChIJ608j7VwwUDARsn805Mj-pGo",
   "confidence": "MEDIUM",
   "community": "หมู่บ้านวัฒนธรรมถลาง บ้านแขนน",
-  "communitySlug": null
+  "communitySlug": null,
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "partial",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "089 972 9438"
+  },
+  "opening_hours": {
+   "open_time": "08:00",
+   "close_time": "18:00",
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A079",
@@ -2619,7 +3949,22 @@
   "placeId": "ChIJvw0K34cvUDAROopns3Ky9X8",
   "confidence": "MEDIUM",
   "community": "ชุมชนท่องเที่ยวบ้านเกาะมะพร้าว",
-  "communitySlug": "koh-maprao"
+  "communitySlug": "koh-maprao",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "not_suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "061 825 9225"
+  },
+  "opening_hours": {
+   "open_time": "10:00",
+   "close_time": "22:00",
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A058",
@@ -2654,7 +3999,22 @@
   "placeId": "ChIJn6VtJkMuUDARtfC37s0hXuE",
   "confidence": "MEDIUM",
   "community": "ชุมชนท่องเที่ยวบ้านบ่อแร่",
-  "communitySlug": null
+  "communitySlug": null,
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "moderate",
+  "contact_method": {
+   "type": "phone",
+   "value": "088 766 1634"
+  },
+  "opening_hours": {
+   "open_time": "10:00",
+   "close_time": "21:00",
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-P001",
@@ -2689,7 +4049,25 @@
   "placeId": "ChIJ6Qilg60xUDARr_8-Hxqkc8o",
   "confidence": "MEDIUM",
   "community": "วิสาหกิจชุมชนท่องเที่ยวย่านเมืองเก่าภูเก็ต",
-  "communitySlug": "old-town"
+  "communitySlug": "old-town",
+  "estimated_visit_duration_min": 20,
+  "estimated_visit_duration_max": 45,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "conditional",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "081 294 5646"
+  },
+  "opening_hours": {
+   "open_time": "10:00",
+   "close_time": "17:10",
+   "closed_days": [
+    "saturday",
+    "sunday"
+   ]
+  }
  },
  {
   "id": "LOMA-CBT-A023",
@@ -2724,7 +4102,22 @@
   "placeId": "ChIJ6RaUg2IvUDARFBjntt0gdQY",
   "confidence": "MEDIUM",
   "community": "วิสาหกิจท่องเที่ยวชุมชนบ้านลิพอนใต้ศรีสุนทร",
-  "communitySlug": null
+  "communitySlug": null,
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "089 471 7710"
+  },
+  "opening_hours": {
+   "open_time": "14:00",
+   "close_time": "20:00",
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-P012",
@@ -2759,7 +4152,22 @@
   "placeId": "ChIJD06_YANJUDARS9kI1c-dwog",
   "confidence": "MEDIUM",
   "community": "หมู่บ้านวัฒนธรรมถลาง บ้านแขนน",
-  "communitySlug": null
+  "communitySlug": null,
+  "estimated_visit_duration_min": 20,
+  "estimated_visit_duration_max": 45,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "095 993 5289"
+  },
+  "opening_hours": {
+   "open_time": "12:00",
+   "close_time": "21:30",
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-P014",
@@ -2794,7 +4202,22 @@
   "placeId": "ChIJRdH2fFExUDARbHb6rmhkAWM",
   "confidence": "MEDIUM",
   "community": "หมู่บ้านวัฒนธรรมถลาง บ้านแขนน",
-  "communitySlug": null
+  "communitySlug": null,
+  "estimated_visit_duration_min": 20,
+  "estimated_visit_duration_max": 45,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "083 632 1887"
+  },
+  "opening_hours": {
+   "open_time": "06:30",
+   "close_time": "22:30",
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A065",
@@ -2829,7 +4252,25 @@
   "placeId": "ChIJHcpIzRsyUDARSGnh0c9_kKk",
   "confidence": "MEDIUM",
   "community": "ชุมชนท่องเที่ยวบ้านบางเทา",
-  "communitySlug": "bang-tao"
+  "communitySlug": "bang-tao",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "conditional",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "076 212 188"
+  },
+  "opening_hours": {
+   "open_time": "08:30",
+   "close_time": "16:30",
+   "closed_days": [
+    "saturday",
+    "sunday"
+   ]
+  }
  },
  {
   "id": "LOMA-CBT-A010",
@@ -2864,7 +4305,22 @@
   "placeId": "ChIJW_ZuovoxUDARO9tP_1sCA30",
   "confidence": "MEDIUM",
   "community": "วิสาหกิจชุมชนท่องเที่ยวย่านเมืองเก่าภูเก็ต",
-  "communitySlug": "old-town"
+  "communitySlug": "old-town",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "076 211 224"
+  },
+  "opening_hours": {
+   "open_time": "09:00",
+   "close_time": "17:00",
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A073",
@@ -2899,7 +4355,22 @@
   "placeId": "ChIJncgfT-UxUDAR4ubGEbCvrHU",
   "confidence": "MEDIUM",
   "community": "ชุมชนท่องเที่ยวบ้านกมลา",
-  "communitySlug": "kamala"
+  "communitySlug": "kamala",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "not_suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "076 211 281"
+  },
+  "opening_hours": {
+   "open_time": "09:00",
+   "close_time": "16:30",
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A044",
@@ -2934,7 +4405,22 @@
   "placeId": "ChIJfS0bkL83UDARNUIGX3mgWaA",
   "confidence": "MEDIUM",
   "community": "วิสาหกิจชุมชนท่องเที่ยวบ้านเคียน",
-  "communitySlug": "ban-kian"
+  "communitySlug": "ban-kian",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "partial",
+  "elderly_suitability": "conditional",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "076 311 084"
+  },
+  "opening_hours": {
+   "open_time": "07:00",
+   "close_time": "18:00",
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-P011",
@@ -2969,7 +4455,22 @@
   "placeId": "ChIJDWG8tv4xUDARFiewdyUCEvM",
   "confidence": "MEDIUM",
   "community": "หมู่บ้านวัฒนธรรมถลาง บ้านแขนน",
-  "communitySlug": null
+  "communitySlug": null,
+  "estimated_visit_duration_min": 20,
+  "estimated_visit_duration_max": 45,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "conditional",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "website",
+   "value": "https://www.wongnai.com/restaurants/20408ap-%E0%B8%AB%E0%B8%A1%E0%B8%B5%E0%B9%88%E0%B8%AA%E0%B8%A1%E0%B8%88%E0%B8%B4%E0%B8%95%E0%B8%95%E0%B9%8C"
+  },
+  "opening_hours": {
+   "open_time": "08:00",
+   "close_time": "17:00",
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A056",
@@ -3004,7 +4505,30 @@
   "placeId": "ChIJLT7FaG4uUDARhPYIeYeIi-0",
   "confidence": "MEDIUM",
   "community": "ชุมชนท่องเที่ยวบ้านบ่อแร่",
-  "communitySlug": null
+  "communitySlug": null,
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "076 391 447"
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": [
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+    "sunday"
+   ]
+  }
  },
  {
   "id": "LOMA-CBT-A020",
@@ -3039,7 +4563,22 @@
   "placeId": "ChIJZ8GPvRxLUDARUFQBqjKUsho",
   "confidence": "MEDIUM",
   "community": "วิสาหกิจท่องเที่ยวชุมชนบ้านลิพอนใต้ศรีสุนทร",
-  "communitySlug": null
+  "communitySlug": null,
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "partial",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "094 714 8707"
+  },
+  "opening_hours": {
+   "open_time": "09:00",
+   "close_time": "18:00",
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A049",
@@ -3066,7 +4605,22 @@
   "placeId": "ChIJ55MjbFwHVzARxIt7PZ15X98",
   "confidence": "LOW",
   "community": "ชุมชนท่องเที่ยวบ้านท่าฉัตรไชย",
-  "communitySlug": "tha-chatchai"
+  "communitySlug": "tha-chatchai",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A087",
@@ -3101,7 +4655,22 @@
   "placeId": "ChIJI79h1KaXITERVPQlxXhvwHE",
   "confidence": "LOW",
   "community": "ชุมชนท่องเที่ยวบ้านป่าตอง",
-  "communitySlug": null
+  "communitySlug": null,
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "partial",
+  "elderly_suitability": "not_suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "087 682 0885"
+  },
+  "opening_hours": {
+   "open_time": "08:00",
+   "close_time": "17:00",
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A019",
@@ -3136,7 +4705,22 @@
   "placeId": "ChIJxU_PYJUk4jARNzvxGkf5bZ4",
   "confidence": "LOW",
   "community": "วิสาหกิจท่องเที่ยวชุมชนบ้านลิพอนใต้ศรีสุนทร",
-  "communitySlug": null
+  "communitySlug": null,
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "081 358 7347"
+  },
+  "opening_hours": {
+   "open_time": "09:00",
+   "close_time": "18:00",
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A072",
@@ -3163,7 +4747,22 @@
   "placeId": "ChIJk5LjtTaw4DARSG2WJ5ycbHE",
   "confidence": "LOW",
   "community": "ชุมชนท่องเที่ยวบ้านกมลา",
-  "communitySlug": "kamala"
+  "communitySlug": "kamala",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "not_suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "081 674 3028"
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A053",
@@ -3198,7 +4797,22 @@
   "placeId": "ChIJUSTBCG1FUDARsyKLmLMyim8",
   "confidence": "LOW",
   "community": "ชุมชนท่องเที่ยวบ้านบ่อแร่",
-  "communitySlug": null
+  "communitySlug": null,
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "not_accessible",
+  "elderly_suitability": "conditional",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "076 348 526"
+  },
+  "opening_hours": {
+   "open_time": "08:30",
+   "close_time": "16:30",
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A014",
@@ -3233,7 +4847,22 @@
   "placeId": "ChIJ3XL4Lsk1UDAR6GnUGUuWq10",
   "confidence": "LOW",
   "community": "วิสาหกิจชุมชนท่องเที่ยวบ้านบางโรง",
-  "communitySlug": "bang-rong"
+  "communitySlug": "bang-rong",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "not_accessible",
+  "elderly_suitability": "not_suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "089 726 0338"
+  },
+  "opening_hours": {
+   "open_time": "09:00",
+   "close_time": "17:00",
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A045",
@@ -3268,7 +4897,22 @@
   "placeId": "ChIJDV878Tc2UDARD0Ec8KJp9O0",
   "confidence": "LOW",
   "community": "วิสาหกิจชุมชนท่องเที่ยวบ้านเคียน",
-  "communitySlug": "ban-kian"
+  "communitySlug": "ban-kian",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": "09:00",
+   "close_time": "16:00",
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A052",
@@ -3303,7 +4947,22 @@
   "placeId": "ChIJn6VtJkMuUDARtfC37s0hXuE",
   "confidence": "LOW",
   "community": "ชุมชนท่องเที่ยวบ้านท่าฉัตรไชย",
-  "communitySlug": "tha-chatchai"
+  "communitySlug": "tha-chatchai",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "conditional",
+  "verification_status": "unverified",
+  "price_range": "moderate",
+  "contact_method": {
+   "type": "phone",
+   "value": "088 766 1634"
+  },
+  "opening_hours": {
+   "open_time": "10:00",
+   "close_time": "21:00",
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A067",
@@ -3338,7 +4997,22 @@
   "placeId": "ChIJ13VgB4MxUDARHYMSNqPlQo8",
   "confidence": "LOW",
   "community": "ชุมชนท่องเที่ยวบ้านบางเทา",
-  "communitySlug": "bang-tao"
+  "communitySlug": "bang-tao",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "076 215 406"
+  },
+  "opening_hours": {
+   "open_time": "09:00",
+   "close_time": "20:00",
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A021",
@@ -3373,7 +5047,25 @@
   "placeId": "ChIJidyCteM2UDARZsou_C30l7w",
   "confidence": "LOW",
   "community": "วิสาหกิจท่องเที่ยวชุมชนบ้านลิพอนใต้ศรีสุนทร",
-  "communitySlug": null
+  "communitySlug": null,
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "partial",
+  "elderly_suitability": "not_suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "076 617 803"
+  },
+  "opening_hours": {
+   "open_time": "08:30",
+   "close_time": "16:30",
+   "closed_days": [
+    "saturday",
+    "sunday"
+   ]
+  }
  },
  {
   "id": "LOMA-CBT-A024",
@@ -3408,7 +5100,22 @@
   "placeId": "ChIJvSVySfoxUDAR8Y9VK0Q_yeA",
   "confidence": "LOW",
   "community": "วิสาหกิจท่องเที่ยวชุมชนบ้านลิพอนใต้ศรีสุนทร",
-  "communitySlug": null
+  "communitySlug": null,
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "conditional",
+  "verification_status": "unverified",
+  "price_range": "moderate",
+  "contact_method": {
+   "type": "phone",
+   "value": "076 211 208"
+  },
+  "opening_hours": {
+   "open_time": "11:00",
+   "close_time": "23:00",
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-P019",
@@ -3443,7 +5150,22 @@
   "placeId": "ChIJ06Jf8sExUDARU-xbPGSgRvg",
   "confidence": "LOW",
   "community": "ศูนย์เรียนรู้ปรัชญาของเศรษฐกิจพอเพียงบ้านม่าหนิก",
-  "communitySlug": null
+  "communitySlug": null,
+  "estimated_visit_duration_min": 20,
+  "estimated_visit_duration_max": 45,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "082 565 4645"
+  },
+  "opening_hours": {
+   "open_time": "10:00",
+   "close_time": "22:00",
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A081",
@@ -3470,7 +5192,22 @@
   "placeId": "ChIJv8uy_bwzUDARng6ymboqY94",
   "confidence": "LOW",
   "community": "ชุมชนท่องเที่ยวบ้านเกาะมะพร้าว",
-  "communitySlug": "koh-maprao"
+  "communitySlug": "koh-maprao",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "not_accessible",
+  "elderly_suitability": "conditional",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A080",
@@ -3505,7 +5242,22 @@
   "placeId": "ChIJUSTBCG1FUDARsyKLmLMyim8",
   "confidence": "LOW",
   "community": "ชุมชนท่องเที่ยวบ้านเกาะมะพร้าว",
-  "communitySlug": "koh-maprao"
+  "communitySlug": "koh-maprao",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "not_accessible",
+  "elderly_suitability": "conditional",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "076 348 526"
+  },
+  "opening_hours": {
+   "open_time": "08:30",
+   "close_time": "16:30",
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-P015",
@@ -3540,7 +5292,22 @@
   "placeId": "ChIJMZsr9ydGUDARvVoib1_XHkw",
   "confidence": "LOW",
   "community": "หมู่บ้านวัฒนธรรมถลาง บ้านแขนน",
-  "communitySlug": null
+  "communitySlug": null,
+  "estimated_visit_duration_min": 20,
+  "estimated_visit_duration_max": 45,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "076 214 618"
+  },
+  "opening_hours": {
+   "open_time": "09:00",
+   "close_time": "19:00",
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A050",
@@ -3575,7 +5342,30 @@
   "placeId": "ChIJ8-Er_wpKUDARTOQacfdjjDg",
   "confidence": "LOW",
   "community": "ชุมชนท่องเที่ยวบ้านท่าฉัตรไชย",
-  "communitySlug": "tha-chatchai"
+  "communitySlug": "tha-chatchai",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "website",
+   "value": "http://thailandferrybooking.com/"
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": [
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+    "sunday"
+   ]
+  }
  },
  {
   "id": "LOMA-CBT-A011",
@@ -3610,7 +5400,22 @@
   "placeId": "ChIJZ8GPvRxLUDARUFQBqjKUsho",
   "confidence": "LOW",
   "community": "วิสาหกิจชุมชนท่องเที่ยวบ้านบางโรง",
-  "communitySlug": "bang-rong"
+  "communitySlug": "bang-rong",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "conditional",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "094 714 8707"
+  },
+  "opening_hours": {
+   "open_time": "09:00",
+   "close_time": "18:00",
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-P034",
@@ -3637,7 +5442,22 @@
   "placeId": "ChIJJdJQYgAxUDARjf2zqeN4mkA",
   "confidence": "LOW",
   "community": "ชุมชนท่องเที่ยวบ้านเกาะมะพร้าว",
-  "communitySlug": "koh-maprao"
+  "communitySlug": "koh-maprao",
+  "estimated_visit_duration_min": 20,
+  "estimated_visit_duration_max": 45,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-P008",
@@ -3664,7 +5484,22 @@
   "placeId": "ChIJmx2YHD43UDAR9C1DHppXn2s",
   "confidence": "LOW",
   "community": "วิสาหกิจท่องเที่ยวชุมชนบ้านลิพอนใต้ศรีสุนทร",
-  "communitySlug": null
+  "communitySlug": null,
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 120,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-P024",
@@ -3699,7 +5534,22 @@
   "placeId": "ChIJmXpOgro6UDAR83_UPEL5HII",
   "confidence": "LOW",
   "community": "ชุมชนท่องเที่ยวบ้านท่าฉัตรไชย",
-  "communitySlug": "tha-chatchai"
+  "communitySlug": "tha-chatchai",
+  "estimated_visit_duration_min": 20,
+  "estimated_visit_duration_max": 45,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "website",
+   "value": "https://www.facebook.com/otopmarket.official/"
+  },
+  "opening_hours": {
+   "open_time": "17:00",
+   "close_time": "00:00",
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-P003",
@@ -3734,7 +5584,24 @@
   "placeId": "ChIJo_5BDPkxUDARYzuQNyDnwf4",
   "confidence": "LOW",
   "community": "วิสาหกิจชุมชนท่องเที่ยวบ้านบางโรง",
-  "communitySlug": "bang-rong"
+  "communitySlug": "bang-rong",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 120,
+  "wheelchair_accessibility": "partial",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "budget",
+  "contact_method": {
+   "type": "phone",
+   "value": "076 215 825"
+  },
+  "opening_hours": {
+   "open_time": "12:00",
+   "close_time": "20:30",
+   "closed_days": [
+    "sunday"
+   ]
+  }
  },
  {
   "id": "LOMA-CBT-A064",
@@ -3769,7 +5636,22 @@
   "placeId": "ChIJDV878Tc2UDARD0Ec8KJp9O0",
   "confidence": "LOW",
   "community": "ชุมชนท่องเที่ยวบ้านบางเทา",
-  "communitySlug": "bang-tao"
+  "communitySlug": "bang-tao",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "conditional",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": "09:00",
+   "close_time": "16:00",
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A009",
@@ -3796,7 +5678,22 @@
   "placeId": "ChIJqz35rNwxUDARX5pwBUKnTuE",
   "confidence": "LOW",
   "community": "วิสาหกิจชุมชนท่องเที่ยวย่านเมืองเก่าภูเก็ต",
-  "communitySlug": "old-town"
+  "communitySlug": "old-town",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "conditional",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-P010",
@@ -3831,7 +5728,24 @@
   "placeId": "ChIJO64_Sf0xUDAROu3GOiw0Hr8",
   "confidence": "LOW",
   "community": "วิสาหกิจท่องเที่ยวชุมชนบ้านลิพอนใต้ศรีสุนทร",
-  "communitySlug": null
+  "communitySlug": null,
+  "estimated_visit_duration_min": 20,
+  "estimated_visit_duration_max": 45,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "conditional",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "085 394 5555"
+  },
+  "opening_hours": {
+   "open_time": "08:00",
+   "close_time": "18:00",
+   "closed_days": [
+    "sunday"
+   ]
+  }
  },
  {
   "id": "LOMA-CBT-P037",
@@ -3866,7 +5780,22 @@
   "placeId": "ChIJ472bTxAsUDARFp-pgtfx9KI",
   "confidence": "LOW",
   "community": "ชุมชนท่องเที่ยวบ้านแหลมพันวา",
-  "communitySlug": "cape-panwa"
+  "communitySlug": "cape-panwa",
+  "estimated_visit_duration_min": 20,
+  "estimated_visit_duration_max": 45,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "081 272 1122"
+  },
+  "opening_hours": {
+   "open_time": "08:00",
+   "close_time": "17:00",
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A074",
@@ -3901,7 +5830,22 @@
   "placeId": "ChIJhS4QmHk7UDARBbEKxSCsnbQ",
   "confidence": "LOW",
   "community": "ชุมชนท่องเที่ยวบ้านกมลา",
-  "communitySlug": "kamala"
+  "communitySlug": "kamala",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "081 569 3363"
+  },
+  "opening_hours": {
+   "open_time": "09:00",
+   "close_time": "18:00",
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A048",
@@ -3928,7 +5872,22 @@
   "placeId": "ChIJKyOqtJ5FUDARzmx0XnLTs6Q",
   "confidence": "LOW",
   "community": "ชุมชนท่องเที่ยวบ้านท่าฉัตรไชย",
-  "communitySlug": "tha-chatchai"
+  "communitySlug": "tha-chatchai",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A037",
@@ -3963,7 +5922,22 @@
   "placeId": "ChIJ80uuojwvUDARZobBgQICAjc",
   "confidence": "LOW",
   "community": "ศูนย์เรียนรู้ปรัชญาของเศรษฐกิจพอเพียงบ้านม่าหนิก",
-  "communitySlug": null
+  "communitySlug": null,
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "conditional",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "093 562 8585"
+  },
+  "opening_hours": {
+   "open_time": "09:00",
+   "close_time": "21:00",
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-P030",
@@ -3990,7 +5964,22 @@
   "placeId": "",
   "confidence": "NONE",
   "community": "ชุมชนท่องเที่ยวบ้านบางเทา",
-  "communitySlug": "bang-tao"
+  "communitySlug": "bang-tao",
+  "estimated_visit_duration_min": 20,
+  "estimated_visit_duration_max": 45,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-P017",
@@ -4017,7 +6006,22 @@
   "placeId": "",
   "confidence": "NONE",
   "community": "ศูนย์เรียนรู้ปรัชญาของเศรษฐกิจพอเพียงบ้านม่าหนิก",
-  "communitySlug": null
+  "communitySlug": null,
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 120,
+  "wheelchair_accessibility": "partial",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": []
+  }
  },
  {
   "id": "LOMA-CBT-A030",
@@ -4044,7 +6048,22 @@
   "placeId": "",
   "confidence": "NONE",
   "community": "หมู่บ้านวัฒนธรรมถลาง บ้านแขนน",
-  "communitySlug": null
+  "communitySlug": null,
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "partial",
+  "elderly_suitability": "not_suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-KATHU-01",
@@ -4080,7 +6099,22 @@
   "confidence": "HIGH",
   "community": "ชุมชนกะทู้",
   "communitySlug": "kathu",
-  "source": "osm_sample"
+  "source": "osm_sample",
+  "estimated_visit_duration_min": 20,
+  "estimated_visit_duration_max": 45,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "062 912 1571"
+  },
+  "opening_hours": {
+   "open_time": "16:00",
+   "close_time": "00:00",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-KATHU-02",
@@ -4116,7 +6150,22 @@
   "confidence": "HIGH",
   "community": "ชุมชนกะทู้",
   "communitySlug": "kathu",
-  "source": "osm_sample"
+  "source": "osm_sample",
+  "estimated_visit_duration_min": 30,
+  "estimated_visit_duration_max": 60,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "conditional",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "065 396 9549"
+  },
+  "opening_hours": {
+   "open_time": "09:00",
+   "close_time": "18:30",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-KATHU-03",
@@ -4152,7 +6201,24 @@
   "confidence": "HIGH",
   "community": "ชุมชนกะทู้",
   "communitySlug": "kathu",
-  "source": "osm_sample"
+  "source": "osm_sample",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "partial",
+  "elderly_suitability": "conditional",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "084 240 1237"
+  },
+  "opening_hours": {
+   "open_time": "11:00",
+   "close_time": "22:00",
+   "closed_days": [
+    "monday"
+   ]
+  }
  },
  {
   "id": "OSM-KOHMAPRAO-01",
@@ -4188,7 +6254,22 @@
   "confidence": "HIGH",
   "community": "ชุมชนเกาะมะพร้าว",
   "communitySlug": "koh-maprao",
-  "source": "osm_sample"
+  "source": "osm_sample",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "095 031 9499"
+  },
+  "opening_hours": {
+   "open_time": "09:00",
+   "close_time": "18:00",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-KOHMAPRAO-02",
@@ -4216,7 +6297,22 @@
   "confidence": "HIGH",
   "community": "ชุมชนเกาะมะพร้าว",
   "communitySlug": "koh-maprao",
-  "source": "osm_sample"
+  "source": "osm_sample",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "not_accessible",
+  "elderly_suitability": "not_suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "082 136 5940"
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-KOHMAPRAO-03",
@@ -4252,7 +6348,22 @@
   "confidence": "HIGH",
   "community": "ชุมชนเกาะมะพร้าว",
   "communitySlug": "koh-maprao",
-  "source": "osm_sample"
+  "source": "osm_sample",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "not_accessible",
+  "elderly_suitability": "not_suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "02 544 0040"
+  },
+  "opening_hours": {
+   "open_time": "08:00",
+   "close_time": "00:00",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-KAMALA-01",
@@ -4280,7 +6391,22 @@
   "confidence": "HIGH",
   "community": "ชุมชนกมลา",
   "communitySlug": "kamala",
-  "source": "osm_sample"
+  "source": "osm_sample",
+  "estimated_visit_duration_min": 30,
+  "estimated_visit_duration_max": 60,
+  "wheelchair_accessibility": "partial",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "084 376 6746"
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-KAMALA-02",
@@ -4316,7 +6442,25 @@
   "confidence": "HIGH",
   "community": "ชุมชนกมลา",
   "communitySlug": "kamala",
-  "source": "osm_sample"
+  "source": "osm_sample",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "partial",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "080 057 6365"
+  },
+  "opening_hours": {
+   "open_time": "13:00",
+   "close_time": "20:30",
+   "closed_days": [
+    "tuesday",
+    "friday"
+   ]
+  }
  },
  {
   "id": "OSM-KAMALA-03",
@@ -4352,7 +6496,22 @@
   "confidence": "HIGH",
   "community": "ชุมชนกมลา",
   "communitySlug": "kamala",
-  "source": "osm_sample"
+  "source": "osm_sample",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "budget",
+  "contact_method": {
+   "type": "phone",
+   "value": "080 550 9343"
+  },
+  "opening_hours": {
+   "open_time": "08:00",
+   "close_time": "23:00",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-BANKIAN-01",
@@ -4388,7 +6547,24 @@
   "confidence": "HIGH",
   "community": "ชุมชนบ้านเคียน",
   "communitySlug": "ban-kian",
-  "source": "osm_sample"
+  "source": "osm_sample",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "064 570 0003"
+  },
+  "opening_hours": {
+   "open_time": "09:00",
+   "close_time": "18:00",
+   "closed_days": [
+    "sunday"
+   ]
+  }
  },
  {
   "id": "OSM-BANKIAN-02",
@@ -4424,7 +6600,22 @@
   "confidence": "HIGH",
   "community": "ชุมชนบ้านเคียน",
   "communitySlug": "ban-kian",
-  "source": "osm_sample"
+  "source": "osm_sample",
+  "estimated_visit_duration_min": 30,
+  "estimated_visit_duration_max": 60,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "084 503 4510"
+  },
+  "opening_hours": {
+   "open_time": "06:00",
+   "close_time": "19:00",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-BANKIAN-03",
@@ -4460,7 +6651,24 @@
   "confidence": "HIGH",
   "community": "ชุมชนบ้านเคียน",
   "communitySlug": "ban-kian",
-  "source": "osm_sample"
+  "source": "osm_sample",
+  "estimated_visit_duration_min": 30,
+  "estimated_visit_duration_max": 60,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": "11:00",
+   "close_time": "21:00",
+   "closed_days": [
+    "sunday"
+   ]
+  }
  },
  {
   "id": "OSM-THACHATCHAI-01",
@@ -4496,7 +6704,22 @@
   "confidence": "HIGH",
   "community": "ชุมชนบ้านท่าฉัตรชัย",
   "communitySlug": "tha-chatchai",
-  "source": "osm_sample"
+  "source": "osm_sample",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "partial",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "budget",
+  "contact_method": {
+   "type": "phone",
+   "value": "076 328 293"
+  },
+  "opening_hours": {
+   "open_time": "10:30",
+   "close_time": "22:00",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-THACHATCHAI-02",
@@ -4532,7 +6755,30 @@
   "confidence": "HIGH",
   "community": "ชุมชนบ้านท่าฉัตรชัย",
   "communitySlug": "tha-chatchai",
-  "source": "osm_sample"
+  "source": "osm_sample",
+  "estimated_visit_duration_min": 30,
+  "estimated_visit_duration_max": 60,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "081 158 1771"
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": [
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+    "sunday"
+   ]
+  }
  },
  {
   "id": "OSM-THACHATCHAI-03",
@@ -4560,7 +6806,22 @@
   "confidence": "HIGH",
   "community": "ชุมชนบ้านท่าฉัตรชัย",
   "communitySlug": "tha-chatchai",
-  "source": "osm_sample"
+  "source": "osm_sample",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "not_accessible",
+  "elderly_suitability": "not_suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "063 414 9978"
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-BANGTAO-01",
@@ -4596,7 +6857,22 @@
   "confidence": "HIGH",
   "community": "ชุมชนบ้านบางเทา",
   "communitySlug": "bang-tao",
-  "source": "osm_sample"
+  "source": "osm_sample",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "082 964 2352"
+  },
+  "opening_hours": {
+   "open_time": "13:00",
+   "close_time": "23:00",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-BANGTAO-02",
@@ -4632,7 +6908,22 @@
   "confidence": "HIGH",
   "community": "ชุมชนบ้านบางเทา",
   "communitySlug": "bang-tao",
-  "source": "osm_sample"
+  "source": "osm_sample",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "093 510 2861"
+  },
+  "opening_hours": {
+   "open_time": "06:00",
+   "close_time": "15:00",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-BANGTAO-03",
@@ -4668,7 +6959,22 @@
   "confidence": "HIGH",
   "community": "ชุมชนบ้านบางเทา",
   "communitySlug": "bang-tao",
-  "source": "osm_sample"
+  "source": "osm_sample",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 120,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "061 185 7146"
+  },
+  "opening_hours": {
+   "open_time": "09:00",
+   "close_time": "23:30",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-BANGRONG-01",
@@ -4704,7 +7010,24 @@
   "confidence": "HIGH",
   "community": "ชุมชนบ้านบางโรง",
   "communitySlug": "bang-rong",
-  "source": "osm_sample"
+  "source": "osm_sample",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "budget",
+  "contact_method": {
+   "type": "phone",
+   "value": "061 253 4064"
+  },
+  "opening_hours": {
+   "open_time": "10:00",
+   "close_time": "20:00",
+   "closed_days": [
+    "friday"
+   ]
+  }
  },
  {
   "id": "OSM-BANGRONG-02",
@@ -4740,7 +7063,24 @@
   "confidence": "HIGH",
   "community": "ชุมชนบ้านบางโรง",
   "communitySlug": "bang-rong",
-  "source": "osm_sample"
+  "source": "osm_sample",
+  "estimated_visit_duration_min": 30,
+  "estimated_visit_duration_max": 60,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "conditional",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "088 168 6823"
+  },
+  "opening_hours": {
+   "open_time": "10:00",
+   "close_time": "21:00",
+   "closed_days": [
+    "monday"
+   ]
+  }
  },
  {
   "id": "OSM-BANGRONG-03",
@@ -4768,7 +7108,22 @@
   "confidence": "HIGH",
   "community": "ชุมชนบ้านบางโรง",
   "communitySlug": "bang-rong",
-  "source": "osm_sample"
+  "source": "osm_sample",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "not_accessible",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-BANSAKHU-01",
@@ -4804,7 +7159,22 @@
   "confidence": "HIGH",
   "community": "ชุมชนบ้านสาคู",
   "communitySlug": "ban-sakhu",
-  "source": "osm_sample"
+  "source": "osm_sample",
+  "estimated_visit_duration_min": 30,
+  "estimated_visit_duration_max": 60,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "084 289 9888"
+  },
+  "opening_hours": {
+   "open_time": "10:00",
+   "close_time": "22:00",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-BANSAKHU-02",
@@ -4840,7 +7210,22 @@
   "confidence": "HIGH",
   "community": "ชุมชนบ้านสาคู",
   "communitySlug": "ban-sakhu",
-  "source": "osm_sample"
+  "source": "osm_sample",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "budget",
+  "contact_method": {
+   "type": "phone",
+   "value": "076 327 557"
+  },
+  "opening_hours": {
+   "open_time": "10:00",
+   "close_time": "20:30",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-BANSAKHU-03",
@@ -4876,7 +7261,22 @@
   "confidence": "HIGH",
   "community": "ชุมชนบ้านสาคู",
   "communitySlug": "ban-sakhu",
-  "source": "osm_sample"
+  "source": "osm_sample",
+  "estimated_visit_duration_min": 20,
+  "estimated_visit_duration_max": 45,
+  "wheelchair_accessibility": "partial",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "076 621 226"
+  },
+  "opening_hours": {
+   "open_time": "07:00",
+   "close_time": "19:00",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-OLDTOWN-01",
@@ -4904,7 +7304,22 @@
   "confidence": "HIGH",
   "community": "ชุมชนย่านเมืองเก่าภูเก็ต",
   "communitySlug": "old-town",
-  "source": "osm_sample"
+  "source": "osm_sample",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "partial",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-OLDTOWN-02",
@@ -4932,7 +7347,22 @@
   "confidence": "HIGH",
   "community": "ชุมชนย่านเมืองเก่าภูเก็ต",
   "communitySlug": "old-town",
-  "source": "osm_sample"
+  "source": "osm_sample",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-OLDTOWN-03",
@@ -4968,7 +7398,29 @@
   "confidence": "HIGH",
   "community": "ชุมชนย่านเมืองเก่าภูเก็ต",
   "communitySlug": "old-town",
-  "source": "osm_sample"
+  "source": "osm_sample",
+  "estimated_visit_duration_min": 20,
+  "estimated_visit_duration_max": 45,
+  "wheelchair_accessibility": "partial",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "094 439 9888"
+  },
+  "opening_hours": {
+   "open_time": "16:00",
+   "close_time": "21:30",
+   "closed_days": [
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "sunday"
+   ]
+  }
  },
  {
   "id": "OSM-CAPEPANWA-01",
@@ -5004,7 +7456,22 @@
   "confidence": "HIGH",
   "community": "ชุมชนบ้านแหลมพันวา",
   "communitySlug": "cape-panwa",
-  "source": "osm_sample"
+  "source": "osm_sample",
+  "estimated_visit_duration_min": 30,
+  "estimated_visit_duration_max": 60,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "conditional",
+  "verification_status": "unverified",
+  "price_range": "moderate",
+  "contact_method": {
+   "type": "phone",
+   "value": "096 393 8461"
+  },
+  "opening_hours": {
+   "open_time": "09:00",
+   "close_time": "20:00",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-CAPEPANWA-02",
@@ -5040,7 +7507,24 @@
   "confidence": "HIGH",
   "community": "ชุมชนบ้านแหลมพันวา",
   "communitySlug": "cape-panwa",
-  "source": "osm_sample"
+  "source": "osm_sample",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "not_accessible",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "076 391 161"
+  },
+  "opening_hours": {
+   "open_time": "08:30",
+   "close_time": "17:30",
+   "closed_days": [
+    "sunday"
+   ]
+  }
  },
  {
   "id": "OSM-CAPEPANWA-03",
@@ -5076,7 +7560,30 @@
   "confidence": "HIGH",
   "community": "ชุมชนบ้านแหลมพันวา",
   "communitySlug": "cape-panwa",
-  "source": "osm_sample"
+  "source": "osm_sample",
+  "estimated_visit_duration_min": 180,
+  "estimated_visit_duration_max": 480,
+  "wheelchair_accessibility": "not_accessible",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": [
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+    "sunday"
+   ]
+  }
  },
  {
   "id": "OSM-PHK-100",
@@ -5112,7 +7619,22 @@
   "confidence": "HIGH",
   "community": null,
   "communitySlug": null,
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "moderate",
+  "contact_method": {
+   "type": "phone",
+   "value": "092 860 1333"
+  },
+  "opening_hours": {
+   "open_time": "10:00",
+   "close_time": "22:00",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-PHK-101",
@@ -5148,7 +7670,24 @@
   "confidence": "HIGH",
   "community": null,
   "communitySlug": null,
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "partial",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "budget",
+  "contact_method": {
+   "type": "phone",
+   "value": "088 752 1349"
+  },
+  "opening_hours": {
+   "open_time": "11:00",
+   "close_time": "19:30",
+   "closed_days": [
+    "thursday"
+   ]
+  }
  },
  {
   "id": "OSM-OLDTOWN-102",
@@ -5184,7 +7723,30 @@
   "confidence": "HIGH",
   "community": "ชุมชนย่านเมืองเก่าภูเก็ต",
   "communitySlug": "old-town",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "conditional",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "086 942 2256"
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": [
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+    "sunday"
+   ]
+  }
  },
  {
   "id": "OSM-OLDTOWN-103",
@@ -5220,7 +7782,24 @@
   "confidence": "HIGH",
   "community": "ชุมชนย่านเมืองเก่าภูเก็ต",
   "communitySlug": "old-town",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 30,
+  "estimated_visit_duration_max": 60,
+  "wheelchair_accessibility": "partial",
+  "elderly_suitability": "conditional",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "092 252 7522"
+  },
+  "opening_hours": {
+   "open_time": "10:30",
+   "close_time": "20:30",
+   "closed_days": [
+    "monday"
+   ]
+  }
  },
  {
   "id": "OSM-OLDTOWN-104",
@@ -5256,7 +7835,24 @@
   "confidence": "HIGH",
   "community": "ชุมชนย่านเมืองเก่าภูเก็ต",
   "communitySlug": "old-town",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "website",
+   "value": "https://www.wongnai.com/restaurants/275091ev-%E0%B8%84%E0%B8%B8%E0%B8%93%E0%B8%8A%E0%B8%B1%E0%B8%A2%E0%B8%8A%E0%B8%A7%E0%B8%99%E0%B8%8A%E0%B8%B4%E0%B8%A1"
+  },
+  "opening_hours": {
+   "open_time": "06:30",
+   "close_time": "21:00",
+   "closed_days": [
+    "friday"
+   ]
+  }
  },
  {
   "id": "OSM-PHK-105",
@@ -5284,7 +7880,22 @@
   "confidence": "HIGH",
   "community": null,
   "communitySlug": null,
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "partial",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "095 656 6085"
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-PHK-106",
@@ -5320,7 +7931,22 @@
   "confidence": "HIGH",
   "community": null,
   "communitySlug": null,
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 30,
+  "estimated_visit_duration_max": 60,
+  "wheelchair_accessibility": "partial",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "080 782 2545"
+  },
+  "opening_hours": {
+   "open_time": "09:30",
+   "close_time": "19:00",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-PHK-107",
@@ -5356,7 +7982,24 @@
   "confidence": "HIGH",
   "community": null,
   "communitySlug": null,
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "087 922 5024"
+  },
+  "opening_hours": {
+   "open_time": "09:00",
+   "close_time": "20:30",
+   "closed_days": [
+    "wednesday"
+   ]
+  }
  },
  {
   "id": "OSM-OLDTOWN-108",
@@ -5384,7 +8027,22 @@
   "confidence": "HIGH",
   "community": "ชุมชนย่านเมืองเก่าภูเก็ต",
   "communitySlug": "old-town",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-OLDTOWN-109",
@@ -5420,7 +8078,24 @@
   "confidence": "HIGH",
   "community": "ชุมชนย่านเมืองเก่าภูเก็ต",
   "communitySlug": "old-town",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "partial",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "064 361 5662"
+  },
+  "opening_hours": {
+   "open_time": "10:00",
+   "close_time": "20:00",
+   "closed_days": [
+    "tuesday"
+   ]
+  }
  },
  {
   "id": "OSM-OLDTOWN-110",
@@ -5456,7 +8131,24 @@
   "confidence": "HIGH",
   "community": "ชุมชนย่านเมืองเก่าภูเก็ต",
   "communitySlug": "old-town",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "conditional",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "092 832 2689"
+  },
+  "opening_hours": {
+   "open_time": "16:00",
+   "close_time": "23:30",
+   "closed_days": [
+    "saturday"
+   ]
+  }
  },
  {
   "id": "OSM-OLDTOWN-111",
@@ -5492,7 +8184,24 @@
   "confidence": "HIGH",
   "community": "ชุมชนย่านเมืองเก่าภูเก็ต",
   "communitySlug": "old-town",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "partial",
+  "elderly_suitability": "conditional",
+  "verification_status": "unverified",
+  "price_range": "budget",
+  "contact_method": {
+   "type": "phone",
+   "value": "085 885 7223"
+  },
+  "opening_hours": {
+   "open_time": "09:00",
+   "close_time": "21:00",
+   "closed_days": [
+    "sunday"
+   ]
+  }
  },
  {
   "id": "OSM-BANKIAN-112",
@@ -5528,7 +8237,24 @@
   "confidence": "HIGH",
   "community": "ชุมชนบ้านเคียน",
   "communitySlug": "ban-kian",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "conditional",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "096 649 6425"
+  },
+  "opening_hours": {
+   "open_time": "08:00",
+   "close_time": "20:00",
+   "closed_days": [
+    "thursday"
+   ]
+  }
  },
  {
   "id": "OSM-OLDTOWN-113",
@@ -5564,7 +8290,24 @@
   "confidence": "HIGH",
   "community": "ชุมชนย่านเมืองเก่าภูเก็ต",
   "communitySlug": "old-town",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "096 027 6169"
+  },
+  "opening_hours": {
+   "open_time": "09:30",
+   "close_time": "18:00",
+   "closed_days": [
+    "saturday"
+   ]
+  }
  },
  {
   "id": "OSM-OLDTOWN-114",
@@ -5600,7 +8343,22 @@
   "confidence": "HIGH",
   "community": "ชุมชนย่านเมืองเก่าภูเก็ต",
   "communitySlug": "old-town",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "076 219 182"
+  },
+  "opening_hours": {
+   "open_time": "06:30",
+   "close_time": "11:30",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-OLDTOWN-115",
@@ -5628,7 +8386,22 @@
   "confidence": "HIGH",
   "community": "ชุมชนย่านเมืองเก่าภูเก็ต",
   "communitySlug": "old-town",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "098 523 8998"
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-BANGTAO-116",
@@ -5664,7 +8437,22 @@
   "confidence": "HIGH",
   "community": "ชุมชนบ้านบางเทา",
   "communitySlug": "bang-tao",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 30,
+  "estimated_visit_duration_max": 60,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "095 212 8387"
+  },
+  "opening_hours": {
+   "open_time": "09:00",
+   "close_time": "21:00",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-OLDTOWN-117",
@@ -5700,7 +8488,22 @@
   "confidence": "HIGH",
   "community": "ชุมชนย่านเมืองเก่าภูเก็ต",
   "communitySlug": "old-town",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "081 536 9179"
+  },
+  "opening_hours": {
+   "open_time": "11:00",
+   "close_time": "00:00",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-OLDTOWN-118",
@@ -5736,7 +8539,22 @@
   "confidence": "HIGH",
   "community": "ชุมชนย่านเมืองเก่าภูเก็ต",
   "communitySlug": "old-town",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "budget",
+  "contact_method": {
+   "type": "phone",
+   "value": "086 909 1829"
+  },
+  "opening_hours": {
+   "open_time": "11:00",
+   "close_time": "21:30",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-PHK-119",
@@ -5772,7 +8590,22 @@
   "confidence": "HIGH",
   "community": null,
   "communitySlug": null,
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "partial",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "091 785 4528"
+  },
+  "opening_hours": {
+   "open_time": "09:00",
+   "close_time": "15:30",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-BANKIAN-120",
@@ -5808,7 +8641,22 @@
   "confidence": "HIGH",
   "community": "ชุมชนบ้านเคียน",
   "communitySlug": "ban-kian",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "moderate",
+  "contact_method": {
+   "type": "phone",
+   "value": "076 313 388"
+  },
+  "opening_hours": {
+   "open_time": "11:00",
+   "close_time": "22:00",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-OLDTOWN-121",
@@ -5844,7 +8692,22 @@
   "confidence": "HIGH",
   "community": "ชุมชนย่านเมืองเก่าภูเก็ต",
   "communitySlug": "old-town",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "conditional",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "089 724 5429"
+  },
+  "opening_hours": {
+   "open_time": "11:00",
+   "close_time": "21:00",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-PHK-122",
@@ -5880,7 +8743,24 @@
   "confidence": "HIGH",
   "community": null,
   "communitySlug": null,
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 20,
+  "estimated_visit_duration_max": 45,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "conditional",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "061 293 8131"
+  },
+  "opening_hours": {
+   "open_time": "00:00",
+   "close_time": "15:30",
+   "closed_days": [
+    "monday"
+   ]
+  }
  },
  {
   "id": "OSM-PHK-123",
@@ -5916,7 +8796,22 @@
   "confidence": "HIGH",
   "community": null,
   "communitySlug": null,
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "conditional",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "091 999 6362"
+  },
+  "opening_hours": {
+   "open_time": "10:00",
+   "close_time": "20:00",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-OLDTOWN-124",
@@ -5952,7 +8847,22 @@
   "confidence": "HIGH",
   "community": "ชุมชนย่านเมืองเก่าภูเก็ต",
   "communitySlug": "old-town",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "moderate",
+  "contact_method": {
+   "type": "phone",
+   "value": "089 647 9111"
+  },
+  "opening_hours": {
+   "open_time": "06:00",
+   "close_time": "12:00",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-PHK-125",
@@ -5988,7 +8898,24 @@
   "confidence": "HIGH",
   "community": null,
   "communitySlug": null,
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "partial",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "098 768 7982"
+  },
+  "opening_hours": {
+   "open_time": "14:00",
+   "close_time": "22:00",
+   "closed_days": [
+    "monday"
+   ]
+  }
  },
  {
   "id": "OSM-OLDTOWN-126",
@@ -6024,7 +8951,22 @@
   "confidence": "HIGH",
   "community": "ชุมชนย่านเมืองเก่าภูเก็ต",
   "communitySlug": "old-town",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "partial",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "081 788 7179"
+  },
+  "opening_hours": {
+   "open_time": "06:30",
+   "close_time": "13:30",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-OLDTOWN-127",
@@ -6060,7 +9002,22 @@
   "confidence": "HIGH",
   "community": "ชุมชนย่านเมืองเก่าภูเก็ต",
   "communitySlug": "old-town",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "095 586 3900"
+  },
+  "opening_hours": {
+   "open_time": "11:30",
+   "close_time": "23:30",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-PHK-128",
@@ -6096,7 +9053,24 @@
   "confidence": "HIGH",
   "community": null,
   "communitySlug": null,
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 30,
+  "estimated_visit_duration_max": 60,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "095 418 1183"
+  },
+  "opening_hours": {
+   "open_time": "08:00",
+   "close_time": "17:00",
+   "closed_days": [
+    "sunday"
+   ]
+  }
  },
  {
   "id": "OSM-OLDTOWN-129",
@@ -6132,7 +9106,24 @@
   "confidence": "HIGH",
   "community": "ชุมชนย่านเมืองเก่าภูเก็ต",
   "communitySlug": "old-town",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "076 254 216"
+  },
+  "opening_hours": {
+   "open_time": "10:30",
+   "close_time": "19:30",
+   "closed_days": [
+    "sunday"
+   ]
+  }
  },
  {
   "id": "OSM-KATHU-130",
@@ -6168,7 +9159,22 @@
   "confidence": "HIGH",
   "community": "ชุมชนกะทู้",
   "communitySlug": "kathu",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "budget",
+  "contact_method": {
+   "type": "phone",
+   "value": "081 240 8924"
+  },
+  "opening_hours": {
+   "open_time": "10:00",
+   "close_time": "20:00",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-PHK-131",
@@ -6204,7 +9210,24 @@
   "confidence": "HIGH",
   "community": null,
   "communitySlug": null,
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 30,
+  "estimated_visit_duration_max": 60,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "moderate",
+  "contact_method": {
+   "type": "website",
+   "value": "http://www.ablanketandapillow.com/"
+  },
+  "opening_hours": {
+   "open_time": "10:30",
+   "close_time": "19:30",
+   "closed_days": [
+    "monday"
+   ]
+  }
  },
  {
   "id": "OSM-OLDTOWN-132",
@@ -6240,7 +9263,22 @@
   "confidence": "HIGH",
   "community": "ชุมชนย่านเมืองเก่าภูเก็ต",
   "communitySlug": "old-town",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "081 893 0159"
+  },
+  "opening_hours": {
+   "open_time": "09:00",
+   "close_time": "23:00",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-BANKIAN-133",
@@ -6276,7 +9314,22 @@
   "confidence": "HIGH",
   "community": "ชุมชนบ้านเคียน",
   "communitySlug": "ban-kian",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "065 396 9656"
+  },
+  "opening_hours": {
+   "open_time": "17:00",
+   "close_time": "00:00",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-KATHU-134",
@@ -6312,7 +9365,24 @@
   "confidence": "HIGH",
   "community": "ชุมชนกะทู้",
   "communitySlug": "kathu",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": "17:30",
+   "close_time": "03:30",
+   "closed_days": [
+    "saturday"
+   ]
+  }
  },
  {
   "id": "OSM-PHK-135",
@@ -6348,7 +9418,22 @@
   "confidence": "HIGH",
   "community": null,
   "communitySlug": null,
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": "11:00",
+   "close_time": "22:00",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-PHK-136",
@@ -6384,7 +9469,22 @@
   "confidence": "HIGH",
   "community": null,
   "communitySlug": null,
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "conditional",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": "09:00",
+   "close_time": "21:30",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-PHK-137",
@@ -6420,7 +9520,22 @@
   "confidence": "HIGH",
   "community": null,
   "communitySlug": null,
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 20,
+  "estimated_visit_duration_max": 45,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "conditional",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": "15:00",
+   "close_time": "19:00",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-OLDTOWN-138",
@@ -6456,7 +9571,24 @@
   "confidence": "HIGH",
   "community": "ชุมชนย่านเมืองเก่าภูเก็ต",
   "communitySlug": "old-town",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "partial",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "budget",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": "08:30",
+   "close_time": "19:00",
+   "closed_days": [
+    "sunday"
+   ]
+  }
  },
  {
   "id": "OSM-OLDTOWN-139",
@@ -6492,7 +9624,22 @@
   "confidence": "HIGH",
   "community": "ชุมชนย่านเมืองเก่าภูเก็ต",
   "communitySlug": "old-town",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "budget",
+  "contact_method": {
+   "type": "phone",
+   "value": "097 154 9985"
+  },
+  "opening_hours": {
+   "open_time": "09:30",
+   "close_time": "16:30",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-OLDTOWN-140",
@@ -6528,7 +9675,22 @@
   "confidence": "HIGH",
   "community": "ชุมชนย่านเมืองเก่าภูเก็ต",
   "communitySlug": "old-town",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "partial",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "076 219 046"
+  },
+  "opening_hours": {
+   "open_time": "10:00",
+   "close_time": "19:00",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-PHK-141",
@@ -6556,7 +9718,22 @@
   "confidence": "HIGH",
   "community": null,
   "communitySlug": null,
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "conditional",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-OLDTOWN-142",
@@ -6592,7 +9769,22 @@
   "confidence": "HIGH",
   "community": "ชุมชนย่านเมืองเก่าภูเก็ต",
   "communitySlug": "old-town",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "budget",
+  "contact_method": {
+   "type": "phone",
+   "value": "092 918 8218"
+  },
+  "opening_hours": {
+   "open_time": "10:00",
+   "close_time": "23:00",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-PHK-143",
@@ -6628,7 +9820,30 @@
   "confidence": "HIGH",
   "community": null,
   "communitySlug": null,
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "064 215 6127"
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": [
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+    "sunday"
+   ]
+  }
  },
  {
   "id": "OSM-OLDTOWN-144",
@@ -6656,7 +9871,22 @@
   "confidence": "HIGH",
   "community": "ชุมชนย่านเมืองเก่าภูเก็ต",
   "communitySlug": "old-town",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "084 192 4829"
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-OLDTOWN-145",
@@ -6692,7 +9922,25 @@
   "confidence": "HIGH",
   "community": "ชุมชนย่านเมืองเก่าภูเก็ต",
   "communitySlug": "old-town",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "budget",
+  "contact_method": {
+   "type": "phone",
+   "value": "062 493 9424"
+  },
+  "opening_hours": {
+   "open_time": "06:30",
+   "close_time": "14:00",
+   "closed_days": [
+    "saturday",
+    "sunday"
+   ]
+  }
  },
  {
   "id": "OSM-OLDTOWN-146",
@@ -6728,7 +9976,22 @@
   "confidence": "HIGH",
   "community": "ชุมชนย่านเมืองเก่าภูเก็ต",
   "communitySlug": "old-town",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "conditional",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "website",
+   "value": "https://www.wongnai.com/restaurants/140514Zk-%E0%B8%95%E0%B8%B4%E0%B9%88%E0%B8%A1%E0%B8%8B%E0%B8%B3%E0%B8%AA%E0%B8%B2%E0%B8%A1%E0%B8%81%E0%B8%AD%E0%B8%87"
+  },
+  "opening_hours": {
+   "open_time": "05:00",
+   "close_time": "12:00",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-PHK-147",
@@ -6756,7 +10019,22 @@
   "confidence": "HIGH",
   "community": null,
   "communitySlug": null,
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "086 041 8979"
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-PHK-148",
@@ -6792,7 +10070,22 @@
   "confidence": "HIGH",
   "community": null,
   "communitySlug": null,
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": "05:00",
+   "close_time": "09:00",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-PHK-149",
@@ -6828,7 +10121,24 @@
   "confidence": "HIGH",
   "community": null,
   "communitySlug": null,
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "partial",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "budget",
+  "contact_method": {
+   "type": "phone",
+   "value": "087 465 4831"
+  },
+  "opening_hours": {
+   "open_time": "09:30",
+   "close_time": "20:30",
+   "closed_days": [
+    "saturday"
+   ]
+  }
  },
  {
   "id": "OSM-OLDTOWN-150",
@@ -6864,7 +10174,24 @@
   "confidence": "HIGH",
   "community": "ชุมชนย่านเมืองเก่าภูเก็ต",
   "communitySlug": "old-town",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "moderate",
+  "contact_method": {
+   "type": "phone",
+   "value": "076 211 985"
+  },
+  "opening_hours": {
+   "open_time": "10:30",
+   "close_time": "20:30",
+   "closed_days": [
+    "sunday"
+   ]
+  }
  },
  {
   "id": "OSM-OLDTOWN-151",
@@ -6900,7 +10227,22 @@
   "confidence": "HIGH",
   "community": "ชุมชนย่านเมืองเก่าภูเก็ต",
   "communitySlug": "old-town",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "partial",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": "07:30",
+   "close_time": "19:30",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-OLDTOWN-152",
@@ -6936,7 +10278,25 @@
   "confidence": "HIGH",
   "community": "ชุมชนย่านเมืองเก่าภูเก็ต",
   "communitySlug": "old-town",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "065 554 2494"
+  },
+  "opening_hours": {
+   "open_time": "12:00",
+   "close_time": "23:00",
+   "closed_days": [
+    "tuesday",
+    "wednesday"
+   ]
+  }
  },
  {
   "id": "OSM-BANKIAN-153",
@@ -6972,7 +10332,24 @@
   "confidence": "HIGH",
   "community": "ชุมชนบ้านเคียน",
   "communitySlug": "ban-kian",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "partial",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "budget",
+  "contact_method": {
+   "type": "phone",
+   "value": "076 624 288"
+  },
+  "opening_hours": {
+   "open_time": "08:00",
+   "close_time": "22:00",
+   "closed_days": [
+    "tuesday"
+   ]
+  }
  },
  {
   "id": "OSM-OLDTOWN-154",
@@ -7008,7 +10385,22 @@
   "confidence": "HIGH",
   "community": "ชุมชนย่านเมืองเก่าภูเก็ต",
   "communitySlug": "old-town",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "conditional",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "085 694 9551"
+  },
+  "opening_hours": {
+   "open_time": "10:00",
+   "close_time": "22:00",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-OLDTOWN-155",
@@ -7044,7 +10436,22 @@
   "confidence": "HIGH",
   "community": "ชุมชนย่านเมืองเก่าภูเก็ต",
   "communitySlug": "old-town",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "conditional",
+  "verification_status": "unverified",
+  "price_range": "budget",
+  "contact_method": {
+   "type": "phone",
+   "value": "076 216 271"
+  },
+  "opening_hours": {
+   "open_time": "06:00",
+   "close_time": "11:30",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-OLDTOWN-156",
@@ -7080,7 +10487,24 @@
   "confidence": "HIGH",
   "community": "ชุมชนย่านเมืองเก่าภูเก็ต",
   "communitySlug": "old-town",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "partial",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "099 482 6562"
+  },
+  "opening_hours": {
+   "open_time": "09:00",
+   "close_time": "20:00",
+   "closed_days": [
+    "sunday"
+   ]
+  }
  },
  {
   "id": "OSM-PHK-157",
@@ -7116,7 +10540,24 @@
   "confidence": "HIGH",
   "community": null,
   "communitySlug": null,
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "064 060 7555"
+  },
+  "opening_hours": {
+   "open_time": "12:00",
+   "close_time": "22:00",
+   "closed_days": [
+    "sunday"
+   ]
+  }
  },
  {
   "id": "OSM-OLDTOWN-158",
@@ -7152,7 +10593,22 @@
   "confidence": "HIGH",
   "community": "ชุมชนย่านเมืองเก่าภูเก็ต",
   "communitySlug": "old-town",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "087 887 4955"
+  },
+  "opening_hours": {
+   "open_time": "06:00",
+   "close_time": "22:00",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-OLDTOWN-159",
@@ -7188,7 +10644,24 @@
   "confidence": "HIGH",
   "community": "ชุมชนย่านเมืองเก่าภูเก็ต",
   "communitySlug": "old-town",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "moderate",
+  "contact_method": {
+   "type": "phone",
+   "value": "098 018 1890"
+  },
+  "opening_hours": {
+   "open_time": "10:30",
+   "close_time": "20:00",
+   "closed_days": [
+    "wednesday"
+   ]
+  }
  },
  {
   "id": "OSM-BANGTAO-160",
@@ -7224,7 +10697,22 @@
   "confidence": "HIGH",
   "community": "ชุมชนบ้านบางเทา",
   "communitySlug": "bang-tao",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 30,
+  "estimated_visit_duration_max": 60,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "conditional",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "087 819 6983"
+  },
+  "opening_hours": {
+   "open_time": "16:00",
+   "close_time": "00:00",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-OLDTOWN-161",
@@ -7260,7 +10748,22 @@
   "confidence": "HIGH",
   "community": "ชุมชนย่านเมืองเก่าภูเก็ต",
   "communitySlug": "old-town",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 30,
+  "estimated_visit_duration_max": 60,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "095 020 7254"
+  },
+  "opening_hours": {
+   "open_time": "08:30",
+   "close_time": "19:30",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-PHK-162",
@@ -7296,7 +10799,27 @@
   "confidence": "HIGH",
   "community": null,
   "communitySlug": null,
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 20,
+  "estimated_visit_duration_max": 45,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": "12:00",
+   "close_time": "21:00",
+   "closed_days": [
+    "tuesday",
+    "thursday",
+    "saturday",
+    "sunday"
+   ]
+  }
  },
  {
   "id": "OSM-PHK-163",
@@ -7332,7 +10855,22 @@
   "confidence": "HIGH",
   "community": null,
   "communitySlug": null,
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "moderate",
+  "contact_method": {
+   "type": "phone",
+   "value": "076 381 323"
+  },
+  "opening_hours": {
+   "open_time": "10:00",
+   "close_time": "22:30",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-PHK-164",
@@ -7368,7 +10906,22 @@
   "confidence": "HIGH",
   "community": null,
   "communitySlug": null,
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "partial",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "091 859 9222"
+  },
+  "opening_hours": {
+   "open_time": "07:00",
+   "close_time": "22:00",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-OLDTOWN-165",
@@ -7396,7 +10949,22 @@
   "confidence": "HIGH",
   "community": "ชุมชนย่านเมืองเก่าภูเก็ต",
   "communitySlug": "old-town",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "076 641 106"
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-OLDTOWN-166",
@@ -7432,7 +11000,22 @@
   "confidence": "HIGH",
   "community": "ชุมชนย่านเมืองเก่าภูเก็ต",
   "communitySlug": "old-town",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "budget",
+  "contact_method": {
+   "type": "phone",
+   "value": "086 266 8832"
+  },
+  "opening_hours": {
+   "open_time": "17:45",
+   "close_time": "02:00",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-OLDTOWN-167",
@@ -7468,7 +11051,22 @@
   "confidence": "HIGH",
   "community": "ชุมชนย่านเมืองเก่าภูเก็ต",
   "communitySlug": "old-town",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "budget",
+  "contact_method": {
+   "type": "phone",
+   "value": "083 175 5571"
+  },
+  "opening_hours": {
+   "open_time": "08:30",
+   "close_time": "19:00",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-OLDTOWN-168",
@@ -7504,7 +11102,22 @@
   "confidence": "HIGH",
   "community": "ชุมชนย่านเมืองเก่าภูเก็ต",
   "communitySlug": "old-town",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "conditional",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "076 226 124"
+  },
+  "opening_hours": {
+   "open_time": "08:30",
+   "close_time": "16:30",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-OLDTOWN-169",
@@ -7540,7 +11153,30 @@
   "confidence": "HIGH",
   "community": "ชุมชนย่านเมืองเก่าภูเก็ต",
   "communitySlug": "old-town",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 20,
+  "estimated_visit_duration_max": 45,
+  "wheelchair_accessibility": "partial",
+  "elderly_suitability": "conditional",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "089 444 9036"
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": [
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+    "sunday"
+   ]
+  }
  },
  {
   "id": "OSM-PHK-170",
@@ -7576,7 +11212,24 @@
   "confidence": "HIGH",
   "community": null,
   "communitySlug": null,
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "093 627 6222"
+  },
+  "opening_hours": {
+   "open_time": "16:30",
+   "close_time": "22:30",
+   "closed_days": [
+    "sunday"
+   ]
+  }
  },
  {
   "id": "OSM-OLDTOWN-171",
@@ -7612,7 +11265,22 @@
   "confidence": "HIGH",
   "community": "ชุมชนย่านเมืองเก่าภูเก็ต",
   "communitySlug": "old-town",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "086 690 3375"
+  },
+  "opening_hours": {
+   "open_time": "06:30",
+   "close_time": "13:00",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-PHK-172",
@@ -7648,7 +11316,24 @@
   "confidence": "HIGH",
   "community": null,
   "communitySlug": null,
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "partial",
+  "elderly_suitability": "conditional",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "098 763 7214"
+  },
+  "opening_hours": {
+   "open_time": "05:30",
+   "close_time": "11:00",
+   "closed_days": [
+    "tuesday"
+   ]
+  }
  },
  {
   "id": "OSM-OLDTOWN-173",
@@ -7684,7 +11369,22 @@
   "confidence": "HIGH",
   "community": "ชุมชนย่านเมืองเก่าภูเก็ต",
   "communitySlug": "old-town",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 120,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "076 530 653"
+  },
+  "opening_hours": {
+   "open_time": "11:00",
+   "close_time": "22:00",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-PHK-174",
@@ -7720,7 +11420,22 @@
   "confidence": "HIGH",
   "community": null,
   "communitySlug": null,
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "moderate",
+  "contact_method": {
+   "type": "phone",
+   "value": "083 181 5923"
+  },
+  "opening_hours": {
+   "open_time": "16:00",
+   "close_time": "23:00",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-OLDTOWN-175",
@@ -7756,7 +11471,22 @@
   "confidence": "HIGH",
   "community": "ชุมชนย่านเมืองเก่าภูเก็ต",
   "communitySlug": "old-town",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 20,
+  "estimated_visit_duration_max": 45,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "076 212 196"
+  },
+  "opening_hours": {
+   "open_time": "05:00",
+   "close_time": "10:30",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-PHK-176",
@@ -7784,7 +11514,22 @@
   "confidence": "HIGH",
   "community": null,
   "communitySlug": null,
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "093 586 1492"
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-OLDTOWN-177",
@@ -7820,7 +11565,22 @@
   "confidence": "HIGH",
   "community": "ชุมชนย่านเมืองเก่าภูเก็ต",
   "communitySlug": "old-town",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 20,
+  "estimated_visit_duration_max": 45,
+  "wheelchair_accessibility": "partial",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "076 219 622"
+  },
+  "opening_hours": {
+   "open_time": "08:00",
+   "close_time": "17:30",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-OLDTOWN-178",
@@ -7856,7 +11616,22 @@
   "confidence": "HIGH",
   "community": "ชุมชนย่านเมืองเก่าภูเก็ต",
   "communitySlug": "old-town",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 20,
+  "estimated_visit_duration_max": 45,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "conditional",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "095 076 0099"
+  },
+  "opening_hours": {
+   "open_time": "07:00",
+   "close_time": "18:00",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-PHK-179",
@@ -7892,7 +11667,22 @@
   "confidence": "HIGH",
   "community": null,
   "communitySlug": null,
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": "10:00",
+   "close_time": "20:30",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-PHK-180",
@@ -7928,7 +11718,24 @@
   "confidence": "HIGH",
   "community": null,
   "communitySlug": null,
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "partial",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "094 642 6916"
+  },
+  "opening_hours": {
+   "open_time": "10:00",
+   "close_time": "20:30",
+   "closed_days": [
+    "tuesday"
+   ]
+  }
  },
  {
   "id": "OSM-PHK-181",
@@ -7964,7 +11771,24 @@
   "confidence": "HIGH",
   "community": null,
   "communitySlug": null,
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "089 874 5541"
+  },
+  "opening_hours": {
+   "open_time": "07:00",
+   "close_time": "14:00",
+   "closed_days": [
+    "monday"
+   ]
+  }
  },
  {
   "id": "OSM-OLDTOWN-182",
@@ -8000,7 +11824,22 @@
   "confidence": "HIGH",
   "community": "ชุมชนย่านเมืองเก่าภูเก็ต",
   "communitySlug": "old-town",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "moderate",
+  "contact_method": {
+   "type": "phone",
+   "value": "081 892 6315"
+  },
+  "opening_hours": {
+   "open_time": "11:00",
+   "close_time": "22:00",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-OLDTOWN-183",
@@ -8036,7 +11875,22 @@
   "confidence": "HIGH",
   "community": "ชุมชนย่านเมืองเก่าภูเก็ต",
   "communitySlug": "old-town",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 120,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "088 821 9432"
+  },
+  "opening_hours": {
+   "open_time": "09:00",
+   "close_time": "22:00",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-OLDTOWN-184",
@@ -8072,7 +11926,22 @@
   "confidence": "HIGH",
   "community": "ชุมชนย่านเมืองเก่าภูเก็ต",
   "communitySlug": "old-town",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "moderate",
+  "contact_method": {
+   "type": "phone",
+   "value": "099 312 5552"
+  },
+  "opening_hours": {
+   "open_time": "07:00",
+   "close_time": "21:00",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-BANKIAN-185",
@@ -8108,7 +11977,24 @@
   "confidence": "HIGH",
   "community": "ชุมชนบ้านเคียน",
   "communitySlug": "ban-kian",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "budget",
+  "contact_method": {
+   "type": "phone",
+   "value": "087 270 4826"
+  },
+  "opening_hours": {
+   "open_time": "07:00",
+   "close_time": "16:00",
+   "closed_days": [
+    "thursday"
+   ]
+  }
  },
  {
   "id": "OSM-OLDTOWN-186",
@@ -8144,7 +12030,24 @@
   "confidence": "HIGH",
   "community": "ชุมชนย่านเมืองเก่าภูเก็ต",
   "communitySlug": "old-town",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "partial",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "063 550 9656"
+  },
+  "opening_hours": {
+   "open_time": "16:00",
+   "close_time": "00:00",
+   "closed_days": [
+    "wednesday"
+   ]
+  }
  },
  {
   "id": "OSM-OLDTOWN-187",
@@ -8180,7 +12083,24 @@
   "confidence": "HIGH",
   "community": "ชุมชนย่านเมืองเก่าภูเก็ต",
   "communitySlug": "old-town",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": "16:00",
+   "close_time": "22:00",
+   "closed_days": [
+    "sunday"
+   ]
+  }
  },
  {
   "id": "OSM-OLDTOWN-188",
@@ -8208,7 +12128,22 @@
   "confidence": "HIGH",
   "community": "ชุมชนย่านเมืองเก่าภูเก็ต",
   "communitySlug": "old-town",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-OLDTOWN-189",
@@ -8244,7 +12179,22 @@
   "confidence": "HIGH",
   "community": "ชุมชนย่านเมืองเก่าภูเก็ต",
   "communitySlug": "old-town",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "partial",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": "10:00",
+   "close_time": "20:00",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-PHK-190",
@@ -8280,7 +12230,22 @@
   "confidence": "HIGH",
   "community": null,
   "communitySlug": null,
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "081 719 4880"
+  },
+  "opening_hours": {
+   "open_time": "11:30",
+   "close_time": "22:00",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-OLDTOWN-191",
@@ -8316,7 +12281,24 @@
   "confidence": "HIGH",
   "community": "ชุมชนย่านเมืองเก่าภูเก็ต",
   "communitySlug": "old-town",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "088 959 4949"
+  },
+  "opening_hours": {
+   "open_time": "11:00",
+   "close_time": "21:00",
+   "closed_days": [
+    "thursday"
+   ]
+  }
  },
  {
   "id": "OSM-PHK-192",
@@ -8352,7 +12334,22 @@
   "confidence": "HIGH",
   "community": null,
   "communitySlug": null,
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "budget",
+  "contact_method": {
+   "type": "phone",
+   "value": "095 421 4000"
+  },
+  "opening_hours": {
+   "open_time": "06:00",
+   "close_time": "13:00",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-OLDTOWN-193",
@@ -8388,7 +12385,30 @@
   "confidence": "HIGH",
   "community": "ชุมชนย่านเมืองเก่าภูเก็ต",
   "communitySlug": "old-town",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 20,
+  "estimated_visit_duration_max": 45,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": [
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+    "sunday"
+   ]
+  }
  },
  {
   "id": "OSM-OLDTOWN-194",
@@ -8424,7 +12444,24 @@
   "confidence": "HIGH",
   "community": "ชุมชนย่านเมืองเก่าภูเก็ต",
   "communitySlug": "old-town",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "conditional",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "093 593 6495"
+  },
+  "opening_hours": {
+   "open_time": "10:00",
+   "close_time": "20:00",
+   "closed_days": [
+    "tuesday"
+   ]
+  }
  },
  {
   "id": "OSM-OLDTOWN-195",
@@ -8452,7 +12489,22 @@
   "confidence": "HIGH",
   "community": "ชุมชนย่านเมืองเก่าภูเก็ต",
   "communitySlug": "old-town",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 20,
+  "estimated_visit_duration_max": 45,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "conditional",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": null,
+   "close_time": null,
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-OLDTOWN-196",
@@ -8488,7 +12540,24 @@
   "confidence": "HIGH",
   "community": "ชุมชนย่านเมืองเก่าภูเก็ต",
   "communitySlug": "old-town",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 30,
+  "estimated_visit_duration_max": 60,
+  "wheelchair_accessibility": "partial",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "081 108 9894"
+  },
+  "opening_hours": {
+   "open_time": "09:00",
+   "close_time": "20:00",
+   "closed_days": [
+    "sunday"
+   ]
+  }
  },
  {
   "id": "OSM-OLDTOWN-197",
@@ -8524,7 +12593,24 @@
   "confidence": "HIGH",
   "community": "ชุมชนย่านเมืองเก่าภูเก็ต",
   "communitySlug": "old-town",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "full",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "091 821 0405"
+  },
+  "opening_hours": {
+   "open_time": "10:00",
+   "close_time": "23:30",
+   "closed_days": [
+    "monday"
+   ]
+  }
  },
  {
   "id": "OSM-PHK-198",
@@ -8560,7 +12646,22 @@
   "confidence": "HIGH",
   "community": null,
   "communitySlug": null,
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "unknown",
+  "elderly_suitability": "suitable",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "none",
+   "value": ""
+  },
+  "opening_hours": {
+   "open_time": "16:00",
+   "close_time": "00:00",
+   "closed_days": []
+  }
  },
  {
   "id": "OSM-OLDTOWN-199",
@@ -8596,6 +12697,21 @@
   "confidence": "HIGH",
   "community": "ชุมชนย่านเมืองเก่าภูเก็ต",
   "communitySlug": "old-town",
-  "source": "osm_bulk"
+  "source": "osm_bulk",
+  "estimated_visit_duration_min": 60,
+  "estimated_visit_duration_max": 90,
+  "wheelchair_accessibility": "partial",
+  "elderly_suitability": "unknown",
+  "verification_status": "unverified",
+  "price_range": "unknown",
+  "contact_method": {
+   "type": "phone",
+   "value": "093 289 1559"
+  },
+  "opening_hours": {
+   "open_time": "10:00",
+   "close_time": "20:00",
+   "closed_days": []
+  }
  }
 ]
