@@ -33,6 +33,9 @@ COMM = {"kathu": (7.911, 98.332, "ชุมชนกะทู้"), "koh-maprao"
         "tha-chatchai": (8.185, 98.303, "ชุมชนบ้านท่าฉัตรชัย"), "bang-tao": (7.998, 98.296, "ชุมชนบ้านบางเทา"),
         "bang-rong": (8.020, 98.420, "ชุมชนบ้านบางโรง"), "ban-sakhu": (8.098, 98.312, "ชุมชนบ้านสาคู"),
         "old-town": (7.884, 98.388, "ชุมชนย่านเมืองเก่าภูเก็ต"), "cape-panwa": (7.807, 98.403, "ชุมชนบ้านแหลมพันวา")}
+AREA_BY_SLUG = {"kathu": "Kathu", "koh-maprao": "Koh Maprao", "kamala": "Kamala", "ban-kian": "Thalang",
+        "tha-chatchai": "Mai Khao (Thalang)", "bang-tao": "Bang Tao / Cherng Talay", "bang-rong": "Pa Khlok",
+        "ban-sakhu": "Thalang", "old-town": "Old Town", "cape-panwa": "Cape Panwa"}
 thai = lambda s: bool(re.search(r"[ก-๙]", s or ""))
 def norm(s): return re.sub(r"[^a-z0-9ก-๙]", "", (s or "").lower())
 def hsh(s):
@@ -104,7 +107,7 @@ for c in pool:
     oh = g.get("regularOpeningHours", {})
     ph = photo_uri(g["photos"][0]["name"])
     new.append({"id": pid, "name": g["displayName"]["text"], "seedName": c["name"], "category": appcat,
-        "emo": emo, "itemType": itype, "area": (thname and COMM[slug][0]) or "Phuket",
+        "emo": emo, "itemType": itype, "area": AREA_BY_SLUG.get(slug, "Phuket"),
         "rating": g.get("rating"), "reviews": g.get("userRatingCount"), "price": PRICE.get(g.get("priceLevel"), ""),
         "openNow": g.get("currentOpeningHours", {}).get("openNow"), "hours": oh.get("weekdayDescriptions", []),
         "lat": g["location"]["latitude"], "lng": g["location"]["longitude"], "address": g.get("formattedAddress", ""),

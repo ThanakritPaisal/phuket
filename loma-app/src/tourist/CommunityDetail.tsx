@@ -2,6 +2,7 @@ import { community, commReady, READINESS_LEVELS } from "../v2data";
 import type { Community } from "../v2data";
 import Icon from "../components/Icon";
 import { LomaBadges } from "../components/AiScorePanel";
+import RealMap, { type MapPin } from "../components/RealMap";
 import { communityMembers } from "../activeAccount";
 import { trackEvent } from "../impact";
 
@@ -68,6 +69,25 @@ export default function CommunityDetail({
         <p style={{ fontSize: 14, color: "var(--ink-2)", marginTop: 14, lineHeight: 1.6 }}>
           {c.about}
         </p>
+
+        {c.lat != null && c.lng != null && (
+          <>
+            <div className="sec-h">Where it is</div>
+            <div className="mapbox" style={{ height: 180, borderRadius: 12, overflow: "hidden" }}>
+              <RealMap
+                you={{ lat: c.lat, lng: c.lng }}
+                pins={members
+                  .filter((m) => m.lat != null && m.lng != null)
+                  .map((m): MapPin => ({ id: m.id, lat: m.lat, lng: m.lng, emoji: m.emo }))}
+                interactive={false}
+              />
+            </div>
+            <div style={{ fontSize: 11, color: "var(--muted)", marginTop: 6 }}>
+              📍 Community centre (median of its {members.length} member businesses) · pins are the
+              members themselves.
+            </div>
+          </>
+        )}
 
         <div className="sec-h">What you'll do</div>
         <div style={{ marginTop: 8 }}>

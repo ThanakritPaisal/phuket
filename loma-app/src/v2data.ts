@@ -21,6 +21,8 @@ export interface Community {
   duration: string;
   schedule: string[];
   phone: string;
+  lat: number | null; // median of member businesses' coordinates
+  lng: number | null;
 }
 export interface PartnerStat {
   name: string;
