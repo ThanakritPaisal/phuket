@@ -86,8 +86,13 @@
 }
 .btn-coral:hover { background: var(--accent-d); }
 
-/* anti-pay-to-win reassurance footer */
-.modehint {
+/* anti-pay-to-win reassurance footer + provider hint boxes.
+   NOTE: `.modehint` is ALSO defined as `display:flex` in staff/impact.css, and this
+   codebase has no CSS scoping — that flex rule leaks in and shatters multi-line
+   paragraphs (each text node / <b> becomes a flex item). Scope under .prov-shell so
+   provider hints stay block paragraphs regardless of stylesheet load order. */
+.prov-shell .modehint {
+  display: block;
   font-size: 11.5px;
   color: var(--ink-2);
   line-height: 1.55;

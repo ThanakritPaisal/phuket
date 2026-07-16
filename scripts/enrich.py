@@ -23,6 +23,10 @@ DETAIL_FIELDS = ",".join("places." + f for f in [
     "regularOpeningHours.weekdayDescriptions", "nationalPhoneNumber",
     "websiteUri", "googleMapsUri", "businessStatus", "primaryTypeDisplayName",
     "editorialSummary", "photos",
+    # Deep-link bundle (Places API New): directionsUri / reviewsUri / photosUri /
+    # writeAReviewUri / placeUri. The DB write assembles these into the `links` object
+    # (see loma-app/src/types.ts ProviderLinks). Google has NO social/booking link field.
+    "googleMapsLinks",
 ])
 
 def post(url, body, field_mask):

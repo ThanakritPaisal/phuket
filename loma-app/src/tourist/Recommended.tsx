@@ -8,8 +8,9 @@ import type { Pick } from "../picks";
 import { trackEvent } from "../impact";
 import Icon from "../components/Icon";
 import TourCard from "./TourCard";
+import { BigCommCard } from "./BigCard";
 import Detail from "./Detail";
-import CommunityDetail, { ReadinessBadge } from "./CommunityDetail";
+import CommunityDetail from "./CommunityDetail";
 import type { TouristTab } from "./TabBar";
 
 type View = { k: "list" } | { k: "prov"; id: string } | { k: "comm"; id: string };
@@ -40,61 +41,6 @@ function resolvePicks(): { provs: Pick[]; comms: Community[]; assisted: boolean 
     comms: [],
     assisted: false,
   };
-}
-
-function CommRecCard({
-  c,
-  onOpen,
-}: {
-  c: Community;
-  onOpen: (id: string) => void;
-}) {
-  const tel = c.phone.replace(/[^0-9]/g, "");
-  return (
-    <div className="pcard" style={{ marginBottom: 12 }}>
-      <div
-        className="ph"
-        style={c.img ? { backgroundImage: `url(${c.img})` } : undefined}
-        onClick={() => onOpen(c.id)}
-      >
-        {!c.img && <div className="ph-emo">{c.emo}</div>}
-        <div className="ph-badges">
-          <span className="badge b-pick">🛶 Community Experience</span>
-          <ReadinessBadge c={c} />
-        </div>
-      </div>
-      <div className="body">
-        <div className="ttl">
-          <h3 onClick={() => onOpen(c.id)}>{c.name}</h3>
-        </div>
-        <div className="meta">
-          📍 {c.area} · {c.duration} · from {c.priceFrom.split("/")[0].split("·")[0].trim()}
-        </div>
-        <div className="aibox">
-          <div className="lab">
-            <Icon name="spark" size={12} /> Why your hosts picked this
-          </div>
-          <p>
-            {c.about.split(". ")[0]}. Run by the community itself — the money stays
-            in the village.
-          </p>
-        </div>
-        <div className="t-plan">📞 Planned experience — contact the community to confirm availability</div>
-        <div className="cta2">
-          <a
-            className="btn btn-primary btn-sm"
-            href={`tel:${tel}`}
-            onClick={() => trackEvent("community_inquiry_clicked", { community_id: c.id })}
-          >
-            <Icon name="phone" size={16} /> Contact Community
-          </a>
-          <button className="btn btn-line btn-sm" onClick={() => onOpen(c.id)}>
-            <Icon name="list" size={16} /> See programme
-          </button>
-        </div>
-      </div>
-    </div>
-  );
 }
 
 // "Recommended" — the QR landing. Shows the staff-selected picks first, each with
@@ -160,7 +106,7 @@ export default function Recommended({ onGoTab }: { onGoTab: (t: TouristTab) => v
               <i>· plan ahead — contact before visiting</i>
             </div>
             {comms.map((c) => (
-              <CommRecCard key={c.id} c={c} onOpen={(id) => setView({ k: "comm", id })} />
+              <BigCommCard key={c.id} c={c} onOpen={(id) => setView({ k: "comm", id })} />
             ))}
           </>
         )}

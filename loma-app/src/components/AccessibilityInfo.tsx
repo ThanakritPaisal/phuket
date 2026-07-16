@@ -31,10 +31,26 @@ function Row({ icon, text, tone }: { icon: string; text: string; tone: string })
   );
 }
 
+// Setting shown only when known (unknown → omitted, never "no").
+const SETTING: Record<string, [string, string] | null> = {
+  indoor: ["Indoor — good in the rain", "ok"],
+  mixed: ["Indoor & outdoor seating", "ok"],
+  outdoor: ["Outdoor / open-air", "muted"],
+  unknown: null,
+};
+// Dietary tags are POSITIVE-only: we show a tag when confirmed; absence is never "no".
+const DIET: Record<string, [string, string]> = {
+  vegetarian: ["🌱", "Vegetarian options"],
+  vegan: ["🌿", "Vegan options"],
+  halal: ["☪", "Halal"],
+};
+
 export default function AccessibilityInfo({ p }: { p: Provider }) {
   const wheel = p.wheelchair_accessibility ?? "unknown";
   const eld = p.elderly_suitability ?? "unknown";
   const verif = p.verification_status ?? "unverified";
+  const setting = SETTING[p.setting ?? "unknown"];
+  const diet = p.dietary ?? [];
   const dur =
     p.estimated_visit_duration_min && p.estimated_visit_duration_max
       ? `≈ ${p.estimated_visit_duration_min}–${p.estimated_visit_duration_max} min at the venue`
@@ -50,6 +66,10 @@ export default function AccessibilityInfo({ p }: { p: Provider }) {
         }}
       >
         {dur && <Row icon="⏱️" text={dur} tone="muted" />}
+        {setting && <Row icon="☂️" text={setting[0]} tone={setting[1]} />}
+        {diet.map((d) => (
+          <Row key={d} icon={DIET[d][0]} text={DIET[d][1]} tone="ok" />
+        ))}
         <Row icon="♿" text={WHEELCHAIR[wheel][0]} tone={WHEELCHAIR[wheel][1]} />
         <Row icon="🧓" text={ELDERLY[eld][0]} tone={ELDERLY[eld][1]} />
         <div style={{ fontSize: 11, color: "var(--muted)", marginTop: 3, borderTop: "1px solid var(--line-2)", paddingTop: 6 }}>

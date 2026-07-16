@@ -5,6 +5,7 @@
 // survivors are ranked by a weighted score; every result carries plain-language reasons.
 import type { RealAccount } from "./types";
 import { activePicks, getActiveAccount } from "./activeAccount";
+import { rainyOk } from "./attributes";
 import type { Pick } from "./picks";
 
 export interface MatchRequest {
@@ -12,6 +13,9 @@ export interface MatchRequest {
   price_range?: "budget" | "moderate" | "premium" | null;
   wheelchair_required?: boolean;
   elderly_friendly?: boolean;
+  vegetarian_required?: boolean; // only confirmed-vegetarian places
+  halal_required?: boolean; // only confirmed-halal places
+  indoor_preferred?: boolean; // rainy day: only indoor / covered
   open_now?: boolean;
   max_minutes?: number | null; // total time budget incl. travel both ways
 }
@@ -32,12 +36,15 @@ export interface MatchOutcome {
 // spec category token -> our catalog category string
 const CAT_MAP: Record<string, string> = {
   local_food: "Local Food",
-  cafe_dessert: "Local Food",
+  seafood: "Seafood",
+  street_food: "Street Food & Noodles",
+  cafe_dessert: "Café & Dessert",
   massage_spa: "Massage & Wellness",
   wellness: "Massage & Wellness",
   souvenir_craft: "Souvenir & Local Product",
   local_product: "Souvenir & Local Product",
   community_experience: "Community Experience",
+  boat_sea: "Boat / Sea",
 };
 const BUFFER = 15;
 
@@ -67,6 +74,10 @@ export function matchProviders(req: MatchRequest, account?: RealAccount): MatchO
     }
     if (req.price_range === "budget" && p.priceRange === "premium") { bump("over budget"); continue; }
     if (req.price_range === "moderate" && p.priceRange === "premium") { bump("over budget"); continue; }
+    // Dietary + setting: "unknown" ≠ "no", so a required tag keeps only CONFIRMED places.
+    if (req.vegetarian_required && !p.dietary.includes("vegetarian")) { bump("vegetarian not confirmed"); continue; }
+    if (req.halal_required && !p.dietary.includes("halal")) { bump("halal not confirmed"); continue; }
+    if (req.indoor_preferred && !rainyOk(p.setting, p.cat)) { bump("outdoor — not rainy-day friendly"); continue; }
     const total = totalMinutes(p);
     if (req.max_minutes && total > req.max_minutes) { bump("won't fit the time window"); continue; }
 

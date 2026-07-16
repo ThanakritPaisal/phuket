@@ -4,6 +4,7 @@ import Icon from "../components/Icon";
 import { operator } from "../mock";
 import { activePick, activePicks } from "../activeAccount";
 import { CAT_EMO, type Pick } from "../picks";
+import { rainyOk } from "../attributes";
 import type { RecList } from "../recommendations";
 import type { Account, CatalogProvider, RealAccount } from "../types";
 
@@ -115,30 +116,53 @@ export const AREA_XY: Record<string, [number, number]> = {
 };
 export const AREAS = Object.keys(AREA_XY);
 
+/** "Around this property" radius, in km, measured from the signed-in partner. */
+export const PROPERTY_RADIUS_KM = 5;
+
+/**
+ * Official subdistricts (tambon) that actually have providers, with counts — powers the
+ * "Somewhere else" picker. Derived from real data, so a chip can never be a dead end
+ * (unlike the old hardcoded tourist-zone list, where "Nai Yang" matched nothing).
+ */
+export function tambonsWithCounts(): { tambon: string; count: number }[] {
+  const counts = new Map<string, number>();
+  for (const p of activePicks()) {
+    if (p.tambon) counts.set(p.tambon, (counts.get(p.tambon) ?? 0) + 1);
+  }
+  return [...counts.entries()]
+    .map(([tambon, count]) => ({ tambon, count }))
+    .sort((a, b) => b.count - a.count || a.tambon.localeCompare(b.tambon));
+}
+
+// Quick-intent chips, aligned to the canonical category taxonomy (src/categories.ts).
+// Café now targets the real "Café & Dessert" category, Boat & Sea is added, and the
+// unbacked "Family Friendly" chip (no data signal ever existed) is removed.
 export const INTENTS = [
   "Local Food 🍜",
-  "Massage & Spa 💆",
-  "Local Experience 🛶",
+  "Seafood 🦐",
+  "Street Food 🍲",
   "Café ☕",
+  "Massage & Spa 💆",
   "Souvenir 🎁",
+  "Local Experience 🛶",
+  "Boat & Sea ⛵",
   "Rainy Day 🌧",
-  "Family Friendly 👨‍👩‍👧",
   "Open Now 🟢",
 ];
 
 const INTENT_MAP: Record<string, Partial<Filter>> = {
   "Local Food": { cat: "Local Food" },
+  Seafood: { cat: "Seafood" },
+  "Street Food": { cat: "Street Food & Noodles" },
+  Café: { cat: "Café & Dessert" },
   "Massage & Spa": { cat: "Massage & Wellness" },
-  "Local Experience": { cat: "Community Experience" },
-  Café: { cat: "Café" },
   Souvenir: { cat: "Souvenir & Local Product" },
+  "Local Experience": { cat: "Community Experience" },
+  "Boat & Sea": { cat: "Boat / Sea" },
   "Rainy Day": { rainy: true },
-  "Family Friendly": { family: true },
   "Open Now": { openNow: true },
 };
 
-// categories used to approximate rainy / half-day (source data has no weather/duration field)
-const INDOOR_CATS = ["Massage & Wellness", "Café", "Souvenir & Local Product", "Cooking Class"];
 const EXPERIENCE_CATS = [
   "Community Experience",
   "Cooking Class",
@@ -199,17 +223,21 @@ export function filterCatalog(base: Filter, opts?: FilterOpts): CatalogProvider[
   if (f.cat) list = list.filter((o) => o.cat === f.cat);
   if (f.cats && f.cats.length) list = list.filter((o) => f.cats!.includes(o.cat));
   if (f.family) list = list.filter((o) => (o.bestFor || []).some((t) => /famil|kid/i.test(t)));
-  if (f.rainy) list = list.filter((o) => INDOOR_CATS.includes(o.cat));
+  if (f.rainy) list = list.filter((o) => rainyOk((o as Pick).setting, o.cat));
   if (f.halfday) list = list.filter((o) => EXPERIENCE_CATS.includes(o.cat));
   if (f.openNow) list = list.filter((o) => o.open);
   if (f.maxMin) list = list.filter((o) => distMin(o) <= f.maxMin!);
   if (f.budget === "low") list = list.filter((o) => o.price === "฿");
   if (f.budget === "low-med") list = list.filter((o) => o.price === "฿" || o.price === "฿฿");
-  if (f.place === "elsewhere" && f.destArea) {
-    const m = list.filter((o) =>
-      String(o.area).toLowerCase().includes(f.destArea!.toLowerCase())
-    );
-    if (m.length) list = m;
+  // WHERE?
+  //  "Around this property" = a real radius from the signed-in property.
+  //  "Somewhere else"       = the whole island, narrowed to one official subdistrict.
+  // NB: no silent fallback — if a subdistrict has no matches we return an empty list
+  // rather than quietly showing the entire catalog (which used to happen).
+  if (f.place === "property") {
+    list = list.filter((o) => (o as Pick).km <= PROPERTY_RADIUS_KM);
+  } else if (f.place === "elsewhere" && f.destArea) {
+    list = list.filter((o) => (o as Pick).tambon === f.destArea);
   }
   const S: Record<string, (a: CatalogProvider, b: CatalogProvider) => number> = {
     match: (a, b) => (b.loma_score || b.quality) - (a.loma_score || a.quality),

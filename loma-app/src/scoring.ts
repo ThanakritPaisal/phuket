@@ -13,6 +13,7 @@ export type SourceType =
   | "hotel_nominated"
   | "community_nominated"
   | "self_registered"
+  | "directory_listed"
   | "admin_added";
 
 export type ProviderStatus =
@@ -115,6 +116,7 @@ const SOURCE_TYPES: SourceType[] = [
   "hotel_nominated",
   "community_nominated",
   "self_registered",
+  "directory_listed",
   "admin_added",
 ];
 
@@ -123,6 +125,7 @@ export const SRC_LABEL: Record<SourceType, string> = {
   hotel_nominated: "🏨 Hotel-nominated",
   community_nominated: "🌾 Community-nominated",
   self_registered: "✍️ Self-registered",
+  directory_listed: "🏛 Official directory",
   admin_added: "🛡 Admin-added",
 };
 
@@ -269,6 +272,7 @@ const SRC_EVIDENCE: Record<SourceType, LocalityEvidence> = {
   hotel_nominated: { signal: "Nominated by a hotel partner", source: "hotel", strength: "strong" },
   admin_added: { signal: "Added by a LOMA operator", source: "loma", strength: "strong" },
   self_registered: { signal: "Self-registered by the business", source: "provider", strength: "medium" },
+  directory_listed: { signal: "Listed in an official tourism directory (TAT)", source: "gov_directory", strength: "medium" },
   ai_discovered: { signal: "Discovered from public data (Google Maps / OSM)", source: "public_data", strength: "weak" },
 };
 

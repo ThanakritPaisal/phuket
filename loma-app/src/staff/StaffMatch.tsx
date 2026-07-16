@@ -57,6 +57,10 @@ export default function StaffMatch() {
       price_range: parsed.price_range ?? null,
       wheelchair_required: !!parsed.wheelchair_required,
       elderly_friendly: !!parsed.elderly_friendly,
+      // Populated once the /nl-parse Gemini prompt is extended to emit these.
+      vegetarian_required: !!parsed.vegetarian_required,
+      halal_required: !!parsed.halal_required,
+      indoor_preferred: !!parsed.indoor_preferred,
       open_now: parsed.open_now ?? true,
       max_minutes: parsed.max_minutes ?? 120,
     };
@@ -104,6 +108,9 @@ export default function StaffMatch() {
         <button className={`chip ${req.price_range === "budget" ? "on" : ""}`} onClick={() => patch({ price_range: req.price_range === "budget" ? null : "budget" })}>💸 Affordable</button>
         <button className={`chip ${req.wheelchair_required ? "on" : ""}`} onClick={() => patch({ wheelchair_required: !req.wheelchair_required })}>♿ Wheelchair</button>
         <button className={`chip ${req.elderly_friendly ? "on" : ""}`} onClick={() => patch({ elderly_friendly: !req.elderly_friendly })}>🧓 Elderly-friendly</button>
+        <button className={`chip ${req.vegetarian_required ? "on" : ""}`} onClick={() => patch({ vegetarian_required: !req.vegetarian_required })}>🌱 Vegetarian</button>
+        <button className={`chip ${req.halal_required ? "on" : ""}`} onClick={() => patch({ halal_required: !req.halal_required })}>☪ Halal</button>
+        <button className={`chip ${req.indoor_preferred ? "on" : ""}`} onClick={() => patch({ indoor_preferred: !req.indoor_preferred })}>🌧 Rainy-day</button>
         <button className={`chip ${req.open_now ? "on" : ""}`} onClick={() => patch({ open_now: !req.open_now })}>🟢 Open now</button>
         <button className={`chip ${req.max_minutes === 120 ? "on" : ""}`} onClick={() => patch({ max_minutes: req.max_minutes === 120 ? null : 120 })}>⏱ ≤ 2 hours</button>
       </div>

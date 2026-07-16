@@ -69,12 +69,35 @@ export default function StaffApp() {
   const [curList, setCurList] = useState<RecList | null>(null);
   const [modal, setModal] = useState<Modal>(null);
   const [toastMsg, setToastMsg] = useState("");
+  // Phone vs. tablet/desktop ("desk") console — self-contained to the staff shell.
+  const [view, setView] = useState<"phone" | "desk">("phone");
 
   const toast = (msg: string) => {
     setToastMsg(msg);
     window.clearTimeout((toast as unknown as { _t?: number })._t);
     (toast as unknown as { _t?: number })._t = window.setTimeout(() => setToastMsg(""), 1900);
   };
+
+  const changeView = (v: "phone" | "desk") => {
+    setView(v);
+    toast(
+      v === "desk"
+        ? "💻 Tablet / desktop console — what the front desk actually uses"
+        : "📱 Phone view"
+    );
+  };
+  const ViewSwitch = (
+    <div className="viewbar">
+      <div className="viewsw">
+        <button className={view === "phone" ? "on" : ""} onClick={() => changeView("phone")}>
+          📱 Phone
+        </button>
+        <button className={view === "desk" ? "on" : ""} onClick={() => changeView("desk")}>
+          💻 Tablet
+        </button>
+      </div>
+    </div>
+  );
 
   const signIn = (a: Account) => {
     // Distances are computed from the signed-in property, so tell the picks engine
@@ -208,11 +231,14 @@ export default function StaffApp() {
 
   return (
     <StaffProvider value={ctx}>
-      {screens[screen]}
-      {modal?.kind === "share" && <ShareOne id={modal.id} />}
-      {modal?.kind === "shareset" && <ShareSet />}
-      {modal?.kind === "counterqr" && <CounterQR />}
-      {toastMsg && <div className="staff-toast">{toastMsg}</div>}
+      <div className={`staff-shell${view === "desk" ? " desk" : ""}`}>
+        {ViewSwitch}
+        {screens[screen]}
+        {modal?.kind === "share" && <ShareOne id={modal.id} />}
+        {modal?.kind === "shareset" && <ShareSet />}
+        {modal?.kind === "counterqr" && <CounterQR />}
+        {toastMsg && <div className="staff-toast">{toastMsg}</div>}
+      </div>
     </StaffProvider>
   );
 }

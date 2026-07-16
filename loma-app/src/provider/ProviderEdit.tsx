@@ -100,12 +100,25 @@ export default function ProviderEdit({
   const [photos, setPhotos] = useState(() => !!p.img);
   const [ai, setAi] = useState(() => aiScore(buildInput(p, initial, /English/i.test(p.lang || ""), !!p.img)));
 
+  // TikTok review-clip source (v3 ppEdit): a place link we auto-pull top clips
+  // from, plus up to 3 optional pinned clips. Curates which clips show — never rank.
+  const tiktok = p as { tiktok_place?: string; reviewClips?: string[] };
+  const [tiktokPlace, setTiktokPlace] = useState(() => tiktok.tiktok_place ?? "");
+  const [clips, setClips] = useState<string[]>(() => {
+    const rc = tiktok.reviewClips ?? [];
+    return [rc[0] ?? "", rc[1] ?? "", rc[2] ?? ""];
+  });
+
   const set = (k: EditKey, v: string) => setEdits((e) => ({ ...e, [k]: v }));
 
   const save = () => {
     const before = ai.readiness_score;
     const next = aiScore(buildInput(p, edits, english, photos));
     setAi(next);
+    // Persist the TikTok source in-memory (demo). Empty pins => auto-select from
+    // the place link; these fields do not touch any score.
+    tiktok.tiktok_place = tiktokPlace.trim();
+    tiktok.reviewClips = clips.map((c) => c.trim()).filter(Boolean);
     const d = next.readiness_score - before;
     toast(
       d !== 0
@@ -162,6 +175,42 @@ export default function ProviderEdit({
           )}
         </div>
       ))}
+
+      <div className="h-sec">TikTok reviews (optional)</div>
+      <div className="modehint" style={{ marginBottom: 10 }}>
+        📹 LOMA auto-plays real TikTok clips filmed at your shop on your LOMA card. Paste your
+        TikTok <b>place</b> link and we pull your 3 most-viewed clips automatically — or pin up
+        to 3 specific videos you would rather feature. This only <b>curates</b> which review
+        clips show — it does <b>not</b> buy ranking.
+      </div>
+      <div className="pe-field">
+        <div className="pe-lab">TikTok place link</div>
+        <input
+          className="pp-input sm"
+          value={tiktokPlace}
+          placeholder="https://www.tiktok.com/place/Your-Shop-Phuket-2156..."
+          onChange={(ev) => setTiktokPlace(ev.target.value)}
+        />
+        <div style={{ fontSize: 11, color: "var(--muted)", marginTop: 5 }}>
+          We auto-select the 3 top clips from this location. Leave the pins below empty to use
+          auto-select.
+        </div>
+      </div>
+      <div className="pe-field">
+        <div className="pe-lab">Pin specific clips (optional)</div>
+        {clips.map((c, i) => (
+          <input
+            key={i}
+            className="pp-input sm"
+            value={c}
+            placeholder={`Clip ${i + 1} · https://www.tiktok.com/@user/video/...`}
+            style={{ marginBottom: 8 }}
+            onChange={(ev) =>
+              setClips((prev) => prev.map((x, j) => (j === i ? ev.target.value : x)))
+            }
+          />
+        ))}
+      </div>
 
       <div className="h-sec">Readiness signals</div>
       <div className="pe-switch">

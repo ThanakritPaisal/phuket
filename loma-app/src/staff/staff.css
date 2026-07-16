@@ -120,3 +120,30 @@
 
 /* ---- doc/consent toggle button when active ---- */
 .doc-ok{color:var(--ok)!important;border-color:#BFE6CF!important;background:var(--ok-l)!important}
+
+/* ============================================================
+   TABLET / DESKTOP ("desk") CONSOLE — self-contained to staff.
+   The front desk runs a tablet, not an oversized phone: same screens,
+   a wider frame, a de-distorted single-column layout (compact search,
+   no oversized map, clean card grid). Toggled by the in-shell ViewSwitch.
+   ============================================================ */
+.staff-shell{flex:1;min-height:0;display:flex;flex-direction:column;position:relative}
+.viewbar{flex:none;display:flex;justify-content:flex-end;align-items:center;padding:6px 10px;border-bottom:1px solid var(--line);background:var(--surface-2)}
+.viewsw{display:flex;gap:2px;background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:2px}
+.viewsw button{font-size:11px;font-weight:700;color:var(--muted);padding:4px 10px;border-radius:7px;line-height:1.4}
+.viewsw button.on{background:var(--primary);color:#fff}
+
+/* widen the phone frame only while this persona is in desk mode */
+.phone:has(.staff-shell.desk){width:min(1080px,100%);max-width:100%}
+
+/* de-distort: drop the oversized map, compact the search, centre + tile content */
+.staff-shell.desk .mapbox{display:none}
+.staff-shell.desk .appbar .row1{max-width:1040px;margin:0 auto;width:100%}
+.staff-shell.desk .search{max-width:520px}
+.staff-shell.desk .pad{max-width:1040px;margin:0 auto;width:100%;display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:13px;align-content:start}
+.staff-shell.desk .pad > *:not(.pcard):not(.prow){grid-column:1/-1}
+.staff-shell.desk .pad > .pcard,
+.staff-shell.desk .pad > .prow{margin-bottom:0}
+.staff-shell.desk .stick-cta{max-width:1040px;margin-left:auto;margin-right:auto}
+@media(max-width:1100px){.phone:has(.staff-shell.desk){width:100%}}
+@media(max-width:640px){.staff-shell.desk .pad{grid-template-columns:1fr}}

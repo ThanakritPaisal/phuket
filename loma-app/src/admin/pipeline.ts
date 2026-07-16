@@ -19,6 +19,7 @@ export const SOURCE_TYPES: SourceType[] = [
   "hotel_nominated",
   "community_nominated",
   "self_registered",
+  "directory_listed",
   "admin_added",
 ];
 
@@ -31,6 +32,8 @@ export const SRC_NOTE: Record<SourceType, string> = {
     "A community leader, association or tourism partner put this forward.",
   self_registered:
     "The business or community submitted its own profile / readiness form.",
+  directory_listed:
+    "Listed in an official tourism directory (TAT) — a verified real business, but local ownership still needs confirming.",
   admin_added: "Added directly by a LOMA operator.",
 };
 

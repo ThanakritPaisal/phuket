@@ -3,13 +3,14 @@ import { activePicks } from "../activeAccount";
 import { impactCredits, hotelTier } from "../impact";
 import { useVersion } from "../store";
 import {
-  AREAS,
   INTENTS,
   LocalBadge,
+  PROPERTY_RADIUS_KM,
   Screen,
   bg,
   intentLabel,
   prov,
+  tambonsWithCounts,
   useStaff,
 } from "./helpers";
 import "./impact.css";
@@ -42,6 +43,9 @@ export default function StaffHome() {
   const tier = hotelTier(cr);
   // Real nearest picks for the signed-in property: the first two read as "recently
   // shared", the next two as today's suggestions.
+  // "Somewhere else" chips + the count inside the property radius, both from real data.
+  const tambons = tambonsWithCounts();
+  const nearbyCount = activePicks().filter((p) => p.km <= PROPERTY_RADIUS_KM).length;
   const nearest = activePicks().slice(0, 4).map((p) => p.id);
   const recent = nearest.slice(0, 2);
   const housePicks = nearest.slice(2, 4);
@@ -185,23 +189,26 @@ export default function StaffHome() {
       {f.place === "elsewhere" ? (
         <>
           <div style={{ fontSize: 11, color: "var(--muted)", margin: "8px 0 6px" }}>
-            Where is the tourist, or where are they heading?
+            Where is the tourist, or where are they heading? · pick a subdistrict
           </div>
           <div className="chips">
-            {AREAS.map((ar) => (
+            {tambons.map(({ tambon, count }) => (
               <button
-                key={ar}
-                className={`chip ${f.destArea === ar ? "on" : ""}`}
-                onClick={() => setFilter({ place: "elsewhere", destArea: ar })}
+                key={tambon}
+                className={`chip ${f.destArea === tambon ? "on" : ""}`}
+                onClick={() =>
+                  setFilter({ place: "elsewhere", destArea: f.destArea === tambon ? null : tambon })
+                }
               >
-                📍 {ar}
+                📍 {tambon} · {count}
               </button>
             ))}
           </div>
         </>
       ) : (
         <div style={{ fontSize: 11, color: "var(--muted)", marginTop: 6 }}>
-          Recommends near {partner.name}. Pick “Somewhere else” if the tourist is out, or heading elsewhere.
+          Within {PROPERTY_RADIUS_KM} km of {partner.name} ({nearbyCount} places). Pick “Somewhere
+          else” if the tourist is out, or heading elsewhere.
         </div>
       )}
 

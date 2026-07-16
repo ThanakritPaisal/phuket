@@ -11,7 +11,6 @@ const TABS: { id: Persona; label: string }[] = [
   { id: "staff", label: "Staff" },
   { id: "tourist", label: "Tourist" },
   { id: "provider", label: "Provider" },
-  { id: "community", label: "Community" },
   { id: "admin", label: "Admin" },
 ];
 
@@ -36,6 +35,17 @@ export default function App({ initialPersona }: { initialPersona?: Persona }) {
                 {t.label}
               </button>
             ))}
+            <button
+              type="button"
+              className={
+                persona === "community"
+                  ? "community-link on"
+                  : "community-link"
+              }
+              onClick={() => setPersona("community")}
+            >
+              🌿 Community host?
+            </button>
           </div>
         </div>
       </div>

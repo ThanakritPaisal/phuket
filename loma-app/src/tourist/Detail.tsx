@@ -6,6 +6,8 @@ import { visitCode } from "../qr";
 import QRCode from "../components/QRCode";
 import AiScorePanel, { LomaBadges } from "../components/AiScorePanel";
 import AccessibilityInfo from "../components/AccessibilityInfo";
+import ReviewVideo from "../components/ReviewVideo";
+import SocialRow from "../components/SocialRow";
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
@@ -26,8 +28,10 @@ export default function Detail({
 
   const p = byId(id);
   if (!p) return null;
-  // AI curation scores are property-independent, so any pick carries them.
-  const ai = activePick(id)?.ai;
+  // The scored Pick carries everything the v3 detail blocks need — .ai, .social,
+  // .img, .sum, .rating — relative to the signed-in property.
+  const pick = activePick(id);
+  const ai = pick?.ai;
 
   return (
     <>
@@ -66,6 +70,16 @@ export default function Detail({
 
         {ai && <AiScorePanel ai={ai} />}
 
+        {p.summary && (
+          <div className="why">
+            <div className="lab">About</div>
+            <p>{p.summary}</p>
+          </div>
+        )}
+
+        {/* v3: the TikTok review clip sits right after the "why" pull-quote, before the specs grid. */}
+        {pick && <ReviewVideo pick={pick} />}
+
         <div className="kv">
           <div>
             <div className="k">Area</div>
@@ -84,13 +98,6 @@ export default function Detail({
             <div className="v">{p.reviews ?? "—"}</div>
           </div>
         </div>
-
-        {p.summary && (
-          <div className="why">
-            <div className="lab">About</div>
-            <p>{p.summary}</p>
-          </div>
-        )}
 
         <AccessibilityInfo p={p} />
 
@@ -146,6 +153,9 @@ export default function Detail({
             </div>
           </div>
         </div>
+
+        {/* v3 socialRow — placed before the Get Directions CTA (which lives in the sticky footer). */}
+        {pick && <SocialRow social={pick.social} />}
       </div>
       <div className="stick-cta">
         <button

@@ -9,10 +9,14 @@ import { CATALOG } from "./data";
 import { haversineKm, distLabel, distMinutes, project } from "./geo";
 import { reasonFor, whyLocalFor, bestForFor, scoresFor } from "./copy";
 import { aiScore, type AiScore, type SourceType } from "./scoring";
+import { demoSocial, type SocialLinks } from "./social";
 
 export const CAT_EMO: Record<string, string> = {
   "Community Experience": "🛶",
   "Local Food": "🍜",
+  "Seafood": "🦐",
+  "Street Food & Noodles": "🍲",
+  "Café & Dessert": "☕",
   "Souvenir & Local Product": "🎁",
   "Massage & Wellness": "💆",
   "Boat / Sea": "⛵",
@@ -31,6 +35,49 @@ export interface Pick extends CatalogProvider {
   durationMax: number;
   priceRange: Provider["price_range"];
   verification: Provider["verification_status"];
+  setting: Provider["setting"]; // indoor/outdoor (rainy-day filter)
+  dietary: NonNullable<Provider["dietary"]>; // confirmed dietary tags (vegetarian/halal/…)
+  links: NonNullable<Provider["links"]>; // consolidated URLs (website, maps, deep-links)
+  district: Provider["district"]; // official amphoe
+  tambon: Provider["tambon"]; // official subdistrict — drives the "Somewhere else" picker
+  // Social + TikTok layer (v3): demo-generated socials; provider-editable TikTok source.
+  social?: SocialLinks | null;
+  tiktok_place?: string;
+  reviewClips?: string[];
+}
+
+/**
+ * Map a provider's ingestion `source` to its localness evidence tier.
+ * EXPLICIT allow-list: an unknown/new source falls back to the WEAKEST tier
+ * (`ai_discovered`), never to a strong one — so a new data pull can never silently
+ * mint "Verified Local" badges it hasn't earned. TAT government-directory records
+ * get their own medium `directory_listed` tier; only the CBT registry is strong.
+ */
+export function sourceTypeFor(src?: string): SourceType {
+  switch (src) {
+    case "osm_bulk":
+    case "osm_sample":
+    case "osm":
+      return "ai_discovered"; // weak — public map data
+    case "tat_restaurants":
+    case "tat_spas":
+    case "tat_stores":
+    case "tat":
+      return "directory_listed"; // medium — official tourism directory, not CBT
+    case "hotel_nominated":
+      return "hotel_nominated";
+    case "admin_added":
+      return "admin_added";
+    case "self_registered":
+      return "self_registered";
+    case "cbt_seed":
+    case undefined:
+    case "":
+      // The hand-curated CBT registry seed carries no `source` field.
+      return "community_nominated"; // strong — community-based-tourism registry
+    default:
+      return "ai_discovered"; // unknown provenance → weakest, safe default
+  }
 }
 
 /** Adapt one real provider into the card shape, relative to a partner property. */
@@ -40,11 +87,8 @@ export function toPick(p: Provider, from: RealAccount, isHousePick = false): Pic
   const s = scoresFor(p);
   const xy = project({ lat: p.lat!, lng: p.lng! });
   const hours = p.hours.length ? p.hours[0].replace(/^\w+:\s*/, "") : "See Google Maps";
-  // Real provenance drives localness evidence strength: CBT-seed providers come from
-  // the community-based-tourism registry (strong); OSM-discovered ones are public data (weak).
-  const src = (p as Provider & { source?: string }).source;
-  const sourceType: SourceType =
-    src === "osm_bulk" || src === "osm_sample" ? "ai_discovered" : "community_nominated";
+  // Real provenance drives localness evidence strength (see scoring.ts SRC_EVIDENCE).
+  const sourceType = sourceTypeFor((p as Provider & { source?: string }).source);
 
   const card: CatalogProvider & {
     km: number; minutes: number; lat: number; lng: number; sourceType: SourceType;
@@ -100,6 +144,25 @@ export function toPick(p: Provider, from: RealAccount, isHousePick = false): Pic
     durationMax: p.estimated_visit_duration_max ?? 75,
     priceRange: p.price_range ?? "unknown",
     verification: p.verification_status ?? "unverified",
+    setting: p.setting ?? "unknown",
+    dietary: p.dietary ?? [],
+    district: p.district,
+    tambon: p.tambon,
+    // Consolidate: prefer the structured links object, else fall back to the legacy
+    // top-level website/mapsUrl so downstream reads one place.
+    links: {
+      website: p.links?.website ?? p.website ?? undefined,
+      google_maps: p.links?.google_maps ?? p.mapsUrl ?? undefined,
+      directions: p.links?.directions,
+      reviews: p.links?.reviews,
+      write_review: p.links?.write_review,
+      photos: p.links?.photos,
+      menu: p.links?.menu,
+      booking: p.links?.booking,
+    },
+    social: demoSocial(p.id, p.name, p.category),
+    tiktok_place: (p as Provider & { tiktok_place?: string }).tiktok_place,
+    reviewClips: (p as Provider & { reviewClips?: string[] }).reviewClips,
   };
 }
 

@@ -1,4 +1,7 @@
 import Icon from "../components/Icon";
+import ReviewVideo from "../components/ReviewVideo";
+import SocialRow from "../components/SocialRow";
+import type { Pick } from "../picks";
 import {
   LocalBadge,
   OpenStatus,
@@ -11,7 +14,9 @@ import {
 
 export default function StaffDetail() {
   const { curProv, saved, toggleSave, go, openModal } = useStaff();
-  const p = prov(curProv);
+  // Real picks are `Pick`s carrying .social / TikTok source fields; the mock
+  // fallback lacks them, in which case SocialRow simply renders nothing.
+  const p = prov(curProv) as Pick;
   const isSaved = saved.has(p.id);
   return (
     <div className="scroll">
@@ -45,6 +50,8 @@ export default function StaffDetail() {
             </div>
           </div>
         </div>
+
+        <ReviewVideo pick={p} />
 
         <div className="kv">
           <div>
@@ -119,6 +126,8 @@ export default function StaffDetail() {
           <div className="lab">⚠ Things to note</div>
           {p.note}
         </div>
+
+        <SocialRow social={p.social} />
 
         <div style={{ height: 90 }} />
       </div>

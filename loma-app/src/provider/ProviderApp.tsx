@@ -18,6 +18,8 @@ export default function ProviderApp() {
   const [status, setStatus] = useState("verified");
   const [screen, setScreen] = useState<ProvScreen>("home");
   const [avail, setAvail] = useState(true);
+  // Phone vs. tablet/desktop ("desk") view — self-contained to the provider shell.
+  const [view, setView] = useState<"phone" | "desk">("phone");
 
   const [toastMsg, setToastMsg] = useState("");
   const [toastOn, setToastOn] = useState(false);
@@ -28,6 +30,27 @@ export default function ProviderApp() {
     if (toastTimer.current) clearTimeout(toastTimer.current);
     toastTimer.current = setTimeout(() => setToastOn(false), 1900);
   };
+
+  const changeView = (v: "phone" | "desk") => {
+    setView(v);
+    toast(
+      v === "desk"
+        ? "💻 Tablet / desktop console — what the front desk actually uses"
+        : "📱 Phone view"
+    );
+  };
+  const ViewSwitch = (
+    <div className="viewbar">
+      <div className="viewsw">
+        <button className={view === "phone" ? "on" : ""} onClick={() => changeView("phone")}>
+          📱 Phone
+        </button>
+        <button className={view === "desk" ? "on" : ""} onClick={() => changeView("desk")}>
+          💻 Tablet
+        </button>
+      </div>
+    </div>
+  );
 
   const login = (a: ProviderAccount) => {
     setAcct(a);
@@ -71,7 +94,8 @@ export default function ProviderApp() {
   if (!p) return null;
 
   return (
-    <>
+    <div className={`prov-shell${view === "desk" ? " desk" : ""}`}>
+      {ViewSwitch}
       <div className="scroll" style={{ display: "flex", flexDirection: "column" }}>
         <ProvAppbar p={p} onProfile={() => setScreen("profile")} />
         {screen === "home" && (
@@ -108,6 +132,6 @@ export default function ProviderApp() {
         <ProvTabbar active={screen} onGo={setScreen} />
       </div>
       <div className={`prov-toast${toastOn ? " show" : ""}`}>{toastMsg}</div>
-    </>
+    </div>
   );
 }
