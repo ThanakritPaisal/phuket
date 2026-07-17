@@ -327,7 +327,12 @@ def _thaillm_post(messages: list[dict[str, str]], max_tokens: int, temperature: 
         req = _urlreq.Request(
             _THAILLM_URL,
             data=_json.dumps(payload).encode(),
-            headers={"Content-Type": "application/json", "Authorization": f"Bearer {_THAILLM_KEY}"},
+            headers={
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {_THAILLM_KEY}",
+                # The ThaiLLM gateway 403s the default "Python-urllib/x" UA — send a normal one.
+                "User-Agent": "loma-logging-api/1.0",
+            },
             method="POST",
         )
         with _urlreq.urlopen(req, timeout=45) as r:
