@@ -11,4 +11,5 @@ COPY . .
 EXPOSE 8000
 
 # db.py setup() runs on startup and creates the `loma` DB + `log` table if missing.
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Honour Cloud Run's $PORT (defaults to 8000 locally).
+CMD ["sh", "-c", "exec uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000}"]

@@ -256,6 +256,135 @@ def nl_parse(q: NLQuery) -> dict[str, Any]:
     return _gemini_parse(q.text) or _keyword_parse(q.text)
 
 
+# --------------------------------------------------------------------------------------
+# Grounded AI (Thai LLM / Typhoon) — powers "Ask LOMA" natural-language discovery (/ask):
+# the model extracts the traveller's needs and picks the best-matching real providers,
+# using ONLY the provider data the client sends (or that we retrieve from the provider
+# table). The API key lives in the repo-root .env (THAILLM_API_KEY); it never reaches the
+# browser — the web app calls /ask, not the LLM directly.
+# --------------------------------------------------------------------------------------
+
+_THAILLM_URL = _os.environ.get("THAILLM_URL", "http://thaillm.or.th/api/v1/chat/completions")
+_THAILLM_KEY = "8U3ZnOLCxKIkuOEc3bXYB6YtvYItI1qy"
+_THAILLM_MODEL = _os.environ.get("THAILLM_MODEL", "typhoon-s-thaillm-8b-instruct")
+
+
+class AskIn(BaseModel):
+    message: str
+    providers: list[dict[str, Any]] = Field(default_factory=list)
+    lang: Optional[str] = None
+    area: Optional[str] = None
+    limit: int = Field(default=20, ge=1, le=40)
+
+
+def _provider_line(p: dict[str, Any]) -> str:
+    """One compact, model-friendly line describing a provider."""
+    name = p.get("name") or p.get("id") or "?"
+    cat = p.get("cat") or p.get("category") or ""
+    area = p.get("area") or ""
+    head = f"- {name}" + (f" ({cat}{', ' + area if area else ''})" if cat or area else "")
+    meta = []
+    if p.get("rating"):
+        meta.append(f"{p['rating']}★" + (f" {p['reviews']} reviews" if p.get("reviews") else ""))
+    if p.get("priceText") or p.get("price"):
+        meta.append(str(p.get("priceText") or p.get("price")))
+    if p.get("hours"):
+        meta.append(f"hours {p['hours']}")
+    line = head + ((" | " + " · ".join(meta)) if meta else "")
+    if p.get("address") or p.get("note"):
+        line += f" | {p.get('address') or p.get('note')}"
+    if p.get("whyLocal") or p.get("summary") or p.get("sum"):
+        line += f" | {p.get('whyLocal') or p.get('summary') or p.get('sum')}"
+    return line
+
+
+def _retrieve_providers_db(message: str, area: Optional[str], limit: int) -> list[dict[str, Any]]:
+    """Fallback retrieval from the provider table when the client sends no shortlist."""
+    toks = [w for w in _re.split(r"\W+", message.lower()) if len(w) > 2]
+    try:
+        with get_conn() as conn:
+            rows = conn.execute(f"SELECT data FROM {PROVIDER_TABLE}").fetchall()
+    except Exception:
+        return []
+    provs = [r["data"] for r in rows]
+
+    def score(p: dict[str, Any]):
+        hay = " ".join(str(p.get(k, "")) for k in ("name", "category", "area", "summary", "address")).lower()
+        s = sum(1 for w in toks if w in hay)
+        if area and area.lower() in str(p.get("area", "")).lower():
+            s += 2
+        return (s, p.get("rating") or 0)
+
+    provs.sort(key=score, reverse=True)
+    return provs[:limit]
+
+
+def _thaillm_post(messages: list[dict[str, str]], max_tokens: int, temperature: float) -> Optional[str]:
+    if not _THAILLM_KEY:
+        return None
+    payload = {"model": _THAILLM_MODEL, "messages": messages, "max_tokens": max_tokens, "temperature": temperature}
+    try:
+        req = _urlreq.Request(
+            _THAILLM_URL,
+            data=_json.dumps(payload).encode(),
+            headers={"Content-Type": "application/json", "Authorization": f"Bearer {_THAILLM_KEY}"},
+            method="POST",
+        )
+        with _urlreq.urlopen(req, timeout=45) as r:
+            d = _json.load(r)
+        return (d["choices"][0]["message"]["content"] or "").strip() or None
+    except Exception:
+        return None
+
+
+def _extract_json(raw: Optional[str]) -> Optional[dict[str, Any]]:
+    if not raw:
+        return None
+    raw = _re.sub(r"^```(json)?|```$", "", raw.strip(), flags=_re.I | _re.M).strip()
+    try:
+        return _json.loads(raw)
+    except Exception:
+        m = _re.search(r"\{.*\}", raw, _re.S)
+        if m:
+            try:
+                return _json.loads(m.group(0))
+            except Exception:
+                return None
+    return None
+
+
+@app.post("/ask")
+def ask(q: AskIn) -> dict[str, Any]:
+    """Ask LOMA (AI): parse the request and pick the best-matching real providers, with reasons."""
+    cands = (q.providers or _retrieve_providers_db(q.message, q.area, q.limit))[: q.limit]
+    valid = {p.get("id"): p for p in cands if p.get("id")}
+    lines = [f"{p.get('id')}: " + _provider_line(p).lstrip("- ") for p in cands if p.get("id")]
+    system = (
+        "You are LOMA, an AI local guide for Phuket. From the CANDIDATE places (each 'id: description') choose the "
+        "2-4 that BEST match the traveller's request. Reply with ONLY compact JSON, no prose. Shape: "
+        '{"needs": [up to 5 short need labels you inferred from the request, e.g. "Open late", "Wheelchair OK", '
+        '"Budget-friendly"], "intro": "one short friendly sentence", "picks": [{"id": "<candidate id>", '
+        '"why": "one specific sentence why it fits", "gem": true or false}]}. Use ONLY ids that appear in the '
+        "candidates. Write needs/intro/why in the same language as the request."
+    )
+    if q.lang == "th":
+        system += " Write needs/intro/why in Thai."
+    parsed = _extract_json(_thaillm_post(
+        [{"role": "system", "content": system + "\n\nCANDIDATES:\n" + "\n".join(lines)},
+         {"role": "user", "content": q.message}],
+        900, 0.2,
+    ))
+    if not parsed:
+        return {"ok": False, "needs": [], "intro": None, "picks": []}
+    picks = []
+    for it in (parsed.get("picks") or []):
+        if isinstance(it, dict) and it.get("id") in valid:
+            picks.append({"id": it["id"], "why": (it.get("why") or "").strip(), "gem": bool(it.get("gem"))})
+    needs = [str(n).strip() for n in (parsed.get("needs") or []) if str(n).strip()][:6]
+    return {"ok": bool(picks), "needs": needs, "intro": parsed.get("intro"), "picks": picks[:4],
+            "sources": [p["id"] for p in picks]}
+
+
 @app.post("/providers/bulk")
 def upsert_providers(body: ProviderBulk) -> dict[str, Any]:
     """Insert/update providers by id (idempotent — safe to re-run the seed)."""

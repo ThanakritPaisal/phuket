@@ -1673,6 +1673,9 @@ function screenHome(){
     <div class="h-sec">Recent recommendations</div>
     <div class="prow" data-prov="OTH"><div class="thumb" data-photo="${P('OTH').img}" data-emo="${P('OTH').emo}"></div><div class="info"><h3>Old Town Herbal Massage</h3><div class="m">Shared 2h ago · opened by tourist ✓</div><div class="bd">${localBadge()}<span class="badge b-verified">${I.verified}Verified</span></div></div></div>
     <div class="prow" data-prov="BRT"><div class="thumb" data-photo="${P('BRT').img}" data-emo="${P('BRT').emo}"></div><div class="info"><h3>Baan Rim Talay Local Kitchen</h3><div class="m">Shared yesterday · visit confirmed ✓</div><div class="bd">${localBadge()}<span class="badge b-pick">⭐ Staff pick</span></div></div></div>
+
+    <div class="h-sec">Today's recommended local picks</div>
+    ${miniRow('RFE')}${miniRow('KLD')}
   </div>${staffTabbar()}`;
 }
 function miniRow(id){const p=P(id);return `<div class="prow" data-prov="${id}"><div class="thumb" data-photo="${p.img}" data-emo="${p.emo}"></div><div class="info"><h3>${p.name}</h3><div class="m">${p.cat} · ${p.dist}</div><div class="bd">${localBadge()}${p.pick?'<span class="badge b-pick">⭐ Staff pick</span>':''}</div></div></div>`;}
@@ -3587,11 +3590,13 @@ const ASK_PICKS=[
 function askExample(){return state.lang==='ไทย' ? 'อยากได้ร้านอาหารท้องถิ่นที่เปิดดึก รองรับรถเข็นผู้สูงอายุ ไม่ไกลมาก ราคาไม่แรง' : 'Local restaurant open late, wheelchair accessible for my mom, not far, and not expensive';}
 function askSend(t){ t=(t||'').trim();
   if(!t){const i=document.getElementById('lomaIn'); if(i){i.value=askExample(); i.focus();} return;}
-  state.askQ=t; state.askStage=1; state.askNeeds=null; render();
+  state.askQ=t; state.askStage=1; state.askNeeds=null; state.askPicks=null; state.askIntro=null; state.askErr=false;
+  state.askLoading=(typeof lomaAsk==='function'); render();
+  if(typeof lomaAsk==='function') lomaAsk(t);
 }
 function touristAsk(){
   if(!state.profile && !state.profileSkipped) return touristOnboard();
-  if(state.askStage===1 && !state.askNeeds) state.askNeeds=['Local food','Open late','♿ Wheelchair OK','Not far','Budget-friendly'];
+  if(state.askStage===1 && !state.askNeeds && !state.askLoading) state.askNeeds=['Local food','Open late','♿ Wheelchair OK','Not far','Budget-friendly'];
   const bot=t=>`<div style="display:flex;gap:9px;margin-bottom:13px"><div style="width:30px;height:30px;border-radius:50%;background:var(--primary);display:grid;place-items:center;flex:none"><span style="font-size:12px">✨</span></div><div style="background:var(--surface-2);border-radius:5px 15px 15px 15px;padding:10px 13px;font-size:13.5px;color:var(--ink);line-height:1.5;max-width:84%">${t}</div></div>`;
   const user=t=>`<div style="display:flex;justify-content:flex-end;margin-bottom:13px"><div style="background:var(--primary);color:#fff;border-radius:15px 5px 15px 15px;padding:10px 13px;font-size:13.5px;line-height:1.5;max-width:84%">${t}</div></div>`;
   let body='';
@@ -3603,18 +3608,27 @@ function touristAsk(){
     </div>`;
   } else {
     body+=user(state.askQ);
-    body+=bot(T('Got it — here is what I understood. Tap ✕ to change:'));
-    body+=`<div style="display:flex;flex-wrap:wrap;gap:6px;margin:0 0 13px 39px">${state.askNeeds.map(n=>`<span class="chip" style="display:inline-flex;align-items:center;gap:6px;background:var(--primary-l);color:var(--primary);font-weight:700">${T(n)}<button data-lomarm="${n}" style="opacity:.6;font-size:12px">✕</button></span>`).join('')}</div>`;
-    body+=bot(T('Three verified local places that fit — every baht goes 100% to the owner:'));
-    body+=`<div style="margin:0 0 6px">`+ASK_PICKS.map(x=>{const p=P(x.id); if(!p) return '';
-      return bigCard(p,{sub:T(x.why),gem:x.gem});
+    if(state.askLoading){
+      body+=bot(state.lang==='ไทย'?'กำลังค้นหาร้าน/สถานที่ท้องถิ่นที่ตรงกับคุณ… ✨':'Finding the best local matches for you… ✨');
+    } else if(state.askErr){
+      body+=bot(state.lang==='ไทย'?'ขออภัยค่ะ ตอนนี้เชื่อมต่อผู้ช่วย AI (thaillm) ไม่ได้ กรุณาลองใหม่อีกครั้ง 🙏':'Sorry — I could not reach the AI (thaillm) right now. Please try again. 🙏');
+      body+=`<div style="margin:2px 0 6px 39px"><button class="btn btn-coral" data-lomaretry style="width:auto;padding:10px 18px;font-weight:700">${state.lang==='ไทย'?'ลองอีกครั้ง':'Try again'}</button></div>`;
+    } else {
+    var _askReal=!!(state.askPicks&&state.askPicks.length);
+    var _askItems=_askReal?state.askPicks:ASK_PICKS;
+    body+=bot(state.askIntro||T('Got it — here is what I understood. Tap ✕ to change:'));
+    if((state.askNeeds||[]).length) body+=`<div style="display:flex;flex-wrap:wrap;gap:6px;margin:0 0 13px 39px">${state.askNeeds.map(n=>`<span class="chip" style="display:inline-flex;align-items:center;gap:6px;background:var(--primary-l);color:var(--primary);font-weight:700">${T(n)}<button data-lomarm="${n}" style="opacity:.6;font-size:12px">✕</button></span>`).join('')}</div>`;
+    body+=bot(T('Verified local places that fit — every baht goes 100% to the owner:'));
+    body+=`<div style="margin:0 0 6px">`+_askItems.map(x=>{const p=P(x.id); if(!p) return '';
+      return bigCard(p,{sub:_askReal?x.why:T(x.why),gem:!!x.gem});
     }).join('')+`</div>`;
     body+=`<div style="font-size:11.5px;color:var(--muted);background:var(--surface-2);border-radius:9px;padding:9px 12px;margin:0 0 13px 39px;line-height:1.5">💚 ${T('No ads · no commission · shops never pay to appear. Your hotel earns Impact Credits for this.')}</div>`;
     body+=`<div style="display:flex;flex-wrap:wrap;gap:8px;margin:0 0 6px 39px">
-      <button class="chip" data-lomaref>💸 ${T('Cheaper')}</button>
-      <button class="chip" data-lomaref>🚶 ${T('Walkable only')}</button>
-      <button class="chip" data-lomaref>🔄 ${T('Different vibe')}</button>
+      <button class="chip" data-lomaref="${state.lang==='ไทย'?'ถูกกว่านี้':'cheaper'}">💸 ${T('Cheaper')}</button>
+      <button class="chip" data-lomaref="${state.lang==='ไทย'?'เดินถึงได้':'walkable only'}">🚶 ${T('Walkable only')}</button>
+      <button class="chip" data-lomaref="${state.lang==='ไทย'?'บรรยากาศอื่น':'different vibe'}">🔄 ${T('Different vibe')}</button>
     </div>`;
+    }
   }
   return `<div class="appbar"><div class="row1">
       <button data-go="selfserve" style="width:32px;height:32px;border-radius:50%;background:var(--surface-2);display:grid;place-items:center;flex:none;font-size:20px;color:var(--ink-2);line-height:1">‹</button>
@@ -5959,7 +5973,9 @@ document.body.addEventListener('click',e=>{
   const lomarm=e.target.closest('[data-lomarm]');
   if(lomarm){state.askNeeds=(state.askNeeds||[]).filter(n=>n!==lomarm.dataset.lomarm);toast(state.lang==='ไทย'?'จัดอันดับใหม่ตามเงื่อนไขที่เหลือ (เดโม)':'Re-ranking with remaining needs (demo)');render();return;}
   const lomaref=e.target.closest('[data-lomaref]');
-  if(lomaref){toast(state.lang==='ไทย'?'แอปจริงจัดอันดับใหม่ทันทีค่ะ':'Full app re-ranks instantly 🙂');return;}
+  const lomaretry=e.target.closest('[data-lomaretry]');
+  if(lomaretry){ askSend(state.askQ||''); return; }
+  if(lomaref){var _r=lomaref.dataset.lomaref||''; askSend(((state.askQ||'')+' '+_r).trim()); return;}
   const obc=e.target.closest('[data-ob]');
   if(obc){const i=obc.dataset.ob.indexOf('|');const k=obc.dataset.ob.slice(0,i),v=obc.dataset.ob.slice(i+1);state.ob=state.ob||{};state.ob[k]=v;if(k==='n')delete state.ob.nOther;render();return;}
   const obcty=e.target.closest('[data-obcountry]');
@@ -6963,6 +6979,35 @@ function lomaContactUrl(o){
   if(o&&o.phone) return 'tel:'+String(o.phone).replace(/[^+0-9]/g,'');
   if(o&&o.website) return o.website;
   return lomaMapsUrl(o);
+}
+/* Ask LOMA (AI) — a shortlist of REAL providers relevant to the request (keyword-ranked
+   over the catalog, falling back to top-rated). */
+function lomaAskCandidates(text){
+  var ops=(window.LOMA_DATA&&window.LOMA_DATA.operators)||[];
+  var toks=String(text||'').toLowerCase().split(/[^a-z0-9฀-๿]+/).filter(function(w){return w.length>2;});
+  function sc(o){ var hay=((o.name||'')+' '+(o.cat||'')+' '+(o.area||'')+' '+((o.bestFor||[]).join(' '))+' '+(o.note||'')+' '+(o.whyLocal||'')).toLowerCase(); var s=0; for(var i=0;i<toks.length;i++){ if(hay.indexOf(toks[i])>=0) s++; } return s; }
+  var scored=ops.map(function(o){ return {o:o,s:sc(o)}; });
+  var hit=scored.filter(function(x){ return x.s>0; });
+  hit.sort(function(a,b){ return (b.s-a.s)||((b.o.loma_score||b.o.quality||0)-(a.o.loma_score||a.o.quality||0)); });
+  if(!hit.length){ scored.sort(function(a,b){ return (b.o.loma_score||b.o.quality||0)-(a.o.loma_score||a.o.quality||0); }); hit=scored; }
+  return hit.slice(0,20).map(function(x){ var o=x.o; return {id:o.id,name:o.name,cat:o.cat,area:o.area,rating:o.rating,reviews:o.reviews,priceText:o.priceText,price:o.price,hours:o.hours,address:o.address||o.note,whyLocal:o.whyLocal,summary:o.sum}; });
+}
+/* Ask LOMA (AI) — POST the request + candidates to /ask; the Thai LLM extracts the needs
+   and picks 2-4 matching providers with reasons. Populates state and re-renders. On any
+   failure it just clears the loading flag so touristAsk shows its built-in picks. */
+function lomaAsk(text){
+  var body={ message:String(text||''), lang:(typeof state!=='undefined'&&state.lang==='ไทย')?'th':'en', area:(typeof PARTNER!=='undefined'&&PARTNER&&PARTNER.area)||null, providers:lomaAskCandidates(text), limit:20 };
+  var opt={ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) };
+  try{ if(typeof AbortSignal!=='undefined' && AbortSignal.timeout) opt.signal=AbortSignal.timeout(60000); }catch(e){}
+  fetch(_lomaApiBase()+'/ask',opt).then(function(x){ return x.ok?x.json():null; }).then(function(d){
+    if(typeof state==='undefined') return;
+    state.askLoading=false;
+    if(d&&d.ok&&d.picks&&d.picks.length){
+      state.askPicks=d.picks; state.askIntro=d.intro||null; state.askErr=false;
+      if(d.needs&&d.needs.length) state.askNeeds=d.needs;
+    } else { state.askErr=true; }
+    if(typeof render==='function') render();
+  }).catch(function(){ if(typeof state!=='undefined'){ state.askLoading=false; state.askErr=true; } if(typeof render==='function') render(); });
 }
 /* Persist a saved pick on this device (survives reloads). */
 function lomaSave(id){
