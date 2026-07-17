@@ -1,0 +1,13 @@
+# Only LOMA.html + nginx.conf are needed in the image (the HTML is self-contained).
+# Keep the build context tiny by excluding docs, decks, seeds, and tooling.
+*.md
+*.pdf
+*.pptx
+*.xlsx
+*.py
+*.json
+LOMA.html.orig
+loma-white.png
+artwork/
+data/
+_cbt_seed_inject.js

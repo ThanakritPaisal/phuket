@@ -1,6 +1,18 @@
 // Community-experience bookings (community host check-in flow).
 // A booking is NOT a visit: only checked-in ("attended") guests count as impact.
+//
+// Bookings are backed by the real database (loma-app/logging-api → `booking` table).
+// This module keeps an in-memory mirror for the synchronous UI: it hydrates from the
+// API at boot (loadBookings), applies every mutation optimistically, and syncs it to
+// the backend in the background. If the API is down we fall back to localStorage so the
+// demo keeps working offline.
 import { bumpVersion } from "./store";
+import {
+  fetchBookings,
+  createBookingApi,
+  updateBookingStatusApi,
+  cancelBookingApi,
+} from "./bookingsApi";
 
 export type BookingStatus = "requested" | "confirmed" | "attended" | "noshow";
 
@@ -39,6 +51,7 @@ export function setBookingStatus(ref: string, status: BookingStatus): void {
     b.status = status;
     persist();
     bumpVersion();
+    void updateBookingStatusApi(ref, status); // best-effort DB sync (check-in / no-show)
   }
 }
 
@@ -113,7 +126,7 @@ export function addBooking(input: {
   guest: string;
 }): Booking {
   const b: Booking = {
-    ref: "BK-" + ++_seq,
+    ref: "BK-" + ++_seq, // optimistic local ref; replaced by the server's ref below
     id: input.id,
     hotel: input.hotel,
     guest: input.guest,
@@ -126,6 +139,15 @@ export function addBooking(input: {
   BOOKINGS.push(b);
   persist();
   bumpVersion();
+  // Persist to the DB and reconcile to the authoritative server ref so a later
+  // cancel/check-in targets the right row.
+  void createBookingApi(input).then((row) => {
+    if (row && row.ref) {
+      b.ref = row.ref;
+      persist();
+      bumpVersion();
+    }
+  });
   return b;
 }
 
@@ -136,7 +158,29 @@ export function cancelBooking(ref: string): void {
     BOOKINGS.splice(i, 1);
     persist();
     bumpVersion();
+    void cancelBookingApi(ref); // best-effort DB sync
   }
+}
+
+/**
+ * Hydrate the in-memory store from the database. Called once at boot (main.tsx).
+ * On success the DB is the source of truth (seeded + self-serve rows). On failure we
+ * keep whatever localStorage rehydrated, so the app still renders offline.
+ */
+export async function loadBookings(): Promise<boolean> {
+  const rows = await fetchBookings();
+  if (!rows) return false;
+  BOOKINGS.length = 0;
+  BOOKINGS.push(...rows);
+  // Keep the local ref sequence ahead of anything the server has handed out so a
+  // brand-new optimistic ref can never collide with an existing row.
+  _seq = rows.reduce((m, b) => {
+    const n = parseInt(String(b.ref).replace(/\D/g, ""), 10);
+    return Number.isFinite(n) && n > m ? n : m;
+  }, _seq);
+  bumpVersion();
+  console.info(`[LOMA] loaded ${rows.length} bookings from the database`);
+  return true;
 }
 
 // ---------- Persistence ----------

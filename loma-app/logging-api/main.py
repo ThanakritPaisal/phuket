@@ -27,12 +27,12 @@ from __future__ import annotations
 import os
 from typing import Any, Optional
 
-from fastapi import FastAPI, Query
+from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from psycopg.types.json import Jsonb
 from pydantic import BaseModel, Field
 
-from db import LOG_TABLE, get_conn, setup
+from db import BOOKING_TABLE, LOG_TABLE, get_conn, setup
 
 # --------------------------------------------------------------------------------------
 # Event taxonomy — kept in sync with the frontend (src/logger.ts / src/impact.ts).
@@ -281,6 +281,134 @@ def upsert_providers(body: ProviderBulk) -> dict[str, Any]:
             )
             n += 1
     return {"ok": True, "upserted": n}
+
+
+# --------------------------------------------------------------------------------------
+# Bookings — community-experience booking system (real DB-backed).
+#
+# A booking is NOT a visit: only a host check-in (status='attended') counts as income.
+# The tourist app creates self-serve bookings (POST /bookings); the community host reads
+# them (GET /bookings?community_id=...) and checks guests in (PATCH /bookings/{ref}).
+# Mirrors the web app's Booking type in src/bookings.ts.
+# --------------------------------------------------------------------------------------
+
+BOOKING_STATUSES = {"requested", "confirmed", "attended", "noshow"}
+SLOT_CAPACITY = 12  # keep in sync with src/bookings.ts
+
+
+class BookingIn(BaseModel):
+    """A new self-serve booking from the tourist app. `ref` is minted server-side."""
+
+    community_id: str
+    date: str = Field(description="ISO YYYY-MM-DD")
+    round: Optional[str] = None
+    pax: int = Field(default=1, ge=1, le=50)
+    hotel: Optional[str] = None
+    guest: Optional[str] = None
+    self_serve: bool = True
+
+
+class BookingStatusIn(BaseModel):
+    status: str
+
+
+def _booking_out(row: dict[str, Any]) -> dict[str, Any]:
+    """Serialize a DB row into the exact shape the web app's Booking type expects."""
+    return {
+        "ref": row["ref"],
+        "id": row["community_id"],   # the frontend keys bookings by community id
+        "hotel": row["hotel"],
+        "guest": row["guest"],
+        "pax": row["pax"],
+        "date": row["booking_date"],
+        "round": row["round"],
+        "status": row["status"],
+        "self": row["self_serve"],
+    }
+
+
+@app.get("/bookings")
+def list_bookings(
+    community_id: Optional[str] = None,
+    status: Optional[str] = None,
+    date: Optional[str] = None,
+) -> list[dict[str, Any]]:
+    """All bookings, newest last — optionally scoped to one community / status / day."""
+    clauses, params = [], []
+    for col, val in (("community_id", community_id), ("status", status), ("booking_date", date)):
+        if val is not None:
+            clauses.append(f"{col} = %s")
+            params.append(val)
+    where = ("WHERE " + " AND ".join(clauses)) if clauses else ""
+    with get_conn() as conn:
+        rows = conn.execute(
+            f"SELECT * FROM {BOOKING_TABLE} {where} ORDER BY booking_date, row_id", params
+        ).fetchall()
+    return [_booking_out(r) for r in rows]
+
+
+@app.post("/bookings")
+def create_booking(b: BookingIn) -> dict[str, Any]:
+    """Create a booking. The server mints the ref (BK-<row_id>) atomically."""
+    with get_conn() as conn:
+        # Reserve the next sequence value first, then use it to build a unique ref.
+        seq = conn.execute(f"SELECT nextval(pg_get_serial_sequence('{BOOKING_TABLE}', 'row_id')) AS n").fetchone()["n"]
+        ref = f"BK-{5000 + int(seq)}"
+        row = conn.execute(
+            f"""
+            INSERT INTO {BOOKING_TABLE}
+                (ref, row_id, community_id, hotel, guest, pax, booking_date, round, status, self_serve)
+            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+            RETURNING *
+            """,
+            (ref, seq, b.community_id, b.hotel, b.guest, b.pax, b.date, b.round,
+             "confirmed", b.self_serve),
+        ).fetchone()
+    return _booking_out(row)
+
+
+@app.patch("/bookings/{ref}")
+def update_booking_status(ref: str, body: BookingStatusIn) -> dict[str, Any]:
+    """Host action — check a guest in (attended) or mark a no-show."""
+    if body.status not in BOOKING_STATUSES:
+        raise HTTPException(400, f"status must be one of {sorted(BOOKING_STATUSES)}")
+    with get_conn() as conn:
+        row = conn.execute(
+            f"UPDATE {BOOKING_TABLE} SET status=%s, updated_at=now() WHERE ref=%s RETURNING *",
+            (body.status, ref),
+        ).fetchone()
+    if not row:
+        raise HTTPException(404, f"booking {ref} not found")
+    return _booking_out(row)
+
+
+@app.delete("/bookings/{ref}")
+def cancel_booking(ref: str) -> dict[str, Any]:
+    """Guest cancels their own self-serve booking."""
+    with get_conn() as conn:
+        row = conn.execute(
+            f"DELETE FROM {BOOKING_TABLE} WHERE ref=%s AND self_serve=TRUE RETURNING ref", (ref,)
+        ).fetchone()
+    if not row:
+        raise HTTPException(404, f"self-serve booking {ref} not found")
+    return {"ok": True, "ref": ref}
+
+
+@app.get("/bookings/availability")
+def booking_availability(community_id: str, date: str, round: str) -> dict[str, Any]:
+    """Seats left for a slot: capacity minus real (non-no-show) booked pax.
+    (The frontend adds a deterministic base load on top for the demo.)"""
+    with get_conn() as conn:
+        taken = conn.execute(
+            f"""SELECT COALESCE(SUM(pax), 0) AS n FROM {BOOKING_TABLE}
+                WHERE community_id=%s AND booking_date=%s AND round=%s AND status <> 'noshow'""",
+            (community_id, date, round),
+        ).fetchone()["n"]
+    return {
+        "community_id": community_id, "date": date, "round": round,
+        "capacity": SLOT_CAPACITY, "taken": int(taken),
+        "seats_left": max(0, SLOT_CAPACITY - int(taken)),
+    }
 
 
 # --------------------------------------------------------------------------------------

@@ -143,12 +143,51 @@ def init_provider_schema() -> None:
             )
 
 
+BOOKING_TABLE = "booking"
+
+
+def init_booking_schema() -> None:
+    """Create the `booking` table — community-experience bookings.
+
+    Mirrors the web app's Booking type (src/bookings.ts). A booking is NOT a visit:
+    only a host check-in (status='attended') turns it into counted income. `ref` is the
+    human-facing booking id (BK-xxxx); `row_id` gives us a monotonic sequence so the
+    server can mint fresh refs without colliding with the seeded demo rows."""
+    with get_conn() as conn:
+        conn.execute(
+            f"""
+            CREATE TABLE IF NOT EXISTS {BOOKING_TABLE} (
+                ref          TEXT PRIMARY KEY,
+                row_id       BIGSERIAL UNIQUE,
+                community_id TEXT NOT NULL,
+                hotel        TEXT,
+                guest        TEXT,
+                pax          INTEGER NOT NULL DEFAULT 1,
+                booking_date TEXT NOT NULL,
+                round        TEXT,
+                status       TEXT NOT NULL DEFAULT 'confirmed',
+                self_serve   BOOLEAN NOT NULL DEFAULT FALSE,
+                created_at   TIMESTAMPTZ NOT NULL DEFAULT now(),
+                updated_at   TIMESTAMPTZ NOT NULL DEFAULT now()
+            )
+            """
+        )
+        for col in ("community_id", "status", "booking_date"):
+            conn.execute(
+                f"CREATE INDEX IF NOT EXISTS idx_{BOOKING_TABLE}_{col} ON {BOOKING_TABLE} ({col})"
+            )
+
+
 def setup() -> None:
     """One-shot: create the database (if needed) then the schema."""
     created = ensure_database()
     init_schema()
     init_provider_schema()
-    print(f"database '{DB_NAME}': {'created' if created else 'already existed'}; tables '{LOG_TABLE}', '{PROVIDER_TABLE}' ready")
+    init_booking_schema()
+    print(
+        f"database '{DB_NAME}': {'created' if created else 'already existed'}; "
+        f"tables '{LOG_TABLE}', '{PROVIDER_TABLE}', '{BOOKING_TABLE}' ready"
+    )
 
 
 if __name__ == "__main__":

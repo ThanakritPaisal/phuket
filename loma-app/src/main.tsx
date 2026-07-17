@@ -5,11 +5,12 @@ import App from './App.tsx'
 import { bootstrapImpact } from './bootstrap'
 import { applyIncomingDeepLink } from './qr'
 import { loadProviders } from './providersApi'
+import { loadBookings } from './bookings'
 
 async function boot() {
-  // Pull the provider catalog from the database first (falls back to bundled JSON
-  // if the API is down), so everything downstream scores/renders the DB data.
-  await loadProviders()
+  // Pull the provider catalog + community bookings from the database first (both fall
+  // back gracefully if the API is down), so everything downstream renders real DB data.
+  await Promise.all([loadProviders(), loadBookings()])
   bootstrapImpact()
   // If opened from a scanned share QR, register the shared picks and start as Tourist.
   const initialPersona = applyIncomingDeepLink()
