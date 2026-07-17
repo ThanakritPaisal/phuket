@@ -8,6 +8,10 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 
+# Patchers print emoji/Thai in their summaries; force UTF-8 so a Windows cp1252 console
+# doesn't abort the build under `set -e` (Linux/Docker default to UTF-8 already).
+export PYTHONUTF8=1 PYTHONIOENCODING=utf-8
+
 cp LOMA.html.orig LOMA.html
 python _wire_booking_backend.py
 python _wire_real_data.py
@@ -15,6 +19,8 @@ python _wire_loma_signals.py
 python _wire_communities.py
 python _wire_live_actions.py
 python _wire_real_prototype.py
+python _wire_recent_recs.py
+python _wire_ui_final.py
 
 # Bake window.LOMA_API_BASE so the deployed page calls the real backend (both the
 # booking layer and the live-actions layer read window.LOMA_API_BASE first).

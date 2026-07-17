@@ -984,6 +984,7 @@ function dayBookings(c,d){return (state.myBookings||[]).filter(b=>b.id===c.id&&b
 /* the host scans the guest in → the booking becomes a CONFIRMED VISIT (and only then is it worth money) */
 function checkInBooking(b,c){
   b.status='attended';
+  lomaCheckIn(b);
   const ev=trackEvent('provider_confirmed_visit',{community_id:c.id, tourist_session_id:'ts_chk_'+c.id+b.dayIdx+b.round,
     metadata:{pax:b.pax, round:b.round, community:c.name}});
   const mid=priceMid({priceText:c.priceFrom})||500;
@@ -1045,84 +1046,14 @@ const PARTNER_APPS = [];
     docs:{license:true,id:true,storefront:true}, dbdMatch:true});
 })();
 
+/* REAL-PROTOTYPE wired */
 const PROVIDERS = [
-  { id:"BRT", name:"Baan Rim Talay Local Kitchen", cat:"Local Food", emo:"🍜",
-    area:"Rawai", dist:"8 min by car", price:"฿฿", priceText:"฿150–350 / person",
-    open:true, hours:"11:00 – 22:00 daily", local:true, verified:true,
-    quality:92, locality:96, readiness:88, safety:90, rating:4.7, reviews:312, branches:1,
-    lang:"Thai · English menu", booking:"Walk-in welcome · booking for groups 6+",
-    contact:"Phone · WhatsApp", pick:true,
-    reason:"Family-run seafood by the pier, locally owned, 8 min away. Tourists love the crab curry.",
-    whyLocal:"Owned by a Rawai fishing family for 20+ years; sources catch from the morning pier auction.",
-    note:"Cash preferred. Gets busy after 19:00 — share early or call ahead for groups.",
-    bestFor:["families","local food","couples"],
-    img:"https://images.unsplash.com/photo-1559314809-0d155014e29e?w=800&q=70",
-    sum:"Consistently praised for fresh seafood, fair prices and friendly owners." },
-
-  { id:"OTH", name:"Old Town Herbal Massage", cat:"Massage & Wellness", emo:"💆",
-    area:"Phuket Old Town", dist:"15 min by car", price:"฿฿", priceText:"฿300–600 / hour",
-    open:true, hours:"10:00 – 21:00 daily", local:true, verified:true,
-    quality:90, locality:88, readiness:94, safety:95, rating:4.8, reviews:540, branches:1,
-    lang:"Thai · English", booking:"Booking recommended",
-    contact:"Phone · LINE · WhatsApp", pick:false,
-    reason:"Certified Thai therapists in a restored Sino-Portuguese shophouse, 4.8★. Great for a rainy afternoon.",
-    whyLocal:"Run by a local therapist cooperative; uses herbal compresses made in-house.",
-    note:"Booking recommended on weekends. Upstairs — not step-free.",
-    bestFor:["couples","rainy day","solo travelers"],
-    img:"https://images.unsplash.com/photo-1600334129128-685c5582fd35?w=800&q=70",
-    sum:"Clean, professional, authentic — repeatedly called the best value massage in Old Town." },
-
-  { id:"RFE", name:"Rawai Fisherfolk Experience", cat:"Community Experience", emo:"🛶",
-    area:"Rawai", dist:"12 min by car", price:"฿฿", priceText:"฿450 / person · 3 hrs",
-    open:true, hours:"Morning & sunset slots", local:true, verified:true,
-    quality:86, locality:98, readiness:80, safety:84, rating:4.6, reviews:97, branches:1,
-    lang:"Thai · English guide", booking:"Booking required",
-    contact:"Phone · LINE", pick:true,
-    reason:"Half-day with a local sea-gypsy community — net fishing, cooking, fair-priced and genuinely local.",
-    whyLocal:"Community-based tourism run by the Urak Lawoi people; income stays in the village.",
-    note:"Booking required a day ahead. Bring sun protection. Light walking on the beach.",
-    bestFor:["solo travelers","families","local food"],
-    img:"https://images.unsplash.com/photo-1545579133-99bb5ab189bd?w=800&q=70",
-    sum:"Travelers describe it as the most authentic, respectful local experience on the island." },
-
-  { id:"KLD", name:"Kathu Local Dessert Café", cat:"Café", emo:"☕",
-    area:"Kathu", dist:"10 min by car", price:"฿", priceText:"฿60–150",
-    open:false, hours:"08:00 – 17:00 · closed now", local:true, verified:true,
-    quality:84, locality:90, readiness:86, safety:88, rating:4.5, reviews:208, branches:1,
-    lang:"Thai · English menu", booking:"Walk-in",
-    contact:"Phone · LINE", pick:false,
-    reason:"Traditional Phuket desserts and local coffee in an old tin-mining quarter. Quiet, cheap, charming.",
-    whyLocal:"Family recipes from Kathu's mining heritage; ingredients from the local market.",
-    note:"Closes at 17:00 — best for morning or early afternoon.",
-    bestFor:["couples","rainy day","families"],
-    img:"https://images.unsplash.com/photo-1521017432531-fbd92d768814?w=800&q=70",
-    sum:"A local favourite for nostalgic Phuket sweets and a calm break off the tourist trail." },
-
-  { id:"PCH", name:"Phuket Craft House", cat:"Souvenir & Local Product", emo:"🎨",
-    area:"Phuket Old Town", dist:"16 min by car", price:"฿฿", priceText:"฿120–900",
-    open:true, hours:"10:00 – 20:00 daily", local:true, verified:true,
-    quality:82, locality:85, readiness:90, safety:92, rating:4.6, reviews:154, branches:1,
-    lang:"Thai · English", booking:"Walk-in",
-    contact:"Phone · WhatsApp", pick:false,
-    reason:"Hand-made batik, ceramics and pearl jewellery from island artisans — real souvenirs, not factory goods.",
-    whyLocal:"Stocks only Phuket-based makers; each piece is tagged with the maker's story.",
-    note:"Card accepted. Can arrange shipping for larger items.",
-    bestFor:["couples","solo travelers"],
-    img:"https://images.unsplash.com/photo-1513519245088-0e12902e35ca?w=800&q=70",
-    sum:"Shoppers value the authenticity and the direct support to local craftspeople." },
-
-  { id:"NYC", name:"Nai Yang Coconut Workshop", cat:"Community Experience", emo:"🥥",
-    area:"Nai Yang", dist:"22 min by car", price:"฿฿", priceText:"฿350 / person",
-    open:true, hours:"09:00 – 16:00 · book ahead", local:true, verified:false,
-    quality:80, locality:94, readiness:74, safety:82, rating:4.4, reviews:43, branches:1,
-    lang:"Thai · basic English", booking:"Booking required",
-    contact:"LINE", pick:false,
-    reason:"Hands-on coconut craft & local snacks near the airport beach — affordable, great for families.",
-    whyLocal:"Smallholder family farm; teaches traditional coconut processing.",
-    note:"Verification in progress — English support is limited. Confirm slot on LINE.",
-    bestFor:["families","solo travelers"],
-    img:"https://images.unsplash.com/photo-1457530378978-8bac673b8062?w=800&q=70",
-    sum:"Early reviews are warm; a quiet, hands-on stop for travellers near Nai Yang." }
+  {"id": "BRT", "pick": true, "name": "Minami Kitchen Phuket", "cat": "Local Food", "emo": "🍜", "area": "Kathu", "dist": "15 min by car", "price": "฿฿", "priceText": "฿150–350 / person", "open": false, "hours": "Closed", "local": true, "verified": false, "quality": 98, "locality": 96, "readiness": 90, "safety": 88, "rating": 5, "reviews": 91, "branches": 1, "lang": "Thai · English", "booking": "Walk-in welcome · call ahead for groups", "contact": "Phone", "reason": "a local kitchen in Kathu, 15 min by car away, rated 5★ by 91 visitors on Google.", "whyLocal": "Sourced from Phuket's community-based tourism registry — a locally owned, community-run operator rather than a chain or tour-desk listing. Identity and location verified against Google.", "note": "Address: 123 หมู่บ้าน อิรวดีเก็ตโฮ่ 27 ถนนเหมืองเจ้าฟ้า Tambon Kathu, Amphoe Kathu, Chang Wat Phuket 83120, Thailand", "bestFor": ["local food", "couples", "highly rated"], "img": "https://storage.googleapis.com/gradient-digital-group-loma-assets/providers/b1_0732.jpg", "sum": "", "loma_score": 93},
+  {"id": "OTH", "pick": false, "name": "Tew Son Spa Phuket", "cat": "Massage & Wellness", "emo": "💆", "area": "Kata", "dist": "20 min by car", "price": "฿฿", "priceText": "฿150–350 / person", "open": true, "hours": "10:00 AM – 7:00 PM", "local": true, "verified": true, "quality": 98, "locality": 96, "readiness": 90, "safety": 88, "rating": 5, "reviews": 179, "branches": 1, "lang": "Thai · English", "booking": "Walk-in welcome · call ahead for groups", "contact": "Phone", "reason": "a local wellness spot in Kata, 20 min by car away, rated 5★ by 179 visitors on Google.", "whyLocal": "Sourced from Phuket's community-based tourism registry — a locally owned, community-run operator rather than a chain or tour-desk listing. Identity and location verified against Google.", "note": "Address: 14 Kata Noi Rd, Tambon Karon, Maung, Chang Wat Phuket 83100, Thailand", "bestFor": ["rainy day", "couples", "highly rated"], "img": "https://storage.googleapis.com/gradient-digital-group-loma-assets/providers/b1_0435.jpg", "sum": "", "loma_score": 93},
+  {"id": "RFE", "pick": true, "name": "DD ~ fusion food & homestay", "cat": "Community Experience", "emo": "🛶", "area": "Chalong", "dist": "20 min by car", "price": "฿฿", "priceText": "฿150–350 / person", "open": true, "hours": "See Google Maps", "local": true, "verified": false, "quality": 95, "locality": 96, "readiness": 80, "safety": 88, "rating": 4.7, "reviews": 56, "branches": 1, "lang": "Thai · English", "booking": "Walk-in welcome · call ahead for groups", "contact": "Phone", "reason": "a community-run experience in Chalong, 20 min by car away, rated 4.7★ by 56 visitors on Google.", "whyLocal": "Sourced from Phuket's community-based tourism registry — a locally owned, community-run operator rather than a chain or tour-desk listing. Identity and location verified against Google.", "note": "Address: 137/19 Soi Suksan 1, Moo 4, ตำบล ราไวย์ อำเภอเมืองภูเก็ต ภูเก็ต 83100, Thailand", "bestFor": ["local culture", "families", "highly rated"], "img": "https://storage.googleapis.com/gradient-digital-group-loma-assets/providers/b1_0450.jpg", "sum": "", "loma_score": 90},
+  {"id": "KLD", "pick": false, "name": "Buppay Cafe", "cat": "Café", "emo": "☕", "area": "Old Town", "dist": "24 min by car", "price": "฿฿", "priceText": "฿150–350 / person", "open": false, "hours": "Closed", "local": true, "verified": false, "quality": 98, "locality": 96, "readiness": 90, "safety": 88, "rating": 5, "reviews": 107, "branches": 1, "lang": "Thai · English", "booking": "Walk-in welcome · call ahead for groups", "contact": "Phone", "reason": "a verified local place in Old Town, 24 min by car away, rated 5★ by 107 visitors on Google.", "whyLocal": "Sourced from Phuket's community-based tourism registry — a locally owned, community-run operator rather than a chain or tour-desk listing. Identity and location verified against Google.", "note": "Address: 95 Phangnga Rd, Tambon Talat Yai, Amphoe Mueang Phuket, Chang Wat Phuket 83000, Thailand", "bestFor": ["local culture", "highly rated"], "img": "https://storage.googleapis.com/gradient-digital-group-loma-assets/providers/b1_0951.jpg", "sum": "", "loma_score": 93},
+  {"id": "PCH", "pick": false, "name": "ร้านอัดรูป กรอบรูป ของขวัญ ช่อดอกไม้ | Richy Surprise Party", "cat": "Souvenir & Local Product", "emo": "🎁", "area": "Phuket Town", "dist": "30 min by car", "price": "฿฿", "priceText": "฿150–350 / person", "open": false, "hours": "Open 24 hours", "local": true, "verified": false, "quality": 98, "locality": 96, "readiness": 90, "safety": 88, "rating": 5, "reviews": 28, "branches": 1, "lang": "Thai · English", "booking": "Walk-in welcome · call ahead for groups", "contact": "Phone", "reason": "a local maker's shop in Phuket Town, 30 min by car away, rated 5★ by 28 visitors on Google.", "whyLocal": "Sourced from Phuket's community-based tourism registry — a locally owned, community-run operator rather than a chain or tour-desk listing. Identity and location verified against Google.", "note": "Address: ตั้งอยู่ ซ.เกาะแก้ว 6/2 อ.เมือง ต.เกาะแก้ว Tambon Ko Kaeo, เมือง Chang Wat Phuket 83000, Thailand", "bestFor": ["souvenirs", "local crafts", "highly rated"], "img": "https://storage.googleapis.com/gradient-digital-group-loma-assets/providers/b1_0759.jpg", "sum": "", "loma_score": 93},
+  {"id": "NYC", "pick": false, "name": "Phuket Bird Park", "cat": "Community Experience", "emo": "🛶", "area": "Chalong", "dist": "14 min by car", "price": "฿฿", "priceText": "฿150–350 / person", "open": false, "hours": "10:00 AM – 5:00 PM", "local": true, "verified": false, "quality": 84, "locality": 96, "readiness": 90, "safety": 88, "rating": 4, "reviews": 3450, "branches": 1, "lang": "Thai · English", "booking": "Walk-in welcome · call ahead for groups", "contact": "Phone", "reason": "a community-run experience in Chalong, 14 min by car away, rated 4★ by 3450 visitors on Google. Spacious animal park with many colorful species of birds in a lush setting with regular bird shows.", "whyLocal": "Sourced from Phuket's community-based tourism registry — a locally owned, community-run operator rather than a chain or tour-desk listing. Identity and location verified against Google.", "note": "Address: 6/2 Thanon Chao Fah Tawan Tok, Tambon Wichit, Amphoe Mueang Phuket, Chang Wat Phuket 83000, Thailand", "bestFor": ["local culture", "families"], "img": "https://storage.googleapis.com/gradient-digital-group-loma-assets/providers/b1_0528.jpg", "sum": "Spacious animal park with many colorful species of birds in a lush setting with regular bird shows.", "loma_score": 90}
 ];
 
 const PARTNERS = [
@@ -1630,7 +1561,7 @@ function screenEventDetail(){
     <div class="why"><div class="lab">${I.spark} Why send a tourist here</div><p>${e.whyGo}</p></div>
     <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:12px">${e.tags.map(t=>`<span class="badge b-price">#${t}</span>`).join('')}</div>
     <div class="mapbox" style="height:150px;margin-top:14px;border-radius:14px">${mapSVG()}<div class="pin sel" style="left:${xy[0]}%;top:${xy[1]}%"><div class="p"><span>${EV_EMO[e.cat]}</span></div></div></div>
-    <div class="cta2" style="margin-top:14px"><button class="btn ${shared?'btn-line':'btn-primary'}" data-shareev="${e.id}">${shared?I.check+' Shared to tourist':I.share+' Share to tourist'}</button><button class="btn btn-ghost" onclick="toast('Opening in maps…')">${I.nav} Directions</button></div>
+    <div class="cta2" style="margin-top:14px"><button class="btn ${shared?'btn-line':'btn-primary'}" data-shareev="${e.id}">${shared?I.check+' Shared to tourist':I.share+' Share to tourist'}</button><a class="btn btn-ghost" href="${lomaEventMapUrl(e)}" target="_blank" rel="noopener">${I.nav} Directions</a></div>
   </div>${staffTabbar()}`;
 }
 
@@ -1644,20 +1575,7 @@ function screenHome(){
   return `${staffAppbar()}<div class="brand-band"><div class="cap"><h2>Who are you helping?</h2><div class="sub">A trusted local pick in three taps</div></div></div><div class="pad">
 
     <div style="display:flex;flex-direction:column;gap:9px;margin-bottom:16px">
-      <div style="display:flex;gap:9px">
-        <button data-go="saved" style="flex:1;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:11px 12px">
-          <div style="font-size:11px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;color:var(--muted)">Hotel Local Picks QR</div>
-          <div style="font-size:12.5px;color:var(--ink-2);margin-top:3px;line-height:1.4">Permanent QR for the desk &amp; rooms →</div>
-        </button>
-        <button data-go="impact" style="flex:1;text-align:left;background:var(--primary-l);border:1px solid #D6E0EE;border-radius:13px;padding:11px 12px">
-          <div style="font-size:11px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;color:var(--primary)">Impact Credits</div>
-          <div style="font-family:var(--fd);font-size:22px;line-height:1.15;color:var(--ink);margin-top:1px">${cr} <span style="font-size:11.5px;font-family:var(--f);color:var(--muted);font-weight:600">· ${tr[0]}</span></div>
-        </button>
-        <button data-go="board" style="flex:1;text-align:left;background:var(--accent-l);border:1px solid #F2C7B6;border-radius:13px;padding:11px 12px">
-          <div style="font-size:11px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;color:var(--accent-d)">Impact Board</div>
-          <div style="font-family:var(--fd);font-size:22px;line-height:1.15;color:var(--ink);margin-top:1px">#${boardRows('total','All',districtOf(PARTNER.name)).findIndex(r=>r.me)+1} <span style="font-size:11.5px;font-family:var(--f);color:var(--muted);font-weight:600">in ${districtLabel(districtOf(PARTNER.name))}</span></div>
-        </button>
-      </div>
+      <div style="display:flex;gap:9px"></div>
     </div>
 
     <div class="search">${I.search}<span>What is the tourist looking for?</span></div>
@@ -1688,7 +1606,7 @@ function screenHome(){
     <!-- Guided-trip planner (Along a route / Half-day experience) hidden for demo — keep UI minimal.
          Handlers (data-guided) and the planner screen remain in code; restore this block to re-enable. -->
 
-    <div class="h-sec">Recent recommendations</div>
+    <div class="h-sec">Recent recommendations</div>  <!-- LOMA ui-final layer -->
     ${_lomaRecentRows()}
   </div>${staffTabbar()}`;
 }
@@ -1935,17 +1853,36 @@ function screenSaved(){
 
 /* reviews left by tourists this partner recommended (sample) */
 const GUEST_REVIEWS = [
-  {prov:'OTH', stars:5, when:'2h ago',    tags:['Authentic','Friendly'],        comment:'Best massage of our trip — so clean and professional.', photos:1, ctx:'Couple · room 214'},
-  {prov:'BRT', stars:5, when:'Yesterday', tags:['Great value','Would recommend'],comment:'Amazing crab curry and the owners were lovely. Thanks for the tip!', photos:2, ctx:'Family of 4'},
-  {prov:'RFE', stars:4, when:'2 days ago',tags:['Authentic'],                   comment:'Really special morning with the fishing community. A bit hard to find at first.', photos:1, ctx:'Solo traveller'},
-  {prov:'KLD', stars:5, when:'3 days ago',tags:['Great value','Authentic'],     comment:'Hidden gem! Loved the old Phuket desserts.', photos:0, ctx:'Couple'},
-  {prov:'BRT', stars:4, when:'4 days ago',tags:['Friendly'],                    comment:'Good food, busy at dinner but worth it.', photos:0, ctx:'Two guests'},
-  {prov:'PCH', stars:5, when:'5 days ago',tags:['Would recommend'],             comment:'Bought a beautiful batik piece — real local craft.', photos:1, ctx:'Couple · room 108'},
-  {prov:'NYC', stars:3, when:'6 days ago',tags:['Hard to find'],                comment:'Fun workshop but the directions were confusing.', photos:0, ctx:'Family'},
-  {prov:'BRT', stars:5, when:'1 week ago', tags:['Authentic','Great value'],     comment:'Came back twice. The tom yum is unreal.', photos:1, ctx:'Couple'},
-  {prov:'OTH', stars:5, when:'2 days ago', tags:['Friendly','Would recommend'],  comment:'Therapists were so skilled. Booked again the next day.', photos:0, ctx:'Solo · room 305'},
-  {prov:'OTH', stars:4, when:'5 days ago', tags:['Great value'],                 comment:'Relaxing and very fair price for the quality.', photos:1, ctx:'Couple'},
-  {prov:'RFE', stars:5, when:'4 days ago', tags:['Authentic','Would recommend'], comment:'A real highlight of our Phuket trip. The family was wonderful.', photos:2, ctx:'Two guests'}
+  {"prov": "BRT", "stars": 5, "when": "Aug 2025", "tags": [], "comment": "One of the coziest restaurants in Phuket with very delicious food and great vibes. Amazing music to eat to and the personnel is very polite and friendly. Will definitely be coming back here❤️", "photos": 0, "ctx": "Duisenbek Alua · Google review"},
+  {"prov": "BRT", "stars": 5, "when": "Apr 2024", "tags": [], "comment": "not much for choice menu but quality is the most good all of the menu that they have the most of my favorite is burger and kang karee with chicken and today i has try spaghetti is also good", "photos": 0, "ctx": "Sutida Pakdiwirote · Google review"},
+  {"prov": "BRT", "stars": 5, "when": "Mar 2023", "tags": [], "comment": "The Beef Burger and Pork Burger are delicious. The bun is tender and the meat is smell good and juicy. If there is a chance next time I will try other burgers.", "photos": 0, "ctx": "Phuket Marine Guide · Google review"},
+  {"prov": "BRT", "stars": 5, "when": "Oct 2024", "tags": [], "comment": "I ordered via Grab, the food is worth the price. So glad that I found a very good curry rice.", "photos": 0, "ctx": "Simplyfaii · Google review"},
+  {"prov": "BRT", "stars": 5, "when": "Jun 2024", "tags": [], "comment": "Super delicious Beef burger is amazing ✨🥹🫶🏼🫶🏼🫶🏼 And must try “Nam Jim Jeaw” Thai style sauce 🫶🏼 Aroi mak kaaaaa", "photos": 0, "ctx": "APINYA (FILM) · Google review"},
+  {"prov": "OTH", "stars": 5, "when": "Aug 2025", "tags": [], "comment": "Had a wonderful time at the spa! My girlfriend and I had a couples massage and were treated with a taylor made experience down to the fragrance of the oil that was used. The staff is polite, respectful and very professional. Navigating t…", "photos": 0, "ctx": "Victor Perez · Google review"},
+  {"prov": "OTH", "stars": 5, "when": "Jan 2026", "tags": [], "comment": "I enjoyed massages and aloe vera wraps here. I had a very pleasant and relaxing time. The ambience is nice and staff if very kind. Would recomment to anyone.", "photos": 0, "ctx": "Simon Schwe · Google review"},
+  {"prov": "OTH", "stars": 5, "when": "Apr 2026", "tags": [], "comment": "The most amazing experience I’ve ever had the detox and lymphatic drainage were so relaxing. The dayspa has a beautiful atmosphere and I have never been so relaxed. Highly recommend", "photos": 0, "ctx": "Christina Shad · Google review"},
+  {"prov": "OTH", "stars": 5, "when": "Aug 2025", "tags": [], "comment": "My experience was absolutely wonderful, very relaxing,to the point i fell asleep. I had the aroma therapy facial. The staff was very friendly and remembered it was my daughters birthday and sang to her.", "photos": 0, "ctx": "Frances Tyler-Vine · Google review"},
+  {"prov": "OTH", "stars": 5, "when": "Oct 2025", "tags": [], "comment": "I chose the aromatherapy facial treatment, and it was so relaxing that I actually fell asleep during the session. The whole team really takes great care of you. It was perfect, Tew Son spa is really great !", "photos": 0, "ctx": "Jessica Hnp · Google review"},
+  {"prov": "RFE", "stars": 5, "when": "Mar 2018", "tags": [], "comment": "The restaurant is simply great! Really delicious food, very friendly staff, decent portions and prices! Western & local food. Highly recommended.", "photos": 0, "ctx": "Jan S · Google review"},
+  {"prov": "RFE", "stars": 5, "when": "Jan 2018", "tags": [], "comment": "Food here is really awesome, both Italian and Thai. You can even pay a small extra and they teach how to cook any dishe you liked!", "photos": 0, "ctx": "Gabriel Garcia · Google review"},
+  {"prov": "RFE", "stars": 5, "when": "Nov 2017", "tags": [], "comment": "The best hosts ever!!! Secret of any amazing place are amazing people that are driving it. This is exactly about this family. They are so open, friendly and welcoming that their positive attitude charges you for whole day. We spent great…", "photos": 0, "ctx": "Volodymyr I. · Google review"},
+  {"prov": "RFE", "stars": 5, "when": "Nov 2018", "tags": [], "comment": "Have spent close to a week here and it has been an amazing time. I've come alone on this trip but I've felt family like comfort with Dararat and family. I recommend every reader to come stay here or check out some of the amazing dishes f…", "photos": 0, "ctx": "Mayank K · Google review"},
+  {"prov": "RFE", "stars": 5, "when": "Jan 2019", "tags": [], "comment": "Very nice food, good price, and lovely family staff!!!", "photos": 0, "ctx": "Gábor Bíró · Google review"},
+  {"prov": "KLD", "stars": 5, "when": "Apr 2026", "tags": [], "comment": "Absolutely delightful to have a coffee here. I loved watching the coffee being made with a manual espresso machine. So much attention to detail and a slower way of making espresso, absolutely delicious and a great place to slow down and…", "photos": 0, "ctx": "fiona white · Google review"},
+  {"prov": "KLD", "stars": 5, "when": "Nov 2024", "tags": [], "comment": "I have never seen coffee this way before. It is a ritual that tames the spirit and soothes the soul. You will forget all the negative thoughts and you will have an amazing coffee. The music is soft and it would make a perfect first date…", "photos": 0, "ctx": "Marianthi Tsitsopoulou · Google review"},
+  {"prov": "KLD", "stars": 5, "when": "Mar 2024", "tags": [], "comment": "An amazing little establishment. They source their beans locally from north Thailand. The owner is striving to be excellent in his craft. And I must say it's just perfect. Every movement is just very precise, even the alignment of the ta…", "photos": 0, "ctx": "Joshua Bush · Google review"},
+  {"prov": "KLD", "stars": 5, "when": "May 2023", "tags": [], "comment": "Hidden gem. We experienced the full process of coffee making. The owner took time to grind the coffee beans, brew the coffee and the result was a chocately-nutty coffee which we could try neat or with milk (good for couples to try differ…", "photos": 0, "ctx": "Aristotle Ang · Google review"},
+  {"prov": "KLD", "stars": 5, "when": "Dec 2025", "tags": [], "comment": "Finally, I find a place where coffee is ritual. and the ritual is scared, may be the artist doesn't see his work as life changing but observer has a different perspective. this felt personal, very simply put it's just coffee. Hold on, wh…", "photos": 0, "ctx": "Ajay Perke · Google review"},
+  {"prov": "PCH", "stars": 5, "when": "Jun 2025", "tags": [], "comment": "OMG it was so great, the quality was good too. Excellent service, I recommend y’all everything’s excellent", "photos": 0, "ctx": "4017 Saharat Benhod · Google review"},
+  {"prov": "PCH", "stars": 4, "when": "Jul 2024", "tags": [], "comment": "The photos are beautiful and sharp, home delivery is available and on time, the price is reasonable, and the seller is polite and friendly. I highly recommend this shop to anyone interested in Polaroid photos, picture frames, or gifts fo…", "photos": 0, "ctx": "today isninenine · Google review"},
+  {"prov": "PCH", "stars": 5, "when": "May 2025", "tags": [], "comment": "The photos are beautiful and the colors are very vibrant. The seller also provided excellent service and was very friendly. I'll definitely shop here again if I have the chance. 😊", "photos": 0, "ctx": "Pitchaya Sittiphol · Google review"},
+  {"prov": "PCH", "stars": 5, "when": "May 2026", "tags": [], "comment": "The photos are vibrant and the price is affordable. I will definitely order again.", "photos": 0, "ctx": "som natcha · Google review"},
+  {"prov": "PCH", "stars": 5, "when": "Jun 2025", "tags": [], "comment": "รูปสีสวย คมชัด ถูกใจมากค่ะ ได้ตามสั่ง พูดเพราะ บริการดี แม่ค้าใจดีน่ารักมากแถมภาพถ่ายเพิ่มด้วย ขอบคุณมากๆนะคะ ไว้โอกาสหน้าจะกลับไปอุดหนุนอีกนะคะ", "photos": 0, "ctx": "Nattaporn Chuirerk · Google review"},
+  {"prov": "NYC", "stars": 4, "when": "Apr 2026", "tags": [], "comment": "Phuket Bird Park is undoubtedly an enjoyable attraction, especially for families with children and for those who appreciate observing birds up close. Although it was not originally on our itinerary, we decided to visit after lunch, encou…", "photos": 0, "ctx": "Mustaque Mahammad Munsi · Google review"},
+  {"prov": "NYC", "stars": 4, "when": "Jun 2026", "tags": [], "comment": "It’s a good place to visit, specially with kids. There are some beautiful birds and some other animals and they have a fun 30 minutes show. For us the highlight of the trip were the bunnies and the little goats that we were able to feed.…", "photos": 0, "ctx": "Catalina Tenud · Google review"},
+  {"prov": "NYC", "stars": 5, "when": "May 2026", "tags": [], "comment": "Nice little zoo with various types of birds. The main attraction is the different varieties of hornbill birds. They also have a bird show three times a day, but please check the timings before going so you don’t miss it. Highly recommend…", "photos": 0, "ctx": "abhishek sunder lal · Google review"},
+  {"prov": "NYC", "stars": 5, "when": "Nov 2025", "tags": [], "comment": "It's a beautiful place. There are many different birds, an entertaining show, and a petting zoo. You should definitely buy animal food there—it's so much fun to feed the animals. In the park, you can feed various goats, an ostrich, and d…", "photos": 0, "ctx": "Алексей Становский · Google review"},
+  {"prov": "NYC", "stars": 4, "when": "Jan 2026", "tags": [], "comment": "This place has a wide variety of bird species, and not just birds — there are also other animals like crocodiles, goats, rabbits, and probably more that I can’t quite remember. It’s quite enjoyable to walk around, even though some bird s…", "photos": 0, "ctx": "John de j3k · Google review"}
 ];
 function revKw(cat){return /Food|Kitchen/.test(cat)?'thai,food':/Massage|Wellness/.test(cat)?'spa,massage':/Souvenir|Craft/.test(cat)?'handicraft,thai':/Café|Dessert/.test(cat)?'coffee,dessert':'phuket,thailand';}
 function screenReviews(){
@@ -2027,7 +1964,7 @@ function counterQRModal(){
         <div style="font-size:11px;font-weight:800;letter-spacing:.6px;color:var(--primary-d)">LOCAL RECOMMENDATIONS</div>
         <div style="font-size:18px;font-weight:800;margin:5px 0 2px">${PARTNER.name}</div>
         <div style="font-size:12px;color:var(--muted)">Trusted local food, cafés &amp; experiences near you</div>
-        <div class="qr" style="width:152px;height:152px;margin:14px auto">${qrSVG()}</div>
+        <div class="qr" style="width:152px;height:152px;margin:14px auto">${lomaQR(lomaShareBase())}</div>
         <div style="font-size:12.5px;font-weight:700;color:var(--primary-d)">Scan with your camera · no app needed</div>
         <div style="font-size:11px;color:var(--accent);background:var(--accent-l);border-radius:8px;padding:6px 10px;margin-top:10px;display:inline-block">${attribution()}</div>
       </div>
@@ -2319,7 +2256,7 @@ function screenQRLink(){
       : 'A one-off link for this guest. It opens <b>only the '+items.length+' place'+(items.length>1?'s':'')+' you chose</b> — then they can explore further on their own.'}</p>
 
     <div style="background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px;text-align:center;box-shadow:var(--shadow)">
-      <div style="width:172px;height:172px;margin:0 auto;background:#fff;border-radius:12px;padding:10px;border:1px solid var(--line)">${qrSVG()}</div>
+      <div style="width:172px;height:172px;margin:0 auto;background:#fff;border-radius:12px;padding:10px;border:1px solid var(--line)">${lomaQR(lomaShareBase())}</div>
       <div style="margin-top:12px;font-size:12px;font-weight:800;letter-spacing:.4px;color:var(--muted);text-transform:uppercase">${passive?'Recommended by this hotel':'Local picks recommended for you'}</div>
       <div style="font-size:13px;font-weight:700;color:var(--primary);margin-top:3px">${recUrl(rl)}</div>
       <div style="display:flex;gap:8px;margin-top:12px">
@@ -2972,6 +2909,7 @@ function reviewVideo(p){
 }
 function touristCard(){
   const p=P(state.curProv);
+  if(!p){ return `<div class="pad" style="padding-top:40px;text-align:center"><div style="font-size:15px;font-weight:700">${T('This place isn\'t available right now.')}</div><div style="margin-top:14px"><button class="btn btn-line" data-go="${state.curList?'reclist':'selfserve'}">${I.back} ${T('All local picks')}</button></div></div>`+touristTabbar(''); }
   return `<div class="tc-hero" data-photo="${p.img}" data-emo="${p.emo}">
     <button data-go="${state.curList?'reclist':'selfserve'}" style="position:absolute;top:14px;left:14px;z-index:5;display:inline-flex;align-items:center;gap:5px;background:rgba(252,247,236,.96);border-radius:99px;padding:7px 13px;font-size:12.5px;font-weight:700;color:var(--primary);box-shadow:var(--shadow)">‹ ${state.curList?'Back to your picks':T('All local picks')}</button>
     <div style="position:absolute;top:14px;right:14px;z-index:5"><div class="langtoggle" style="background:rgba(255,255,255,.94);border-color:transparent;box-shadow:var(--shadow)">${['EN','ไทย'].map(l=>`<button class="${state.lang===l?'on':''}" data-lang="${l}">${l}</button>`).join('')}</div></div>
@@ -2996,7 +2934,7 @@ function touristCard(){
       <div class="r"><span class="k">Languages</span><span class="v">${p.lang}</span></div>
     </div>
 
-    <div class="mapbox" style="height:160px;border-radius:14px;overflow:hidden;margin-top:16px">${mapSVG()}<div class="pin sel" style="left:54%;top:70%"><div class="p"><span>${p.emo}</span></div></div><div class="you" style="left:${PARTNER.x}%;top:${PARTNER.y}%"><div class="core"></div></div></div>
+    <div class="mapbox" style="height:160px;border-radius:14px;overflow:hidden;margin-top:16px">${lomaMapEmbed(p)}</div>
 
     <div style="margin-top:18px">
       <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--primary-d);margin-bottom:8px">${T('Why you can trust this')}</div>
@@ -3022,10 +2960,10 @@ function touristCard(){
 
     ${socialRow(p)}
 
-    <div style="margin-top:16px"><button class="btn btn-coral" onclick="toast('Opening maps…')">${I.nav} ${T('Get Directions')}</button></div>
+    <div style="margin-top:16px"><a class="btn btn-coral" href="${lomaMapsUrl(p)}" target="_blank" rel="noopener" onclick="lomaLog('provider_card_viewed','${p.id}','directions',{action:'directions'})">${I.nav} ${T('Get Directions')}</a></div>
     <div class="cta2" style="margin-top:9px">
-      <button class="btn btn-ghost" onclick="toast('Contacting provider…')">${I.phone} ${T('Contact')}</button>
-      <button class="btn btn-line" onclick="toast('Saved to this device')">${I.heart} ${T('Save')}</button>
+      <a class="btn btn-ghost" href="${lomaContactUrl(p)}" onclick="lomaLog('provider_card_viewed','${p.id}','contact',{action:'contact'})">${I.phone} ${T('Contact')}</a>
+      <button class="btn btn-line" onclick="lomaSave('${p.id}')">${I.heart} ${T('Save')}</button>
     </div>
     <div style="margin-top:9px"><button class="btn btn-soft" data-go="ref">${I.qr} ${T('Show Referral Code')}</button></div>
 
@@ -3050,7 +2988,7 @@ function touristRef(){
     <div class="refcode" style="margin-top:16px">
       <div class="lab">Your referral code</div>
       <div class="code">${refFor(p.id)}</div>
-      <div class="qr">${qrSVG()}</div>
+      <div class="qr">${lomaQR(shareLink(p.id))}</div>
       <div style="font-size:11.5px;color:var(--muted)">Show the code or QR. The provider scans it to confirm your visit — it helps local businesses get recognised.</div>
     </div>
     <div class="tc-by" style="margin-top:16px"><div class="h">🏨</div><div><b>${attribution()}</b></div></div>
@@ -3108,7 +3046,7 @@ function touristRoute(){
   </div>
   <div class="pad">
     <div class="tc-by"><div class="h">🏨</div><div><b>${attribution()}</b><br><span style="font-size:11.5px">${ids.length} local ${custom?'places picked for you':'stops on your way'}</span></div></div>
-    <div class="mapbox" style="height:160px;border-radius:12px;overflow:hidden;margin-top:12px">${mapSVG()}${ids.map((id,i)=>{const o=P(id);return `<div class="pin ${i===0?'sel':''}" style="left:${o.mapX}%;top:${o.mapY}%"><div class="lab">${i+1}</div><div class="p"><span>${i+1}</span></div></div>`;}).join('')}<div class="you" style="left:${PARTNER.x}%;top:${PARTNER.y}%"><div class="core"></div></div></div>
+    <div class="mapbox" style="height:160px;border-radius:12px;overflow:hidden;margin-top:12px">${lomaRouteEmbed(ids)}</div>
     ${ids.map((id,i)=>{const p=P(id);return `<div class="prow" style="margin-top:10px"><div style="width:28px;height:28px;border-radius:50%;background:var(--primary);color:#fff;display:grid;place-items:center;font-weight:800;font-size:13px;flex:none">${i+1}</div><div class="thumb" data-photo="${p.img}" data-emo="${p.emo}" style="width:54px;height:54px"></div><div class="info"><h3 style="font-size:14px">${p.name}</h3><div class="m">${p.emo} ${p.cat} · ${p.dist} · ${p.priceText.split('·')[0].trim()}</div><div class="bd">${localBadge()}</div></div></div>`;}).join('')}
     <div class="cta2"><button class="btn btn-primary" onclick="toast('Opening route in maps…')">${I.nav} Navigate route</button><button class="btn btn-ghost" data-go="ref">${I.qr} Show code</button></div>
     <div style="font-size:11.5px;color:var(--muted);background:var(--surface-2);border-radius:9px;padding:9px 11px;margin-top:12px;text-align:center">No login or app needed. Show the plan code at any stop.</div>
@@ -3607,11 +3545,13 @@ const ASK_PICKS=[
 function askExample(){return state.lang==='ไทย' ? 'อยากได้ร้านอาหารท้องถิ่นที่เปิดดึก รองรับรถเข็นผู้สูงอายุ ไม่ไกลมาก ราคาไม่แรง' : 'Local restaurant open late, wheelchair accessible for my mom, not far, and not expensive';}
 function askSend(t){ t=(t||'').trim();
   if(!t){const i=document.getElementById('lomaIn'); if(i){i.value=askExample(); i.focus();} return;}
-  state.askQ=t; state.askStage=1; state.askNeeds=null; render();
+  state.askQ=t; state.askStage=1; state.askNeeds=null; state.askPicks=null; state.askIntro=null; state.askErr=false;
+  state.askLoading=(typeof lomaAsk==='function'); render();
+  if(typeof lomaAsk==='function') lomaAsk(t);
 }
 function touristAsk(){
   if(!state.profile && !state.profileSkipped) return touristOnboard();
-  if(state.askStage===1 && !state.askNeeds) state.askNeeds=['Local food','Open late','♿ Wheelchair OK','Not far','Budget-friendly'];
+  if(state.askStage===1 && !state.askNeeds && !state.askLoading) state.askNeeds=['Local food','Open late','♿ Wheelchair OK','Not far','Budget-friendly'];
   const bot=t=>`<div style="display:flex;gap:9px;margin-bottom:13px"><div style="width:30px;height:30px;border-radius:50%;background:var(--primary);display:grid;place-items:center;flex:none"><span style="font-size:12px">✨</span></div><div style="background:var(--surface-2);border-radius:5px 15px 15px 15px;padding:10px 13px;font-size:13.5px;color:var(--ink);line-height:1.5;max-width:84%">${t}</div></div>`;
   const user=t=>`<div style="display:flex;justify-content:flex-end;margin-bottom:13px"><div style="background:var(--primary);color:#fff;border-radius:15px 5px 15px 15px;padding:10px 13px;font-size:13.5px;line-height:1.5;max-width:84%">${t}</div></div>`;
   let body='';
@@ -3623,18 +3563,27 @@ function touristAsk(){
     </div>`;
   } else {
     body+=user(state.askQ);
-    body+=bot(T('Got it — here is what I understood. Tap ✕ to change:'));
-    body+=`<div style="display:flex;flex-wrap:wrap;gap:6px;margin:0 0 13px 39px">${state.askNeeds.map(n=>`<span class="chip" style="display:inline-flex;align-items:center;gap:6px;background:var(--primary-l);color:var(--primary);font-weight:700">${T(n)}<button data-lomarm="${n}" style="opacity:.6;font-size:12px">✕</button></span>`).join('')}</div>`;
-    body+=bot(T('Three verified local places that fit — every baht goes 100% to the owner:'));
-    body+=`<div style="margin:0 0 6px">`+ASK_PICKS.map(x=>{const p=P(x.id); if(!p) return '';
-      return bigCard(p,{sub:T(x.why),gem:x.gem});
+    if(state.askLoading){
+      body+=bot(state.lang==='ไทย'?'กำลังค้นหาร้าน/สถานที่ท้องถิ่นที่ตรงกับคุณ… ✨':'Finding the best local matches for you… ✨');
+    } else if(state.askErr){
+      body+=bot(state.lang==='ไทย'?'ขออภัยค่ะ ตอนนี้เชื่อมต่อผู้ช่วย AI (thaillm) ไม่ได้ กรุณาลองใหม่อีกครั้ง 🙏':'Sorry — I could not reach the AI (thaillm) right now. Please try again. 🙏');
+      body+=`<div style="margin:2px 0 6px 39px"><button class="btn btn-coral" data-lomaretry style="width:auto;padding:10px 18px;font-weight:700">${state.lang==='ไทย'?'ลองอีกครั้ง':'Try again'}</button></div>`;
+    } else {
+    var _askReal=!!(state.askPicks&&state.askPicks.length);
+    var _askItems=_askReal?state.askPicks:ASK_PICKS;
+    body+=bot(state.askIntro||T('Got it — here is what I understood. Tap ✕ to change:'));
+    if((state.askNeeds||[]).length) body+=`<div style="display:flex;flex-wrap:wrap;gap:6px;margin:0 0 13px 39px">${state.askNeeds.map(n=>`<span class="chip" style="display:inline-flex;align-items:center;gap:6px;background:var(--primary-l);color:var(--primary);font-weight:700">${T(n)}<button data-lomarm="${n}" style="opacity:.6;font-size:12px">✕</button></span>`).join('')}</div>`;
+    body+=bot(T('Verified local places that fit — every baht goes 100% to the owner:'));
+    body+=`<div style="margin:0 0 6px">`+_askItems.map(x=>{const p=P(x.id); if(!p) return '';
+      return bigCard(p,{sub:_askReal?x.why:T(x.why),gem:!!x.gem});
     }).join('')+`</div>`;
     body+=`<div style="font-size:11.5px;color:var(--muted);background:var(--surface-2);border-radius:9px;padding:9px 12px;margin:0 0 13px 39px;line-height:1.5">💚 ${T('No ads · no commission · shops never pay to appear. Your hotel earns Impact Credits for this.')}</div>`;
     body+=`<div style="display:flex;flex-wrap:wrap;gap:8px;margin:0 0 6px 39px">
-      <button class="chip" data-lomaref>💸 ${T('Cheaper')}</button>
-      <button class="chip" data-lomaref>🚶 ${T('Walkable only')}</button>
-      <button class="chip" data-lomaref>🔄 ${T('Different vibe')}</button>
+      <button class="chip" data-lomaref="${state.lang==='ไทย'?'ถูกกว่านี้':'cheaper'}">💸 ${T('Cheaper')}</button>
+      <button class="chip" data-lomaref="${state.lang==='ไทย'?'เดินถึงได้':'walkable only'}">🚶 ${T('Walkable only')}</button>
+      <button class="chip" data-lomaref="${state.lang==='ไทย'?'บรรยากาศอื่น':'different vibe'}">🔄 ${T('Different vibe')}</button>
     </div>`;
+    }
   }
   return `<div class="appbar"><div class="row1">
       <button data-go="selfserve" style="width:32px;height:32px;border-radius:50%;background:var(--surface-2);display:grid;place-items:center;flex:none;font-size:20px;color:var(--ink-2);line-height:1">‹</button>
@@ -3700,7 +3649,7 @@ function touristEventDetail(){
     <div class="why"><div class="lab">${I.spark} Why go</div><p>${e.whyGo}</p></div>
     <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:12px">${e.tags.map(t=>`<span class="badge b-price">#${t}</span>`).join('')}</div>
     <div class="mapbox" style="height:160px;margin-top:14px;border-radius:14px">${mapSVG()}<div class="pin sel" style="left:${xy[0]}%;top:${xy[1]}%"><div class="p"><span>${EV_EMO[e.cat]}</span></div></div></div>
-    <div class="cta2" style="margin-top:14px"><button class="btn btn-primary" onclick="toast('Opening in Google Maps…')">${I.nav} Get Directions</button><button class="btn btn-ghost" onclick="toast('Added to your Phuket plan')">＋ Add to my plan</button></div>
+    <div class="cta2" style="margin-top:14px"><a class="btn btn-primary" href="${lomaEventMapUrl(e)}" target="_blank" rel="noopener">${I.nav} Get Directions</a><button class="btn btn-ghost" onclick="toast('Added to your Phuket plan')">＋ Add to my plan</button></div>
     <div style="text-align:center;font-size:11.5px;color:var(--muted);margin-top:12px">Shared with you via LOMA · no app needed</div>
   </div>`;
 }
@@ -4035,7 +3984,7 @@ function chCheckin(c,acct){
 
     <div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:8px">${days.map(d=>`<button data-bhday="${d.idx}" class="chip ${day===d.idx?'on':''}" style="flex:none">${d.top} ${d.num}</button>`).join('')}</div>
 
-    ${guests.length?guests.map((b,i)=>{const st=b.status||'booked';
+    ${guests.length?guests.map((b,i)=>{let st=b.status||'booked'; if(st==='confirmed'||st==='requested') st='booked';
       const chip={booked:['b-price','⏳ Awaiting check-in'],attended:['b-ready','✓ Checked in'],noshow:['b-warn','✕ No-show — ฿0 counted']}[st];
       return `<div class="pcard" style="margin-bottom:9px;padding:12px 13px">
         <div style="display:flex;align-items:center;gap:11px">
@@ -4458,7 +4407,7 @@ function ppEdit(){
 }
 function ppProfile(){
   const p=curProvP(), menu=provMenu(p), kw=revKw(p.cat);
-  const photos=[p.img, `https://loremflickr.com/300/300/${kw}?lock=21`, `https://loremflickr.com/300/300/${kw}?lock=42`];
+  const photos=[p.img].filter(Boolean);
   return `${provAppbar()}
   <div class="ed-top">
     <h1>This is what<br>they see.</h1>
@@ -5968,10 +5917,10 @@ document.body.addEventListener('click',e=>{
   if(bookpax){state.bookGuests=Math.min(10,Math.max(1,state.bookGuests+(+bookpax.dataset.bookpax)));renderTourist();return;}
   const book=e.target.closest('[data-book]');
   if(book){const[id,di,r]=book.dataset.book.split('|');const day=(bookDays().find(d=>d.idx===+di)||{}).top||('day '+di);
-    state.myBookings.push({id,dayIdx:+di,round:r,pax:state.bookGuests});
+    lomaAddBooking(id,+di,r,state.bookGuests);
     toast('✓ Booked '+state.bookGuests+' · '+r+' · '+day);renderTourist();return;}
   const cancelb=e.target.closest('[data-cancelbook]');
-  if(cancelb){state.myBookings.splice(+cancelb.dataset.cancelbook,1);toast('Booking cancelled');renderTourist();return;}
+  if(cancelb){lomaCancelBooking(+cancelb.dataset.cancelbook);toast('Booking cancelled');renderTourist();return;}
   const askq=e.target.closest('[data-askq]');
   if(askq){sendChat(askq.dataset.askq);return;}
   const chatsend=e.target.closest('[data-chatsend]');
@@ -5983,7 +5932,9 @@ document.body.addEventListener('click',e=>{
   const lomarm=e.target.closest('[data-lomarm]');
   if(lomarm){state.askNeeds=(state.askNeeds||[]).filter(n=>n!==lomarm.dataset.lomarm);toast(state.lang==='ไทย'?'จัดอันดับใหม่ตามเงื่อนไขที่เหลือ (เดโม)':'Re-ranking with remaining needs (demo)');render();return;}
   const lomaref=e.target.closest('[data-lomaref]');
-  if(lomaref){toast(state.lang==='ไทย'?'แอปจริงจัดอันดับใหม่ทันทีค่ะ':'Full app re-ranks instantly 🙂');return;}
+  const lomaretry=e.target.closest('[data-lomaretry]');
+  if(lomaretry){ askSend(state.askQ||''); return; }
+  if(lomaref){var _r=lomaref.dataset.lomaref||''; askSend(((state.askQ||'')+' '+_r).trim()); return;}
   const obc=e.target.closest('[data-ob]');
   if(obc){const i=obc.dataset.ob.indexOf('|');const k=obc.dataset.ob.slice(0,i),v=obc.dataset.ob.slice(i+1);state.ob=state.ob||{};state.ob[k]=v;if(k==='n')delete state.ob.nOther;render();return;}
   const obcty=e.target.closest('[data-obcountry]');
@@ -6252,7 +6203,7 @@ document.body.addEventListener('click',e=>{
   /* community host check-in — a booking only becomes a visit when the host scans the guest in */
   const cScan=e.target.closest('[data-commscan]');
   if(cScan){const a=commAcct();if(!a)return;const c=COMM(a.commId);
-    const pend=dayBookings(c,state.bhDay||0).filter(b=>(b.status||'booked')==='booked');
+    const pend=dayBookings(c,state.bhDay||0).filter(b=>{var s=b.status||'booked';return s==='booked'||s==='confirmed'||s==='requested';});
     if(!pend.length){toast('📷 Camera would open — no guests awaiting check-in on this day');return;}
     checkInBooking(pend[0],c);return;}
   const cIn=e.target.closest('[data-checkin]');
@@ -6375,13 +6326,14 @@ document.body.addEventListener('click',e=>{
       transport:(F.cfTrans||'').trim()||'Ask when you book.', limits:(F.cfLimits||'').trim()||'—', social:(F.cfSocial||'').trim()});
     state.commForm={};state.commStep=1;state.provAuthScreen='communityDone';renderProvider();toast('✓ Community submitted');return;}
   const gSrch=e.target.closest('[data-gsearch]');
-  if(gSrch){const q=(document.getElementById('gquery').value||'').toLowerCase().trim();
-    let res=GOOGLE_RESULTS.filter(r=>r.name.toLowerCase().includes(q));if(!res.length)res=GOOGLE_RESULTS;
-    const box=document.getElementById('gresults');
-    box.innerHTML=`<div style="margin-top:10px;display:flex;flex-direction:column;gap:8px">${res.map(r=>{const i=GOOGLE_RESULTS.indexOf(r);return `<div class="prow" data-gpick="${i}" style="margin:0;cursor:pointer;background:var(--surface)"><div data-photo="${r.img}" data-emo="📍" style="width:48px;height:48px;border-radius:9px;flex:none"></div><div class="info"><h3 style="font-size:13px">${r.name}</h3><div class="m" style="font-size:11px">${r.rating}★ (${r.reviews}) · ${r.cat} · ${r.area}</div></div><div style="font-size:11px;color:var(--primary);font-weight:700;align-self:center">Import</div></div>`;}).join('')}</div>`;
-    hydratePhotos(box);return;}
+  if(gSrch){const q=(document.getElementById('gquery').value||'').trim();const box=document.getElementById('gresults');
+    const render=(res)=>{state.gResults=res;box.innerHTML=res.length?`<div style="margin-top:10px;display:flex;flex-direction:column;gap:8px">${res.map((r,i)=>`<div class="prow" data-gpick="${i}" style="margin:0;cursor:pointer;background:var(--surface)"><div data-photo="${r.img||''}" data-emo="📍" style="width:48px;height:48px;border-radius:9px;flex:none"></div><div class="info"><h3 style="font-size:13px">${r.name}</h3><div class="m" style="font-size:11px">${r.rating}★ (${r.reviews}) · ${r.cat} · ${r.area}</div></div><div style="font-size:11px;color:var(--primary);font-weight:700;align-self:center">Import</div></div>`).join('')}</div>`:`<div style="margin-top:10px;color:var(--muted);font-size:12px">No matches on Google for “${q}”.</div>`;hydratePhotos(box);};
+    if(q.length<2){render(GOOGLE_RESULTS);return;}
+    box.innerHTML=`<div style="margin-top:10px;color:var(--muted);font-size:12px">Searching Google…</div>`;
+    fetch(_LOMA_API_BASE+'/places/search?q='+encodeURIComponent(q)).then(x=>x.ok?x.json():Promise.reject()).then(render).catch(()=>render(GOOGLE_RESULTS.filter(r=>r.name.toLowerCase().includes(q.toLowerCase()))));
+    return;}
   const gPick=e.target.closest('[data-gpick]');
-  if(gPick){const r=GOOGLE_RESULTS[+gPick.dataset.gpick];state.provReg.imported=r;state.provReg.cat=r.cat;state.provReg.area=r.area;state.provReg.googleClaimed=true;renderProvider();toast('Imported "'+r.name+'" from Google');return;}
+  if(gPick){const list=(state.gResults&&state.gResults.length)?state.gResults:GOOGLE_RESULTS;const r=list[+gPick.dataset.gpick];state.provReg.imported=r;state.provReg.cat=r.cat;state.provReg.area=r.area;state.provReg.googleClaimed=true;renderProvider();toast('Imported "'+r.name+'" from Google');return;}
   const pFill=e.target.closest('[data-pvfill]');
   if(pFill){const u=pFill.dataset.pvfill;const a=PROVIDER_ACCOUNTS.find(x=>x.user===u)||COMMUNITY_ACCOUNTS.find(x=>x.user===u);if(!a)return;document.getElementById('pvUser').value=a.user;document.getElementById('pvPass').value=a.pass;document.getElementById('pvErr').style.display='none';return;}
   const pLogin=e.target.closest('[data-pvlogin]');
@@ -6577,8 +6529,10 @@ function switchPersona(p){state.persona=p;
   const el=document.getElementById('p-'+p);if(el)el.classList.remove('hidden');}
 function openShare(id){state.shareId=id;document.getElementById('shareOverlay').innerHTML=shareModal(id);document.getElementById('shareOverlay').classList.add('show');}
 function shareLink(id){
-  if(id&&EV(id)) return 'https://loma.app/e/'+refFor(id);
-  return id==='PLAN' ? 'https://loma.app/r/LOMA-PLAN-'+(1000+(state.filter.mode==='route'?state.routeDest:'plan').length*611%9000) : 'https://loma.app/r/'+refFor(id);}
+  var base; try{ base=(location.protocol==='file:')?'https://loma.app/':(location.origin+location.pathname); }catch(e){ base='https://loma.app/'; }
+  if(id&&EV(id)) return base+'?e='+encodeURIComponent(id)+'&ref='+refFor(id);
+  if(id==='PLAN') return base+'?plan=1';
+  return base+'?p='+encodeURIComponent(id)+'&ref='+refFor(id);}
 function shareMessage(id){
   if(id&&EV(id)){const e=EV(id);return `${EV_EMO[e.cat]} ${e.title}\n${attribution()}\n📅 ${e.date} · ${e.timeText}\n📍 ${e.venue}, ${e.area}\nSee details & map:\n${shareLink(id)}`;}
   if(id==='PLAN'){return `🗺 ${planTitle()}\n${attribution()}\n${planStops().length} local places — open:\n${shareLink(id)}`;}
@@ -6589,9 +6543,9 @@ function renderSharePreview(ch){
   const box=document.getElementById('sharePreview'); if(!box) return;
   const id=state.shareId, link=shareLink(id), msg=shareMessage(id), enc=encodeURIComponent(msg);
   const bubble=bg=>`<div style="background:${bg};border-radius:13px;padding:11px 13px;font-size:12.5px;white-space:pre-line;line-height:1.55;color:#12241f;box-shadow:var(--shadow)">${msg}</div>`;
-  const openBtn=(label,href,color)=>`<a href="${href}" target="_blank" rel="noopener" class="btn" style="background:${color};color:#fff;margin-top:10px;text-decoration:none">↗ Open in ${label}</a>`;
+  const openBtn=(label,href,color)=>`<a href="${href}" target="_blank" rel="noopener" class="btn" style="background:${color};color:#fff;margin-top:10px;text-decoration:none" onclick="lomaLog('link_shared','${id}','${label}')">↗ Open in ${label}</a>`;
   let h='';
-  if(ch==='QR'){h=`<div style="text-align:center;border:1px solid var(--line);border-radius:13px;padding:14px"><div class="qr" style="width:150px;height:150px;margin:0 auto 8px">${qrSVG()}</div><div style="font-size:12px;color:var(--muted)">Guest scans this with their camera to open the card</div><div style="font-size:11px;background:var(--surface-2);border-radius:8px;padding:7px 9px;margin-top:8px;word-break:break-all">${link}</div></div>`;}
+  if(ch==='QR'){h=`<div style="text-align:center;border:1px solid var(--line);border-radius:13px;padding:14px"><div class="qr" style="width:150px;height:150px;margin:0 auto 8px">${lomaQR(link)}</div><div style="font-size:12px;color:var(--muted)">Guest scans this with their camera to open the card</div><div style="font-size:11px;background:var(--surface-2);border-radius:8px;padding:7px 9px;margin-top:8px;word-break:break-all">${link}</div></div>`;}
   else if(ch==='WhatsApp'){h=`<div style="font-size:11px;font-weight:800;color:#1DA851;margin-bottom:6px">💬 WHATSAPP — this is what the guest receives</div>${bubble('#DCF8C6')}${openBtn('WhatsApp','https://wa.me/?text='+enc,'#25D366')}`;}
   else if(ch==='LINE'){h=`<div style="font-size:11px;font-weight:800;color:#06C755;margin-bottom:6px">💚 LINE — message preview</div>${bubble('#E7FBE9')}${openBtn('LINE','https://line.me/R/msg/text/?'+enc,'#06C755')}`;}
   else if(ch==='SMS'){h=`<div style="font-size:11px;font-weight:800;color:#2563B0;margin-bottom:6px">✉️ SMS — message preview</div>${bubble('#EDEFF3')}${openBtn('Messages','sms:?&body='+enc,'#2563B0')}`;}
@@ -6646,6 +6600,60 @@ function render(){
   if(el) new MutationObserver(()=>hydratePhotos(el)).observe(el,{childList:true,subtree:true});
 });
 render();
+
+/* ===== LOMA booking backend =====================================================
+   Persists community-experience bookings to the real database via the FastAPI
+   service (loma-app/logging-api -> `booking` table). Best-effort: if the API is
+   unreachable the app keeps working entirely in-memory, exactly as before.
+   Point it at a different host with  window.LOMA_API_BASE  or  ?api=http://host:8000
+================================================================================= */
+var LOMA_API_BASE = (function(){
+  try{ var q=new URLSearchParams(location.search).get('api'); if(q) return q.replace(/\/+$/,''); }catch(e){}
+  if(window.LOMA_API_BASE) return String(window.LOMA_API_BASE).replace(/\/+$/,'');
+  return 'http://'+(location.hostname||'localhost')+':8000';
+})();
+function _lomaIso(di){ var d=new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate()+di);
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function _lomaDayIdx(iso){ var t=new Date(iso+'T00:00:00'), n=new Date(); n.setHours(0,0,0,0);
+  return Math.round((t-n)/86400000); }
+function _lomaHotel(){ try{ return (PARTNER&&PARTNER.name)||'LOMA app'; }catch(e){ return 'LOMA app'; } }
+/* Tourist self-books: push locally now (snappy UI), persist to the DB, then adopt the
+   server-minted ref so a later cancel/check-in targets the right row. */
+function lomaAddBooking(id,di,r,pax){
+  var b={id:id,dayIdx:di,round:r,pax:pax,date:_lomaIso(di),status:'confirmed',self:true,hotel:_lomaHotel(),guest:'App guest'};
+  state.myBookings.push(b);
+  try{ fetch(LOMA_API_BASE+'/bookings',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({community_id:id,date:b.date,round:r,pax:pax,hotel:b.hotel,guest:b.guest,self_serve:true})})
+    .then(function(x){return x.ok?x.json():null;})
+    .then(function(row){ if(row&&row.ref) b.ref=row.ref; }).catch(function(){}); }catch(e){}
+  return b;
+}
+function lomaCancelBooking(i){
+  var b=state.myBookings[i]; state.myBookings.splice(i,1);
+  if(b&&b.ref){ try{ fetch(LOMA_API_BASE+'/bookings/'+encodeURIComponent(b.ref),{method:'DELETE'}).catch(function(){}); }catch(e){} }
+}
+function lomaCheckIn(b){
+  if(b&&b.ref){ try{ fetch(LOMA_API_BASE+'/bookings/'+encodeURIComponent(b.ref),{method:'PATCH',
+      headers:{'Content-Type':'application/json'},body:JSON.stringify({status:'attended'})}).catch(function(){}); }catch(e){} }
+}
+/* On load, replace the in-memory bookings with what's really in the DB (only rows for
+   communities this build knows about), so a reload — or another device — shows the
+   same live bookings. */
+function lomaHydrateBookings(){
+  try{
+    fetch(LOMA_API_BASE+'/bookings').then(function(x){return x.ok?x.json():null;}).then(function(rows){
+      if(!Array.isArray(rows)) return;
+      var known=(typeof COMM==='function');
+      state.myBookings = rows.filter(function(r){ return !known || COMM(r.id); }).map(function(r){
+        return {id:r.id,dayIdx:_lomaDayIdx(r.date),round:r.round,pax:r.pax,date:r.date,
+                ref:r.ref,status:r.status,hotel:r.hotel,guest:r.guest,self:r['self']};
+      });
+      if(typeof render==='function') render();
+    }).catch(function(){});
+  }catch(e){}
+}
+lomaHydrateBookings();
+
 
 /* ===== LOMA real-data layer: provider catalog ===================================
    The tourist "Local experiences, recommended for you" lists are driven by
@@ -7061,6 +7069,193 @@ function _lomaRecentRows(){
 
 lomaHydrateProviders();
 
+
+/* ===== LOMA real-data layer: live actions ======================================
+   Real Google Maps directions from the provider table, real share/referral links,
+   and DB funnel logging (/events). Best-effort — nothing blocks if the API is down.
+================================================================================= */
+function _lomaApiBase(){
+  try{ if(typeof _LOMA_API_BASE!=='undefined' && _LOMA_API_BASE) return _LOMA_API_BASE; }catch(e){}
+  try{ if(typeof LOMA_API_BASE!=='undefined' && LOMA_API_BASE) return LOMA_API_BASE; }catch(e){}
+  return 'http://'+(location.hostname||'localhost')+':8000';
+}
+function lomaSession(){
+  try{ var k='loma_sid', v=localStorage.getItem(k);
+    if(!v){ v='ts_'+Math.abs((Date.now()^(location.href.length*2654435761))>>>0).toString(36)
+              +Math.floor((typeof performance!=='undefined'?performance.now():0)).toString(36);
+            localStorage.setItem(k,v); }
+    return v;
+  }catch(e){ return 'ts_anon'; }
+}
+/* POST one funnel event to the DB (fire-and-forget). Shapes match logging-api EventIn. */
+function lomaLog(type, provider_id, channel, meta){
+  try{
+    var body={ event_type:type, tourist_session_id:lomaSession(),
+      hotel_id:(typeof PARTNER!=='undefined'&&PARTNER&&PARTNER.id)||null,
+      provider_id:provider_id||null, channel:channel||null, metadata:meta||{} };
+    fetch(_lomaApiBase()+'/events',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(body), keepalive:true}).catch(function(){});
+  }catch(e){}
+}
+/* Real Google Maps URL for a provider operator, straight from the provider table:
+   mapsUrl -> place_id search -> lat/lng directions -> name+area search. */
+function lomaMapsUrl(o){
+  if(o){
+    if(o.mapsUrl) return o.mapsUrl;
+    if(o.placeId) return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(o.name||'')+'&query_place_id='+encodeURIComponent(o.placeId);
+    if(o.lat!=null&&o.lng!=null) return 'https://www.google.com/maps/dir/?api=1&destination='+encodeURIComponent(o.lat+','+o.lng);
+  }
+  var q=[o&&o.name, o&&o.area, 'Phuket'].filter(Boolean).join(' ');
+  return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(q||'Phuket');
+}
+function lomaEventMapUrl(e){ return lomaMapsUrl({ name:(e&&e.venue)||'', area:(e&&e.area)||'' }); }
+/* A real, interactive Google Map centred on the provider, from the provider table's
+   coordinates / place_id. Uses the official Maps Embed API when a key is supplied via
+   window.LOMA_MAPS_KEY or ?mapskey=..., else a keyless Google Maps embed. */
+function lomaMapEmbed(o){
+  var key=''; try{ key=window.LOMA_MAPS_KEY||new URLSearchParams(location.search).get('mapskey')||''; }catch(e){}
+  var lang=(typeof state!=='undefined'&&state.lang==='ไทย')?'th':'en', src;
+  if(key){
+    var q=(o&&o.placeId)?('place_id:'+encodeURIComponent(o.placeId))
+        :(o&&o.lat!=null&&o.lng!=null)?encodeURIComponent(o.lat+','+o.lng)
+        :encodeURIComponent([o&&o.name,o&&o.area,'Phuket'].filter(Boolean).join(' '));
+    src='https://www.google.com/maps/embed/v1/place?key='+encodeURIComponent(key)+'&q='+q+'&zoom=16&language='+lang;
+  } else {
+    var q2=(o&&o.lat!=null&&o.lng!=null)?encodeURIComponent(o.lat+','+o.lng)
+         :encodeURIComponent([o&&o.name,o&&o.area,'Phuket'].filter(Boolean).join(' '));
+    src='https://maps.google.com/maps?q='+q2+'&z=16&hl='+lang+'&output=embed';
+  }
+  return '<iframe title="Map" src="'+src+'" style="width:100%;height:100%;border:0;display:block" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>';
+}
+/* A real Google Map with the multi-stop route from the hotel through each pick, using
+   the provider table's coordinates. Embed API directions mode when a key is supplied,
+   else a keyless Google Maps directions embed (saddr/daddr). */
+function lomaRouteEmbed(ids){
+  var stops=(ids||[]).map(function(id){ return P(id); }).filter(Boolean);
+  var key=''; try{ key=window.LOMA_MAPS_KEY||new URLSearchParams(location.search).get('mapskey')||''; }catch(e){}
+  var lang=(typeof state!=='undefined'&&state.lang==='ไทย')?'th':'en';
+  function loc(o){ return (o&&o.lat!=null&&o.lng!=null) ? (o.lat+','+o.lng) : [o&&o.name,o&&o.area,'Phuket'].filter(Boolean).join(' '); }
+  var hotel=(typeof PARTNER!=='undefined'&&PARTNER)||{};
+  var origin=(hotel.lat!=null&&hotel.lng!=null)?(hotel.lat+','+hotel.lng):(hotel.name||'Phuket');
+  if(!stops.length) return lomaMapEmbed({lat:hotel.lat,lng:hotel.lng,name:hotel.name,area:'Phuket'});
+  var src;
+  if(key){
+    var dest=loc(stops[stops.length-1]);
+    var way=stops.slice(0,-1).map(loc).map(encodeURIComponent).join('|');
+    src='https://www.google.com/maps/embed/v1/directions?key='+encodeURIComponent(key)+'&origin='+encodeURIComponent(origin)+'&destination='+encodeURIComponent(dest)+(way?'&waypoints='+way:'')+'&mode=driving&language='+lang;
+  } else {
+    var daddr=stops.map(loc).map(encodeURIComponent).join('+to:');
+    src='https://maps.google.com/maps?saddr='+encodeURIComponent(origin)+'&daddr='+daddr+'&hl='+lang+'&output=embed';
+  }
+  return '<iframe title="Route map" src="'+src+'" style="width:100%;height:100%;border:0;display:block" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>';
+}
+/* The app's own base URL (so QR codes / share links point back to this deployment). */
+function lomaShareBase(){
+  try{ return (location.protocol==='file:')?'https://loma.app/':(location.origin+location.pathname); }
+  catch(e){ return 'https://loma.app/'; }
+}
+/* A real, scannable QR that encodes `text`. Uses the shipped QR lib (window.LomaQR);
+   falls back to a QR image service if the lib didn't load. */
+function lomaQR(text){
+  var t=text||lomaShareBase();
+  try{
+    if(window.LomaQR && LomaQR.create){
+      var qr=LomaQR.create(t,{errorCorrectionLevel:'M'}), d=qr.modules.data, n=qr.modules.size, cells='';
+      for(var y=0;y<n;y++)for(var x=0;x<n;x++){ if(d[y*n+x]) cells+='<rect x="'+x+'" y="'+y+'" width="1" height="1"/>'; }
+      return '<svg viewBox="0 0 '+n+' '+n+'" width="100%" height="100%" fill="#0A3A73" shape-rendering="crispEdges">'+cells+'</svg>';
+    }
+  }catch(e){}
+  return '<img alt="QR code" src="https://api.qrserver.com/v1/create-qr-code/?margin=0&size=220x220&data='+encodeURIComponent(t)+'" style="width:100%;height:100%;object-fit:contain"/>';
+}
+/* Real contact link — phone, else website, else maps. */
+function lomaContactUrl(o){
+  if(o&&o.phone) return 'tel:'+String(o.phone).replace(/[^+0-9]/g,'');
+  if(o&&o.website) return o.website;
+  return lomaMapsUrl(o);
+}
+/* Ask LOMA (AI) — a shortlist of REAL providers relevant to the request (keyword-ranked
+   over the catalog, falling back to top-rated). */
+function lomaAskCandidates(text){
+  var ops=(window.LOMA_DATA&&window.LOMA_DATA.operators)||[];
+  var toks=String(text||'').toLowerCase().split(/[^a-z0-9฀-๿]+/).filter(function(w){return w.length>2;});
+  function sc(o){ var hay=((o.name||'')+' '+(o.cat||'')+' '+(o.area||'')+' '+((o.bestFor||[]).join(' '))+' '+(o.note||'')+' '+(o.whyLocal||'')).toLowerCase(); var s=0; for(var i=0;i<toks.length;i++){ if(hay.indexOf(toks[i])>=0) s++; } return s; }
+  var scored=ops.map(function(o){ return {o:o,s:sc(o)}; });
+  var hit=scored.filter(function(x){ return x.s>0; });
+  hit.sort(function(a,b){ return (b.s-a.s)||((b.o.loma_score||b.o.quality||0)-(a.o.loma_score||a.o.quality||0)); });
+  if(!hit.length){ scored.sort(function(a,b){ return (b.o.loma_score||b.o.quality||0)-(a.o.loma_score||a.o.quality||0); }); hit=scored; }
+  return hit.slice(0,20).map(function(x){ var o=x.o; return {id:o.id,name:o.name,cat:o.cat,area:o.area,rating:o.rating,reviews:o.reviews,priceText:o.priceText,price:o.price,hours:o.hours,address:o.address||o.note,whyLocal:o.whyLocal,summary:o.sum}; });
+}
+/* Ask LOMA (AI) — POST the request + candidates to /ask; the Thai LLM extracts the needs
+   and picks 2-4 matching providers with reasons. Populates state and re-renders. On any
+   failure it just clears the loading flag so touristAsk shows its built-in picks. */
+function lomaAsk(text){
+  var body={ message:String(text||''), lang:(typeof state!=='undefined'&&state.lang==='ไทย')?'th':'en', area:(typeof PARTNER!=='undefined'&&PARTNER&&PARTNER.area)||null, providers:lomaAskCandidates(text), limit:20 };
+  var opt={ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) };
+  try{ if(typeof AbortSignal!=='undefined' && AbortSignal.timeout) opt.signal=AbortSignal.timeout(60000); }catch(e){}
+  fetch(_lomaApiBase()+'/ask',opt).then(function(x){ return x.ok?x.json():null; }).then(function(d){
+    if(typeof state==='undefined') return;
+    state.askLoading=false;
+    if(d&&d.ok&&d.picks&&d.picks.length){
+      state.askPicks=d.picks; state.askIntro=d.intro||null; state.askErr=false;
+      if(d.needs&&d.needs.length) state.askNeeds=d.needs;
+    } else { state.askErr=true; }
+    if(typeof render==='function') render();
+  }).catch(function(){ if(typeof state!=='undefined'){ state.askLoading=false; state.askErr=true; } if(typeof render==='function') render(); });
+}
+/* Persist a saved pick on this device (survives reloads). */
+function lomaSave(id){
+  try{ var k='loma_saved', a=JSON.parse(localStorage.getItem(k)||'[]');
+    if(a.indexOf(id)<0){ a.push(id); localStorage.setItem(k,JSON.stringify(a)); }
+    if(typeof SAVED!=='undefined'&&SAVED&&SAVED.add) SAVED.add(id);
+  }catch(e){}
+  if(typeof toast==='function') toast('Saved to this device');
+}
+/* Incoming share/referral link: ?p=<providerId>&ref=<code> (or ?e=<eventId>). Opens the
+   matching card as a tourist and logs received + opened. Runs once; retried while the
+   provider catalog finishes hydrating from the DB. */
+function lomaApplyIncomingLink(){
+  if(window._lomaLinkApplied) return;
+  var qs; try{ qs=new URLSearchParams(location.search); }catch(e){ return; }
+  var pid=qs.get('p'), eid=qs.get('e'), ref=qs.get('ref');
+  if(!pid && !eid) return;
+  var meta=ref?{ref:ref}:{};
+  if(pid && typeof P==='function' && P(pid)){
+    window._lomaLinkApplied=true;
+    try{
+      state.persona='tourist';
+      state.curProv=pid;
+      /* Land on the branded "Local picks recommended for you" scan page (not the
+         bare provider card): seed a rec list holding the shared place. */
+      state.curList={ id:'rl_link_'+pid, kind:'assisted', items:[pid], note:'',
+        hotel_name:(typeof PARTNER!=='undefined'&&PARTNER&&PARTNER.name)||'' };
+      if(typeof gotoTourist==='function'){ gotoTourist('reclist'); }
+      else { state.tourist='reclist'; }
+    }catch(e){}
+    lomaLog('link_received', pid, null, meta);
+    lomaLog('link_opened', pid, null, meta);
+    if(typeof render==='function') render();
+  } else if(eid && typeof EV==='function' && EV(eid)){
+    window._lomaLinkApplied=true;
+    lomaLog('link_received', null, null, {event:eid, ref:ref||''});
+    lomaLog('link_opened', null, null, {event:eid, ref:ref||''});
+  }
+}
+try{ lomaApplyIncomingLink(); }catch(e){}
+if(!window._lomaLinkApplied){
+  try{
+    var _lomaQ=new URLSearchParams(location.search);
+    if(_lomaQ.get('p')||_lomaQ.get('e')){
+      var _lomaLinkTries=0;
+      var _lomaLinkIv=setInterval(function(){
+        _lomaLinkTries++;
+        try{ lomaApplyIncomingLink(); }catch(e){}
+        if(window._lomaLinkApplied || _lomaLinkTries>20) clearInterval(_lomaLinkIv);
+      }, 500);
+    }
+  }catch(e){}
+}
+
 </script>
+<script src="data/qrcode.browser.js"></script>
 </body>
 </html>
