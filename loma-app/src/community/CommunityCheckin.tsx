@@ -1,8 +1,10 @@
+import { useState } from "react";
 import Icon from "../components/Icon";
 import { useVersion } from "../store";
 import { bahtF } from "../econ";
-import { bookingsFor, setBookingStatus } from "../bookings";
+import { bookingsFor, setBookingStatus, bookingByRef } from "../bookings";
 import { trackEvent } from "../impact";
+import QRScanner from "../components/QRScanner";
 import { statusBadge, commRevenue } from "./lib";
 import type { CommScreenProps } from "./CommunityApp";
 
@@ -15,6 +17,7 @@ const fmtDate = (iso: string) => {
 
 export default function CommunityCheckin({ c, toast }: CommScreenProps) {
   useVersion();
+  const [scanning, setScanning] = useState(false);
   const bookings = [...bookingsFor(c.id)].sort((a, b) => a.date.localeCompare(b.date));
   const rev = commRevenue(c);
 
@@ -23,6 +26,22 @@ export default function CommunityCheckin({ c, toast }: CommScreenProps) {
     // A checked-in guest is a confirmed visit; the sending hotel earns Impact Credits.
     trackEvent("provider_confirmed_visit", { community_id: c.id });
     toast(`Checked in ${pax} guest${pax > 1 ? "s" : ""} — counted as income`);
+  };
+
+  // Scan a tourist's booking QR. The QR encodes the booking ref (e.g. BK-3001).
+  const onScan = (text: string) => {
+    setScanning(false);
+    const ref = (text.match(/BK-\d+/i) || [text.trim()])[0];
+    const b = bookingByRef(ref);
+    if (!b || b.id !== c.id) {
+      toast("Booking not found for this community");
+      return;
+    }
+    if (b.status === "attended") {
+      toast(`${b.ref} already checked in`);
+      return;
+    }
+    checkIn(b.ref, b.pax);
   };
   const noShow = (ref: string) => {
     setBookingStatus(ref, "noshow"); // ฿0 — a no-show is not a visit
@@ -77,7 +96,16 @@ export default function CommunityCheckin({ c, toast }: CommScreenProps) {
               Or ask for their LOMA code. Only a check-in counts as income.
             </div>
           </div>
+          <button
+            className="btn btn-sm"
+            style={{ background: "#fff", color: "var(--primary)", fontWeight: 800, flex: "none", width: "auto", padding: "9px 14px" }}
+            onClick={() => setScanning(true)}
+          >
+            Scan
+          </button>
         </div>
+
+        {scanning && <QRScanner onClose={() => setScanning(false)} onResult={onScan} />}
 
         {bookings.length === 0 ? (
           <div

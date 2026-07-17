@@ -16,15 +16,6 @@ export interface Booking {
 
 // Seeded demo bookings across the (real) communities.
 export const BOOKINGS: Booking[] = [
-  { ref: "BK-2041", id: "bang-rong", hotel: "Istanbul Boutique Hotel", guest: "Müller +1", pax: 2, date: "2026-07-11", status: "attended" },
-  { ref: "BK-2042", id: "bang-rong", hotel: "Tall Tree Kata Phuket", guest: "Ferrari family", pax: 4, date: "2026-07-12", status: "confirmed" },
-  { ref: "BK-2043", id: "koh-maprao", hotel: "Istanbul Boutique Hotel", guest: "Andersson", pax: 2, date: "2026-07-10", status: "attended" },
-  { ref: "BK-2044", id: "bang-rong", hotel: "RentaBikePhuket.com", guest: "Tanaka +2", pax: 3, date: "2026-07-13", status: "requested" },
-  { ref: "BK-2045", id: "koh-maprao", hotel: "Tall Tree Kata Phuket", guest: "O'Brien", pax: 2, date: "2026-07-09", status: "noshow" },
-  { ref: "BK-2046", id: "kamala", hotel: "Istanbul Boutique Hotel", guest: "Rossi +1", pax: 2, date: "2026-07-11", status: "attended" },
-  { ref: "BK-2047", id: "old-town", hotel: "Tall Tree Kata Phuket", guest: "Nguyen family", pax: 3, date: "2026-07-12", status: "confirmed" },
-  { ref: "BK-2048", id: "cape-panwa", hotel: "RentaBikePhuket.com", guest: "Silva", pax: 2, date: "2026-07-13", status: "requested" },
-  { ref: "BK-2049", id: "bang-tao", hotel: "Istanbul Boutique Hotel", guest: "Kim +2", pax: 3, date: "2026-07-10", status: "attended" },
 ];
 
 export function bookingsFor(commId: string): Booking[] {
@@ -37,4 +28,67 @@ export function setBookingStatus(ref: string, status: BookingStatus): void {
     b.status = status;
     bumpVersion();
   }
+}
+
+export function bookingByRef(ref: string): Booking | undefined {
+  return BOOKINGS.find((b) => b.ref === ref.trim());
+}
+
+// ---------- Capacity / live availability ----------
+// Each community publishes a number of seats. Availability = capacity minus the pax of
+// every booking that isn't a no-show, so a real tourist booking lowers it live.
+const CAPACITY: Record<string, number> = {};
+
+function hashId(id: string): number {
+  let h = 0;
+  for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) >>> 0;
+  return h;
+}
+
+/** Published seats for a community (deterministic default 14–24, editable by the host). */
+export function getCapacity(commId: string): number {
+  if (CAPACITY[commId] == null) CAPACITY[commId] = 14 + (hashId(commId) % 11);
+  return CAPACITY[commId];
+}
+
+export function setCapacity(commId: string, n: number): void {
+  CAPACITY[commId] = Math.max(0, Math.floor(n));
+  bumpVersion();
+}
+
+/** Seats already taken by live bookings (everything except no-shows). */
+export function bookedPax(commId: string): number {
+  return BOOKINGS.filter((b) => b.id === commId && b.status !== "noshow").reduce((a, b) => a + b.pax, 0);
+}
+
+/** Seats still available right now. */
+export function remainingSlots(commId: string): number {
+  return Math.max(0, getCapacity(commId) - bookedPax(commId));
+}
+
+// ---------- Creating a real booking (tourist side) ----------
+let bkSeq = 3000;
+
+export interface CreateBookingResult {
+  ok: boolean;
+  booking?: Booking;
+  reason?: string;
+}
+
+export function createBooking(opts: {
+  commId: string;
+  pax: number;
+  guest: string;
+  hotel: string;
+  date: string;
+}): CreateBookingResult {
+  const { commId, pax, guest, hotel, date } = opts;
+  if (pax < 1) return { ok: false, reason: "Choose at least 1 guest" };
+  const left = remainingSlots(commId);
+  if (left < pax) return { ok: false, reason: `Only ${left} seat${left === 1 ? "" : "s"} left` };
+  const ref = "BK-" + ++bkSeq;
+  const booking: Booking = { ref, id: commId, hotel, guest, pax, date, status: "confirmed" };
+  BOOKINGS.push(booking);
+  bumpVersion(); // availability drops immediately
+  return { ok: true, booking };
 }
