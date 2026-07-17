@@ -1560,18 +1560,7 @@ function screenHome(){
 
     <div style="display:flex;flex-direction:column;gap:9px;margin-bottom:16px">
       <div style="display:flex;gap:9px">
-        <button data-go="saved" style="flex:1;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:11px 12px">
-          <div style="font-size:11px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;color:var(--muted)">Hotel Local Picks QR</div>
-          <div style="font-size:12.5px;color:var(--ink-2);margin-top:3px;line-height:1.4">Permanent QR for the desk &amp; rooms →</div>
-        </button>
-        <button data-go="impact" style="flex:1;text-align:left;background:var(--primary-l);border:1px solid #D6E0EE;border-radius:13px;padding:11px 12px">
-          <div style="font-size:11px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;color:var(--primary)">Impact Credits</div>
-          <div style="font-family:var(--fd);font-size:22px;line-height:1.15;color:var(--ink);margin-top:1px">${cr} <span style="font-size:11.5px;font-family:var(--f);color:var(--muted);font-weight:600">· ${tr[0]}</span></div>
-        </button>
-        <button data-go="board" style="flex:1;text-align:left;background:var(--accent-l);border:1px solid #F2C7B6;border-radius:13px;padding:11px 12px">
-          <div style="font-size:11px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;color:var(--accent-d)">Impact Board</div>
-          <div style="font-family:var(--fd);font-size:22px;line-height:1.15;color:var(--ink);margin-top:1px">#${boardRows('total','All',districtOf(PARTNER.name)).findIndex(r=>r.me)+1} <span style="font-size:11.5px;font-family:var(--f);color:var(--muted);font-weight:600">in ${districtLabel(districtOf(PARTNER.name))}</span></div>
-        </button>
+       
       </div>
     </div>
 
@@ -6603,7 +6592,7 @@ render();
 var LOMA_API_BASE = (function(){
   try{ var q=new URLSearchParams(location.search).get('api'); if(q) return q.replace(/\/+$/,''); }catch(e){}
   if(window.LOMA_API_BASE) return String(window.LOMA_API_BASE).replace(/\/+$/,'');
-  return 'http://'+(location.hostname||'localhost')+':8000';
+  return 'http://localhost:8000';
 })();
 function _lomaIso(di){ var d=new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate()+di);
   return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
@@ -6660,7 +6649,7 @@ var _LOMA_API_BASE = (function(){
   try{ if(typeof LOMA_API_BASE!=='undefined' && LOMA_API_BASE) return LOMA_API_BASE; }catch(e){}
   try{ var q=new URLSearchParams(location.search).get('api'); if(q) return q.replace(/\/+$/,''); }catch(e){}
   if(window.LOMA_API_BASE) return String(window.LOMA_API_BASE).replace(/\/+$/,'');
-  return 'http://'+(location.hostname||'localhost')+':8000';
+  return 'http://localhost:8000';
 })();
 var LOMA_ASSET_BASE = 'https://storage.googleapis.com/gradient-digital-group-loma-assets';
 function _lomaAsset(p){ if(!p) return p; return /^https?:\/\//.test(p) ? p : LOMA_ASSET_BASE+(p.charAt(0)==='/'?p:'/'+p); }
@@ -6864,7 +6853,7 @@ lomaHydrateProviders();
 function _lomaApiBase(){
   try{ if(typeof _LOMA_API_BASE!=='undefined' && _LOMA_API_BASE) return _LOMA_API_BASE; }catch(e){}
   try{ if(typeof LOMA_API_BASE!=='undefined' && LOMA_API_BASE) return LOMA_API_BASE; }catch(e){}
-  return 'http://'+(location.hostname||'localhost')+':8000';
+  return 'http://localhost:8000';
 }
 function lomaSession(){
   try{ var k='loma_sid', v=localStorage.getItem(k);
@@ -7008,7 +6997,17 @@ function lomaApplyIncomingLink(){
   var meta=ref?{ref:ref}:{};
   if(pid && typeof P==='function' && P(pid)){
     window._lomaLinkApplied=true;
-    try{ state.persona='tourist'; state.curProv=pid; state.tourist='card'; }catch(e){}
+    try{
+      state.persona='tourist';
+      state.curProv=pid;
+      /* Land on the "Local picks recommended for you" scan page (not the bare
+         provider card): seed a rec list holding the shared place so the guest
+         sees the branded pick page they scanned into. */
+      state.curList={ id:'rl_link_'+pid, kind:'assisted', items:[pid], note:'',
+        hotel_name:(typeof PARTNER!=='undefined'&&PARTNER&&PARTNER.name)||'' };
+      if(typeof gotoTourist==='function'){ gotoTourist('reclist'); }
+      else { state.tourist='reclist'; }
+    }catch(e){}
     lomaLog('link_received', pid, null, meta);
     lomaLog('link_opened', pid, null, meta);
     if(typeof render==='function') render();
