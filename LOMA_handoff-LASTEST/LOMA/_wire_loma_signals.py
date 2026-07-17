@@ -561,6 +561,27 @@ function _lomaInitMaps(){
 """
 src = sub_once(src, "\nlomaHydrateProviders();", MAPS + "\nlomaHydrateProviders();", "maps-layer")
 
+# --------------------------------------------------------------------------------------
+# 11) Compact community cards in the RESULTS list. Each "tick to add" community card
+#     rendered a full contact-note + a "Read the full programme" button, making it ~300px
+#     tall. Ten of them (plus the business list) triggered a Chromium scroll-compositor
+#     desync that painted a business photo as a ghost over the top of the results. The
+#     full programme already lives on the community page (tap the card), so drop the note
+#     and the redundant button — keeps the card to name + one line + Add-to-QR.
+# --------------------------------------------------------------------------------------
+src = sub_once(
+    src,
+    """<div class="ai" style="font-size:11.5px;color:var(--ink-2);margin-top:6px;line-height:1.45">${SPK} Community-run. The guest must contact ${c.contactPerson||'the community'} before visiting.</div>
+          <div class="cta2" style="margin-top:9px">
+            <button class="btn btn-line btn-sm" data-commview="${c.id}">Read the full programme</button>
+            <button class="btn ${on?'btn-coral':'btn-primary'} btn-sm" data-asel="${c.id}">${on?I.check+' Added':'＋ Add to QR'}</button>
+          """,
+    """<div class="cta2" style="margin-top:7px">
+            <button class="btn ${on?'btn-coral':'btn-primary'} btn-sm" data-asel="${c.id}">${on?I.check+' Added':'＋ Add to QR'}</button>
+          """,
+    "compact-comm",
+)
+
 io.open(HTML, "w", encoding="utf-8", newline="").write(src)
 print("wired LOMA.html signals layer:")
 print("  · closed shops removed from every list (business_status)")
