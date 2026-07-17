@@ -23,3 +23,31 @@ LOMA-handover.zip
 osm_sample_enriched.json
 
 # node_modules / dist are ignored by loma-app/.gitignore
+LOMA_handoff-LASTEST/LOMA/_cbt_seed_inject.js
+LOMA_handoff-LASTEST/LOMA/artwork/_contact.png
+LOMA_handoff-LASTEST/LOMA/artwork/image.png
+LOMA_handoff-LASTEST/LOMA/artwork/LINE_ALBUM_Loma Logo_260713_2.jpg
+LOMA_handoff-LASTEST/LOMA/artwork/LOMA Poster Latest Version.png
+LOMA_handoff-LASTEST/LOMA/artwork/loma-coast.png
+LOMA_handoff-LASTEST/LOMA/artwork/loma-navy.png
+LOMA_handoff-LASTEST/LOMA/data/areas.json
+LOMA_handoff-LASTEST/LOMA/data/gen_loma_data.py
+LOMA_handoff-LASTEST/LOMA/data/loma-data.js
+LOMA_handoff-LASTEST/LOMA/data/operators.json
+LOMA_handoff-LASTEST/LOMA/data/README.md
+LOMA_handoff-LASTEST/LOMA/data/recommendations.json
+LOMA_handoff-LASTEST/LOMA/data/staff.json
+LOMA_handoff-LASTEST/LOMA/data/tourists.json
+LOMA_handoff-LASTEST/LOMA/data/transactions.json
+LOMA_handoff-LASTEST/LOMA/DEV_HANDOFF.md
+LOMA_handoff-LASTEST/LOMA/enrich_cbt_google_places.py
+LOMA_handoff-LASTEST/LOMA/loma-white.png
+LOMA_handoff-LASTEST/LOMA/LOMA.html
+LOMA_handoff-LASTEST/LOMA/loma_cbt_seed.json
+LOMA_handoff-LASTEST/LOMA/LOMA_Judge_QA_Prep.md
+LOMA_handoff-LASTEST/LOMA/LOMA_Pitch_Deck.pdf
+LOMA_handoff-LASTEST/LOMA/LOMA_Pitch_Deck.pptx
+LOMA_handoff-LASTEST/LOMA/LOMA_Pitch_Script.md
+LOMA_handoff-LASTEST/LOMA/LOMA_provider_leads_tiktok.xlsx
+LOMA_handoff-LASTEST/LOMA/LOMA_provider_seed_CBT.xlsx
+LOMA_handoff-LASTEST/LOMA/LOMA_v2_CHANGES.md

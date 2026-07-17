@@ -128,7 +128,9 @@ export default function CommunityCheckin({ c, toast }: CommScreenProps) {
                       {b.guest} · {b.pax} guest{b.pax > 1 ? "s" : ""}
                     </div>
                     <div style={{ fontSize: 11.5, color: "var(--muted)" }}>
-                      {fmtDate(b.date)} · sent by {b.hotel} · <b>{b.ref}</b>
+                      {fmtDate(b.date)}
+                      {b.round ? ` · ${b.round}` : ""} ·{" "}
+                      {b.self ? "booked in-app" : `sent by ${b.hotel}`} · <b>{b.ref}</b>
                     </div>
                     <div style={{ marginTop: 6 }}>
                       <span className={`badge ${badge.cls}`}>{badge.label}</span>

@@ -68,7 +68,7 @@ export default function StaffHome() {
         <Icon name="spark" size={16} /> Create Assisted Recommendation
       </button>
       <div style={{ display: "flex", gap: 9, marginBottom: 10 }}>
-        <button
+        {/* <button
           onClick={() => go("saved")}
           style={{
             flex: 1,
@@ -93,8 +93,8 @@ export default function StaffHome() {
           <div style={{ fontSize: 12.5, color: "var(--ink-2)", marginTop: 3, lineHeight: 1.4 }}>
             Permanent passive QR for the desk &amp; rooms →
           </div>
-        </button>
-        <button
+        </button> */}
+        {/* <button
           onClick={() => go("impact")}
           style={{
             flex: 1,
@@ -122,7 +122,7 @@ export default function StaffHome() {
               · {tier[0]}
             </span>
           </div>
-        </button>
+        </button> */}
       </div>
       <div className="modehint" style={{ marginBottom: 14 }}>
         <span>
@@ -292,10 +292,10 @@ export default function StaffHome() {
         );
       })}
 
-      <div className="h-sec">Today's recommended local picks</div>
+      {/* <div className="h-sec">Today's recommended local picks</div>
       {housePicks.map((id) => (
         <MiniRow key={id} id={id} />
-      ))}
+      ))} */}
     </Screen>
   );
 }

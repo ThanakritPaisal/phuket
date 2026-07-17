@@ -1,10 +1,21 @@
+import { useState } from "react";
 import { community, commReady, READINESS_LEVELS } from "../v2data";
 import type { Community } from "../v2data";
 import Icon from "../components/Icon";
 import { LomaBadges } from "../components/AiScorePanel";
 import RealMap, { type MapPin } from "../components/RealMap";
-import { communityMembers } from "../activeAccount";
+import { communityMembers, getActiveAccount } from "../activeAccount";
 import { trackEvent } from "../impact";
+import { useVersion } from "../store";
+import {
+  bookDays,
+  slotSeats,
+  myBooking,
+  addBooking,
+  cancelBooking,
+  COMMUNITY_ROUNDS,
+  SLOT_CAPACITY,
+} from "../bookings";
 
 const READY_CLASS = ["b-price", "b-price", "b-ready", "b-verified"];
 const READY_EMOJI = ["📄", "📞", "✓", "💠"];
@@ -17,6 +28,154 @@ export function ReadinessBadge({ c }: { c: Community }) {
     <span className={`badge ${READY_CLASS[r]}`}>
       {READY_EMOJI[r]} {READINESS_LEVELS[r]}
     </span>
+  );
+}
+
+// "Book your visit" — ported from LOMA-prototype.html. Live availability by day +
+// round; a confirmed booking lands in the shared BOOKINGS store, so the community
+// host sees it on their Bookings / Check-in screens right away. A booking is still
+// not a visit — only a host check-in turns it into counted income.
+function BookVisit({ c }: { c: Community }) {
+  useVersion(); // re-render when a booking is created / cancelled
+  const [dayIdx, setDayIdx] = useState(0);
+  const [guests, setGuests] = useState(2);
+  const days = bookDays();
+  const day = days[dayIdx];
+  const hotel = getActiveAccount().name;
+
+  const book = (round: string) => {
+    addBooking({
+      id: c.id,
+      date: day.iso,
+      round,
+      pax: guests,
+      hotel,
+      guest: "App guest",
+    });
+    trackEvent("community_inquiry_clicked", { community_id: c.id });
+  };
+
+  const mine = COMMUNITY_ROUNDS.some((r) => myBooking(c.id, day.iso, r));
+
+  return (
+    <>
+      <div className="sec-h">Book your visit</div>
+      <div style={{ fontSize: 12, color: "var(--muted)", margin: "-2px 0 10px" }}>
+        Live availability — pick a day and round.
+      </div>
+
+      <div style={{ display: "flex", gap: 8, overflowX: "auto", paddingBottom: 6 }}>
+        {days.map((d) => (
+          <button
+            key={d.idx}
+            className={`chip ${dayIdx === d.idx ? "on" : ""}`}
+            onClick={() => setDayIdx(d.idx)}
+            style={{
+              flexDirection: "column",
+              minWidth: 54,
+              padding: "8px 4px",
+              gap: 1,
+              textAlign: "center",
+              lineHeight: 1.15,
+            }}
+          >
+            <span style={{ fontSize: 10.5 }}>{d.top}</span>
+            <b style={{ fontSize: 15 }}>{d.num}</b>
+          </button>
+        ))}
+      </div>
+
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", margin: "13px 0 8px" }}>
+        <span style={{ fontSize: 12.5, color: "var(--ink-2)", fontWeight: 700 }}>Guests</span>
+        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+          <button
+            onClick={() => setGuests((g) => Math.max(1, g - 1))}
+            style={{ width: 32, height: 32, borderRadius: "50%", border: "1px solid var(--line)", fontSize: 19, color: "var(--primary)", lineHeight: 1 }}
+          >
+            −
+          </button>
+          <b style={{ fontSize: 16, minWidth: 20, textAlign: "center" }}>{guests}</b>
+          <button
+            onClick={() => setGuests((g) => Math.min(10, g + 1))}
+            style={{ width: 32, height: 32, borderRadius: "50%", border: "1px solid var(--line)", fontSize: 19, color: "var(--primary)", lineHeight: 1 }}
+          >
+            +
+          </button>
+        </div>
+      </div>
+
+      {COMMUNITY_ROUNDS.map((r) => {
+        const seats = slotSeats(c.id, day.iso, r);
+        const booked = myBooking(c.id, day.iso, r);
+        const notEnough = seats < guests;
+        return (
+          <div
+            key={r}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              border: `1px solid ${booked ? "var(--ok)" : "var(--line)"}`,
+              background: booked ? "var(--ok-l)" : "var(--surface)",
+              borderRadius: 12,
+              padding: "12px 14px",
+              marginBottom: 9,
+            }}
+          >
+            <div>
+              <div style={{ fontWeight: 800, fontSize: 15.5 }}>{r}</div>
+              <div
+                style={{
+                  fontSize: 12,
+                  fontWeight: 600,
+                  color: seats <= 0 ? "var(--danger)" : seats <= 3 ? "var(--warn-d)" : "var(--ok-d)",
+                }}
+              >
+                {seats <= 0 ? "Fully booked" : `${seats} of ${SLOT_CAPACITY} seats left`}
+              </div>
+            </div>
+            {booked ? (
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <span style={{ fontSize: 13, fontWeight: 800, color: "var(--ok-d)" }}>✓ Confirmed</span>
+                <button
+                  className="btn btn-line btn-sm"
+                  style={{ width: "auto" }}
+                  onClick={() => cancelBooking(booked.ref)}
+                >
+                  Cancel
+                </button>
+              </div>
+            ) : (
+              <button
+                className="btn btn-coral btn-sm"
+                style={{ width: "auto", ...(notEnough ? { opacity: 0.45, cursor: "not-allowed" } : {}) }}
+                disabled={seats <= 0 || notEnough}
+                onClick={() => book(r)}
+              >
+                {seats <= 0 ? "Full" : notEnough ? "Not enough" : `Book ${guests}`}
+              </button>
+            )}
+          </div>
+        );
+      })}
+
+      {mine && (
+        <div
+          style={{
+            background: "var(--ok-l)",
+            borderRadius: 10,
+            padding: "9px 12px",
+            fontSize: 12.5,
+            color: "var(--ok-d)",
+            fontWeight: 700,
+            marginBottom: 2,
+          }}
+        >
+          ✓ Your booking was sent to {c.name}. They will greet you on the day — a booking is not a
+          visit until they check you in.
+        </div>
+      )}
+    </>
   );
 }
 
@@ -123,6 +282,8 @@ export default function CommunityDetail({
             <span className="v">{READINESS_LEVELS[commReady(c)]}</span>
           </div>
         </div>
+
+        <BookVisit c={c} />
 
         {members.length > 0 && (
           <>
