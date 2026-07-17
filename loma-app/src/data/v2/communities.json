@@ -8,10 +8,9 @@
   "img": "/providers/OSM-KATHU-01.jpg",
   "about": "Phuket's old tin-mining heart — heritage houses, an old town, deep-rooted culture and traditional rituals set against green hills.",
   "activities": [
-   "ของเก่า บ้านเก่า เมืองเก่า",
-   "ธรรมชาติดี",
-   "วัฒนธรรมเก่าแก่",
-   "พิธีกรรมเก่าๆ"
+   "Tin-mining old town and its heritage houses",
+   "Long-standing local culture and ceremonies",
+   "Green hills and streams around the valley"
   ],
   "memberIds": [
    "OSM-KATHU-01",
@@ -20,14 +19,31 @@
    "OSM-KATHU-130",
    "OSM-KATHU-134"
   ],
-  "priceFrom": "฿350–500 / person (est.)",
-  "duration": "Half-day · flexible",
+  "priceFrom": "฿250 / person",
   "schedule": [
    "By appointment — contact the community"
   ],
   "phone": "Arrange via LOMA",
   "lat": 7.90748,
-  "lng": 98.350191
+  "lng": 98.350191,
+  "programs": [
+   {
+    "name": "Old town & tin-mining heritage walk",
+    "duration": "2 hours",
+    "price": "฿300"
+   },
+   {
+    "name": "Shrine ceremony explained by a Kathu elder",
+    "duration": "1 hour",
+    "price": "฿250"
+   },
+   {
+    "name": "Kathu valley green-hills walk",
+    "duration": "Half-day (~3h)",
+    "price": "฿350"
+   }
+  ],
+  "programs_status": "draft from community notes — not confirmed by the community"
  },
  {
   "id": "koh-maprao",
@@ -38,12 +54,11 @@
   "img": "/providers/LOMA-CBT-P034.jpg",
   "about": "The island closest to Phuket — 5 minutes by longtail. 2,800 rai of nature incl. 600 rai of pristine mangrove, fully organic, with a way of life kept whole. It makes 'having nothing like the city' the whole point.",
   "activities": [
-   "ใกล้ภูเก็ตที่สุด — เรือหางยาวจากฝั่งไม่เกิน 5 นาที",
-   "ป่าโกงกาง 600 ไร่ ธรรมชาติ 2,800 ไร่",
-   "ทั้งเกาะออร์แกนิก",
-   "อาหารทะเลสด แปรรูปอาหารทะเล ผลิตภัณฑ์จากมะพร้าว",
-   "ไม้กวาด พวงกุญแจ งานฝีมือ",
-   "กรีดยาง ชายหาดสงบ วิถีชุมชน"
+   "Five-minute longtail crossing from the mainland",
+   "600 rai of intact mangrove, 2,800 rai of nature",
+   "A fully organic island and a quiet beach",
+   "Coconut products, brooms and keepsakes made on the island",
+   "Rubber tapping and seafood straight off the boat"
   ],
   "memberIds": [
    "OSM-KOHMAPRAO-01",
@@ -54,14 +69,36 @@
    "LOMA-CBT-A080",
    "LOMA-CBT-A079"
   ],
-  "priceFrom": "฿350–500 / person (est.)",
-  "duration": "Half-day · flexible",
+  "priceFrom": "฿300 / person",
   "schedule": [
    "By appointment — contact the community"
   ],
   "phone": "Arrange via LOMA",
   "lat": 7.934054,
-  "lng": 98.38354
+  "lng": 98.38354,
+  "programs": [
+   {
+    "name": "Longtail crossing & mangrove paddle",
+    "duration": "Half-day (~3h)",
+    "price": "฿450"
+   },
+   {
+    "name": "Coconut craft — brooms & keepsakes",
+    "duration": "2 hours",
+    "price": "฿300"
+   },
+   {
+    "name": "Rubber tapping at dawn with a smallholder",
+    "duration": "2 hours",
+    "price": "฿350"
+   },
+   {
+    "name": "Organic island seafood lunch",
+    "duration": "2 hours",
+    "price": "฿400"
+   }
+  ],
+  "programs_status": "draft from community notes — not confirmed by the community"
  },
  {
   "id": "kamala",
@@ -72,10 +109,9 @@
   "img": "/providers/LOMA-CBT-A070.jpg",
   "about": "Batik and tie-dye crafts, natural products and local sweets, framed by waterfalls, mountains, beaches and headlands.",
   "activities": [
-   "งานบาติก มัดย้อม",
-   "ผลิตภัณฑ์ธรรมชาติ ขนมพื้นถิ่น",
-   "ส้มควาย",
-   "น้ำตก ภูเขา ชายหาด แหลม ภูผา"
+   "Batik and tie-dye made by hand in the village",
+   "Local sweets and natural products, including som khwai",
+   "Waterfall, headland and beach within a short drive"
   ],
   "memberIds": [
    "OSM-KAMALA-01",
@@ -93,14 +129,31 @@
    "LOMA-CBT-A074",
    "LOMA-CBT-A072"
   ],
-  "priceFrom": "฿350–500 / person (est.)",
-  "duration": "Half-day · flexible",
+  "priceFrom": "฿250 / person",
   "schedule": [
    "By appointment — contact the community"
   ],
   "phone": "Arrange via LOMA",
   "lat": 7.948024,
-  "lng": 98.295737
+  "lng": 98.295737,
+  "programs": [
+   {
+    "name": "Batik & tie-dye workshop — take your piece home",
+    "duration": "Half-day (~3h)",
+    "price": "฿550"
+   },
+   {
+    "name": "Local sweets & som khwai tasting",
+    "duration": "1 hour",
+    "price": "฿250"
+   },
+   {
+    "name": "Waterfall and headland walk",
+    "duration": "Half-day (~3h)",
+    "price": "฿300"
+   }
+  ],
+  "programs_status": "draft from community notes — not confirmed by the community"
  },
  {
   "id": "ban-kian",
@@ -111,9 +164,9 @@
   "img": "/providers/LOMA-CBT-A043.jpg",
   "about": "A Thalang heritage village — Wat Phra Nang Sang, the Nine Heroes memorial, and the historic Ya Chan / Ya Muk houses.",
   "activities": [
-   "วัดพระนางสร้าง",
-   "อนุสรณ์สถาน 9 วีรชน",
-   "บ้านย่าจัน ย่ามุก"
+   "Wat Phra Nang Sang, one of Phuket's oldest temples",
+   "The Nine Heroes memorial and the Thalang story",
+   "The Ya Chan and Ya Muk heritage houses"
   ],
   "memberIds": [
    "OSM-BANKIAN-01",
@@ -136,14 +189,31 @@
    "OSM-BANKIAN-153",
    "OSM-BANKIAN-185"
   ],
-  "priceFrom": "฿350–500 / person (est.)",
-  "duration": "Half-day · flexible",
+  "priceFrom": "฿200 / person",
   "schedule": [
    "By appointment — contact the community"
   ],
   "phone": "Arrange via LOMA",
   "lat": 8.026604,
-  "lng": 98.337714
+  "lng": 98.337714,
+  "programs": [
+   {
+    "name": "Wat Phra Nang Sang with a village guide",
+    "duration": "1 hour",
+    "price": "฿200"
+   },
+   {
+    "name": "Nine Heroes memorial & the Thalang story",
+    "duration": "2 hours",
+    "price": "฿250"
+   },
+   {
+    "name": "Ya Chan & Ya Muk heritage houses",
+    "duration": "2 hours",
+    "price": "฿250"
+   }
+  ],
+  "programs_status": "draft from community notes — not confirmed by the community"
  },
  {
   "id": "tha-chatchai",
@@ -154,10 +224,10 @@
   "img": "/providers/LOMA-CBT-A048.jpg",
   "about": "The northern gateway by the Sarasin Bridge — mangrove forest, local fishing, and the Crystal Sand (Sai Kaew) beach.",
   "activities": [
-   "สะพานสารสิน",
-   "ป่าชายเลน",
-   "ประมงพื้นบ้าน",
-   "หาดทรายแก้ว"
+   "Mangrove forest at Phuket's northern edge",
+   "Sarasin Bridge and the channel crossing",
+   "Inshore fishing the way the village still does it",
+   "Sai Kaew beach"
   ],
   "memberIds": [
    "OSM-THACHATCHAI-01",
@@ -173,14 +243,31 @@
    "LOMA-CBT-A050",
    "LOMA-CBT-P023"
   ],
-  "priceFrom": "฿350–500 / person (est.)",
-  "duration": "Half-day · flexible",
+  "priceFrom": "฿250 / person",
   "schedule": [
    "By appointment — contact the community"
   ],
   "phone": "Arrange via LOMA",
   "lat": 8.096277,
-  "lng": 98.301738
+  "lng": 98.301738,
+  "programs": [
+   {
+    "name": "Mangrove boardwalk & Sarasin Bridge",
+    "duration": "2 hours",
+    "price": "฿250"
+   },
+   {
+    "name": "Out with the inshore fishermen",
+    "duration": "Half-day (~3h)",
+    "price": "฿500"
+   },
+   {
+    "name": "Sai Kaew beach & seafood picnic",
+    "duration": "2 hours",
+    "price": "฿300"
+   }
+  ],
+  "programs_status": "draft from community notes — not confirmed by the community"
  },
  {
   "id": "bang-tao",
@@ -191,10 +278,9 @@
   "img": "/providers/LOMA-CBT-A060.jpg",
   "about": "A quiet white-sand west coast, 25 min from the airport — seafront local operators for 10 km, fresh seafood and everyday village life.",
   "activities": [
-   "หาดทรายขาว เงียบสงบ",
-   "ผู้ประกอบการตั้งหน้าหาด 10 กิโล",
-   "อาหารทะเลสด",
-   "วิถีชีวิตชุมชน"
+   "Ten kilometres of quiet white-sand beach",
+   "Family-run businesses along the beachfront",
+   "Fresh seafood, 25 minutes from the airport"
   ],
   "memberIds": [
    "OSM-BANGTAO-01",
@@ -216,14 +302,26 @@
    "OSM-BANGTAO-116",
    "OSM-BANGTAO-160"
   ],
-  "priceFrom": "฿350–500 / person (est.)",
-  "duration": "Half-day · flexible",
+  "priceFrom": "฿200 / person",
   "schedule": [
    "By appointment — contact the community"
   ],
   "phone": "Arrange via LOMA",
   "lat": 7.979378,
-  "lng": 98.309377
+  "lng": 98.309377,
+  "programs": [
+   {
+    "name": "Bang Tao beach walk — ten quiet kilometres",
+    "duration": "2 hours",
+    "price": "฿200"
+   },
+   {
+    "name": "Seafood lunch with a beachfront family",
+    "duration": "2 hours",
+    "price": "฿400"
+   }
+  ],
+  "programs_status": "draft from community notes — not confirmed by the community"
  },
  {
   "id": "bang-rong",
@@ -234,10 +332,10 @@
   "img": "/providers/LOMA-CBT-P004.jpg",
   "about": "A Muslim fishing village in the east-coast mangroves — batik craft and fresh seafood, with hands-on pineapple picking (→ jam) and rubber tapping (→ rubber sheets) alongside the farmers.",
   "activities": [
-   "งานคราฟ ปาเต๊ะ",
-   "อาหารทะเลสด",
-   "กิจกรรมเก็บสับปะรดไปทำแยม",
-   "กิจกรรมกรีดยางไปทำยางแผ่น ร่วมกับชาวบ้าน"
+   "Pineapple fields you work in, not just look at",
+   "Picking pineapples and cooking them into jam",
+   "Rubber tapping and pressing the sheets with the villagers",
+   "Pa-te craft work and fresh seafood"
   ],
   "memberIds": [
    "OSM-BANGRONG-01",
@@ -252,14 +350,36 @@
    "LOMA-CBT-A016",
    "LOMA-CBT-A012"
   ],
-  "priceFrom": "฿350–500 / person (est.)",
-  "duration": "Half-day · flexible",
+  "priceFrom": "฿350 / person",
   "schedule": [
    "By appointment — contact the community"
   ],
   "phone": "Arrange via LOMA",
   "lat": 8.030248,
-  "lng": 98.399489
+  "lng": 98.399489,
+  "programs": [
+   {
+    "name": "Pick pineapples & cook the jam with the growers",
+    "duration": "Half-day (~3h)",
+    "price": "฿450"
+   },
+   {
+    "name": "Rubber tapping & pressing sheets with the village",
+    "duration": "Half-day (~3h)",
+    "price": "฿400"
+   },
+   {
+    "name": "Pa-te batik craft session",
+    "duration": "2 hours",
+    "price": "฿350"
+   },
+   {
+    "name": "Village seafood lunch",
+    "duration": "2 hours",
+    "price": "฿350"
+   }
+  ],
+  "programs_status": "draft from community notes — not confirmed by the community"
  },
  {
   "id": "ban-sakhu",
@@ -270,25 +390,40 @@
   "img": "/providers/OSM-BANSAKHU-01.jpg",
   "about": "A community near the airport — som khwai, local fishing, organic farming and a lively fish-tossing market.",
   "activities": [
-   "ใกล้สนามบิน",
-   "ส้มควาย",
-   "ประมง",
-   "เกษตรอินทรีย์",
-   "ตลาดชิงปลา"
+   "Ching Pla fish market, minutes from the airport",
+   "Organic smallholdings and som khwai",
+   "Inshore fishing with the village"
   ],
   "memberIds": [
    "OSM-BANSAKHU-01",
    "OSM-BANSAKHU-02",
    "OSM-BANSAKHU-03"
   ],
-  "priceFrom": "฿350–500 / person (est.)",
-  "duration": "Half-day · flexible",
+  "priceFrom": "฿250 / person",
   "schedule": [
    "By appointment — contact the community"
   ],
   "phone": "Arrange via LOMA",
   "lat": 8.100248,
-  "lng": 98.31129
+  "lng": 98.31129,
+  "programs": [
+   {
+    "name": "Ching Pla fish market at first light",
+    "duration": "1 hour",
+    "price": "฿250"
+   },
+   {
+    "name": "Organic smallholding tour & tasting",
+    "duration": "2 hours",
+    "price": "฿300"
+   },
+   {
+    "name": "Inshore fishing with the village",
+    "duration": "Half-day (~3h)",
+    "price": "฿450"
+   }
+  ],
+  "programs_status": "draft from community notes — not confirmed by the community"
  },
  {
   "id": "old-town",
@@ -299,10 +434,10 @@
   "img": "/providers/LOMA-CBT-P002.jpg",
   "about": "From tin mines to a Sino-European town — heritage shophouses, Phuket local food and dress, and the Sunday walking street (16:00–22:00).",
   "activities": [
-   "อาคารเก่า ชิโน-ยูโรเปียน",
-   "อาหารพื้นเมือง",
-   "อาภรณ์พื้นเมืองภูเก็ต",
-   "ถนนคนเดิน วันอาทิตย์ 16.00–22.00"
+   "Sino-European shophouses and how the mines built them",
+   "The ore route to Penang that made the town",
+   "Phuket's own food and its traditional dress",
+   "Sunday walking street, 16:00–22:00"
   ],
   "memberIds": [
    "OSM-OLDTOWN-01",
@@ -379,14 +514,37 @@
    "OSM-OLDTOWN-197",
    "OSM-OLDTOWN-199"
   ],
-  "priceFrom": "฿350–500 / person (est.)",
-  "duration": "Half-day · flexible",
+  "priceFrom": "฿250 / person",
   "schedule": [
-   "By appointment — contact the community"
+   "Sunday walking street: 16:00–22:00",
+   "Other programs by appointment"
   ],
   "phone": "Arrange via LOMA",
   "lat": 7.886423,
-  "lng": 98.383606
+  "lng": 98.383606,
+  "programs": [
+   {
+    "name": "Sino-Portuguese shophouse walk",
+    "duration": "2 hours",
+    "price": "฿300"
+   },
+   {
+    "name": "From tin mine to town — the Penang ore route",
+    "duration": "2 hours",
+    "price": "฿300"
+   },
+   {
+    "name": "Phuket traditional dress & portrait session",
+    "duration": "1 hour",
+    "price": "฿400"
+   },
+   {
+    "name": "Sunday walking street with a local guide",
+    "duration": "2 hours",
+    "price": "฿250"
+   }
+  ],
+  "programs_status": "draft from community notes — not confirmed by the community"
  },
  {
   "id": "cape-panwa",
@@ -397,9 +555,9 @@
   "img": "/providers/LOMA-CBT-P036.jpg",
   "about": "Just 9 km from town — a five-star coastline meets a fishing community with khao yam, community-grown vegetables and archery.",
   "activities": [
-   "ห่างจากในเมืองแค่ 9 กิโล",
-   "ข้าวยำ ผักในชุมชน",
-   "กิจกรรมยิงธนู"
+   "Khao yam made with vegetables grown in the village",
+   "Community archery",
+   "Nine kilometres from town, past the resort strip"
   ],
   "memberIds": [
    "OSM-CAPEPANWA-01",
@@ -412,13 +570,25 @@
    "LOMA-CBT-P035",
    "LOMA-CBT-A084"
   ],
-  "priceFrom": "฿350–500 / person (est.)",
-  "duration": "Half-day · flexible",
+  "priceFrom": "฿250 / person",
   "schedule": [
    "By appointment — contact the community"
   ],
   "phone": "Arrange via LOMA",
   "lat": 7.820217,
-  "lng": 98.404812
+  "lng": 98.404812,
+  "programs": [
+   {
+    "name": "Khao yam cooking with village vegetables",
+    "duration": "2 hours",
+    "price": "฿400"
+   },
+   {
+    "name": "Community archery session",
+    "duration": "1 hour",
+    "price": "฿250"
+   }
+  ],
+  "programs_status": "draft from community notes — not confirmed by the community"
  }
 ]

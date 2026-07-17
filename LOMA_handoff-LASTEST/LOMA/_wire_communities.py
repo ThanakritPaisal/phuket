@@ -13,7 +13,7 @@ LOMA.html's own init loop fills the booking fields (rounds/capacity/…) it need
 
 Idempotent — guarded by a marker. Run:  python _wire_communities.py
 """
-import io, json, os
+import io, json, os, sys
 
 HTML = "LOMA.html"
 MARKER = "LOMA communities: loma-app parity"
@@ -21,8 +21,12 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 V2 = os.path.join(HERE, "..", "..", "loma-app", "src", "data", "v2")
 ASSET_BASE = "https://storage.googleapis.com/gradient-digital-group-loma-assets"
 
+# `programs` carries the per-program name/duration/price the detail screen already knows
+# how to render (and which makes it hide its generic Duration row). `duration` is gone:
+# it was the same placeholder string on all ten communities.
 COMM_KEYS = ["id", "name", "nameEn", "area", "emo", "img", "about", "activities",
-             "memberIds", "priceFrom", "duration", "schedule", "phone", "lat", "lng"]
+             "memberIds", "programs", "priceFrom", "schedule", "phone", "lat", "lng",
+             "programs_status"]
 
 
 def asset(p):
@@ -69,9 +73,13 @@ def replace_block(text, start_tok, end_tok, new_block, label):
 
 
 def main():
+    # --force: replace_block regenerates the whole COMMUNITIES array from communities.json,
+    # so re-running is safe — it is a rewrite, not an append. Needed whenever the source
+    # data changes (the marker alone would pin the mockup to the first run forever).
+    force = "--force" in sys.argv
     src = io.open(HTML, encoding="utf-8").read()
-    if MARKER in src:
-        print("already wired — nothing to do")
+    if MARKER in src and not force:
+        print("already wired — nothing to do  (use --force to re-sync from communities.json)")
         return
 
     comm_header = (

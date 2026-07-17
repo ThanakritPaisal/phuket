@@ -114,7 +114,24 @@ function _lomaDist(o){
     return km<1 ? Math.round(km*1000)+' m' : (km<10?km.toFixed(1):Math.round(km))+' km';
   }catch(e){ return ''; }
 }
+/* OUR score, precomputed in Postgres by scripts/compute_score.py:
+     score = hiddenness x cultural x quality x confidence^2
+   The raw score tops out near 25 (four sub-1.0 multipliers compound), which is fine for
+   ordering and misleading to display — so the badge shows the percentile instead. */
+function _lomaScore(r){ return r.loma_score || null; }
 function _lomaApplySignals(o,r){
+  var ls=_lomaScore(r);
+  if(ls){
+    o.loma=ls;
+    o.loma_pct=ls.percentile;
+    o.loma_rank=ls.rank;
+    /* the mockup's own engine writes these; ours wins */
+    if(ls.score!=null){ o.loma_score=ls.percentile; o.overall_loma_score=ls.percentile; }
+    o.blockedReason=ls.blocked||'';
+    var fx=ls.factors||{};
+    o.f_hidden=fx.hiddenness; o.f_cultural=fx.cultural; o.f_quality=fx.quality; o.f_conf=fx.confidence;
+    o.is_hidden_gem=(ls.percentile>=90);
+  }
   var w=_lomaSetting(r);          if(w) o.weather=w;
   var why=_lomaWhy(r);            if(why){ o.reason=why; o._why=why; }
   var wl=_lomaWhyLocal(r);        if(wl) o.whyLocal=wl;
@@ -122,7 +139,7 @@ function _lomaApplySignals(o,r){
   o.cultural=_lomaCultural(r);
   o.dietary=r.dietary||[];
   o.complaint=_lomaComplaint(r);
-  o.closed=_lomaClosed(r);
+  o.closed=_lomaClosed(r) || (ls&&ls.blocked==='closed');
   return o;
 }
 """
@@ -160,6 +177,19 @@ src = sub_once(
     "refresh",
 )
 
+
+# --------------------------------------------------------------------------------------
+# 3b) Adopted providers — apply the signals to them too. On a cold load EVERY provider
+#     takes this branch (no mock id matches a DB id), so without this the whole layer
+#     only ever fires on the handful of hand-written rows.
+# --------------------------------------------------------------------------------------
+src = sub_once(
+    src,
+    "          var op=_lomaProvToOp(r); ops.push(op); byId[op.id]=op; added++;",
+    "          var op=_lomaProvToOp(r); _lomaApplySignals(op,r); ops.push(op); byId[op.id]=op; added++;",
+    "adopt-signals",
+)
+
 # --------------------------------------------------------------------------------------
 # 4) Drop closed shops once hydration lands, and report what the signals cover.
 # --------------------------------------------------------------------------------------
@@ -177,8 +207,18 @@ src = sub_once(
     "                               if(!o.duration)o.duration=(typeof DURATION_BY_CAT!=='undefined'&&DURATION_BY_CAT[o.cat])||'short';\n"
     "                               if(!o.dist)o.dist=_lomaDist(o); });\n"
     "      try{ if(typeof aiRefresh==='function') aiRefresh(); }catch(e){}\n"
-    "      /* our grounded note beats the template-generated one where we have it */\n"
-    "      ops.forEach(function(o){ if(o._why) o.ai_summary=o._why; });\n"
+    "      /* aiRefresh() just recomputed the mockup's own engine over every op, clobbering\n"
+    "         both our score and our note. Restore ours on top — the DB is the authority. */\n"
+    "      ops.forEach(function(o){\n"
+    "        if(o._why) o.ai_summary=o._why;\n"
+    "        if(o.loma && o.loma.percentile!=null){\n"
+    "          o.loma_score=o.loma.percentile;\n"
+    "          o.overall_loma_score=o.loma.percentile;\n"
+    "          o.is_hidden_gem=(o.loma.percentile>=90);\n"
+    "          o.quality=Math.round((o.loma.factors.quality||0)*100);\n"
+    "          o.locality=Math.round((o.loma.factors.cultural||0)*100);\n"
+    "        }\n"
+    "      });\n"
     "      var withWhy=ops.filter(function(o){return o.reason;}).length;\n"
     "      var withSet=ops.filter(function(o){return o.weather;}).length;\n"
     "      try{ console.info('[LOMA] providers hydrated from DB — '+refreshed+' refreshed, '+added+' new ('+ops.length+' live, '+(before-ops.length)+' closed removed)');\n"
@@ -200,6 +240,40 @@ src = sub_once(
     "filterCatalog",
 )
 
+
+# --------------------------------------------------------------------------------------
+# 6) Chips — reflect the catalog we actually have.
+#    Family Friendly matched 28 of 1,214: only the hand-written mock providers carry a
+#    "families" tag, and nothing in the provider table produces one. A chip that silently
+#    returns almost nothing is worse than no chip.
+#    Halal (22) and Vegetarian (264) are real, filterable, and Phuket is ~a third Muslim.
+# --------------------------------------------------------------------------------------
+src = sub_once(
+    src,
+    """const INTENT_MAP = {
+  "Local Food":{cat:"Local Food"}, "Massage & Spa":{cat:"Massage & Wellness"},
+  "Local Experience":{cat:"Community Experience"}, "Café":{cat:"Café"},
+  "Souvenir":{cat:"Souvenir & Local Product"}, "Rainy Day":{rainy:true},
+  "Family Friendly":{family:true}, "Open Now":{openNow:true},""",
+    """const INTENT_MAP = {
+  "Local Food":{cat:"Local Food"}, "Massage & Spa":{cat:"Massage & Wellness"},
+  "Local Experience":{cat:"Community Experience"}, "Café":{cat:"Café"},
+  "Souvenir":{cat:"Souvenir & Local Product"}, "Rainy Day":{rainy:true},
+  /* LOMA signals layer: dietary is real data (provider.dietary); "Family Friendly" was
+     dropped — it matched only hand-written mock rows, never a real provider. */
+  "Halal":{dietary:"halal"}, "Vegetarian":{dietary:"vegetarian"},
+  "Open Now":{openNow:true},""",
+    "intent-map",
+)
+
+src = sub_once(
+    src,
+    "const intents=['Local Food 🍜','Massage & Spa 💆','Local Experience 🛶','Café ☕','Souvenir 🎁','Rainy Day 🌧','Family Friendly 👨‍👩‍👧','Open Now 🟢'",
+    "const intents=['Local Food 🍜','Massage & Spa 💆','Local Experience 🛶','Café ☕','Souvenir 🎁','Rainy Day 🌧','Halal ☪','Vegetarian 🌱','Open Now 🟢'",
+    "intent-chips",
+)
+
+
 io.open(HTML, "w", encoding="utf-8", newline="").write(src)
 print("wired LOMA.html signals layer:")
 print("  · closed shops removed from every list (business_status)")
@@ -209,3 +283,5 @@ print("  · aspects -> bestFor (top positive, counted)")
 print("  · setting -> o.weather (per-place, beats WEATHER_BY_CAT)")
 print("  · dietary -> o.dietary (filterable: halal / vegetarian)")
 print("  · high-severity complaints never listed")
+print("  · loma_score (ours, precomputed) overrides the mockup engine")
+print("  · chips: +Halal +Vegetarian, -Family Friendly (no data behind it)")

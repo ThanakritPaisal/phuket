@@ -931,17 +931,20 @@ const SHARED_EVENTS = new Set();   // events a partner has shared to the tourist
 /* Communities — identical to loma-app (LOMA communities: loma-app parity).
    The 10 real Phuket CBT communities from loma-app/src/data/v2/communities.json;
    `name` is Thai (primary), `nameEn` the English gloss, `img` a real member photo. */
+/* Communities — identical to loma-app (LOMA communities: loma-app parity).
+   The 10 real Phuket CBT communities from loma-app/src/data/v2/communities.json;
+   `name` is Thai (primary), `nameEn` the English gloss, `img` a real member photo. */
 const COMMUNITIES = [
-  { id:"kathu", name:"ชุมชนกะทู้", nameEn:"Kathu Community", area:"Kathu", emo:"⛏️", img:"https://storage.googleapis.com/gradient-digital-group-loma-assets/providers/OSM-KATHU-01.jpg", about:"Phuket's old tin-mining heart — heritage houses, an old town, deep-rooted culture and traditional rituals set against green hills.", activities:["ของเก่า บ้านเก่า เมืองเก่า", "ธรรมชาติดี", "วัฒนธรรมเก่าแก่", "พิธีกรรมเก่าๆ"], memberIds:["OSM-KATHU-01", "OSM-KATHU-02", "OSM-KATHU-03", "OSM-KATHU-130", "OSM-KATHU-134"], priceFrom:"฿350–500 / person (est.)", duration:"Half-day · flexible", schedule:["By appointment — contact the community"], phone:"Arrange via LOMA", lat:7.90748, lng:98.350191 },
-  { id:"koh-maprao", name:"ชุมชนเกาะมะพร้าว", nameEn:"Koh Maprao (Coconut Island) Community", area:"Koh Maprao", emo:"🥥", img:"https://storage.googleapis.com/gradient-digital-group-loma-assets/providers/LOMA-CBT-P034.jpg", about:"The island closest to Phuket — 5 minutes by longtail. 2,800 rai of nature incl. 600 rai of pristine mangrove, fully organic, with a way of life kept whole. It makes 'having nothing like the city' the whole point.", activities:["ใกล้ภูเก็ตที่สุด — เรือหางยาวจากฝั่งไม่เกิน 5 นาที", "ป่าโกงกาง 600 ไร่ ธรรมชาติ 2,800 ไร่", "ทั้งเกาะออร์แกนิก", "อาหารทะเลสด แปรรูปอาหารทะเล ผลิตภัณฑ์จากมะพร้าว", "ไม้กวาด พวงกุญแจ งานฝีมือ", "กรีดยาง ชายหาดสงบ วิถีชุมชน"], memberIds:["OSM-KOHMAPRAO-01", "OSM-KOHMAPRAO-02", "OSM-KOHMAPRAO-03", "LOMA-CBT-P034", "LOMA-CBT-A081", "LOMA-CBT-A080", "LOMA-CBT-A079"], priceFrom:"฿350–500 / person (est.)", duration:"Half-day · flexible", schedule:["By appointment — contact the community"], phone:"Arrange via LOMA", lat:7.934054, lng:98.38354 },
-  { id:"kamala", name:"ชุมชนกมลา", nameEn:"Kamala Community", area:"Kamala", emo:"🎨", img:"https://storage.googleapis.com/gradient-digital-group-loma-assets/providers/LOMA-CBT-A070.jpg", about:"Batik and tie-dye crafts, natural products and local sweets, framed by waterfalls, mountains, beaches and headlands.", activities:["งานบาติก มัดย้อม", "ผลิตภัณฑ์ธรรมชาติ ขนมพื้นถิ่น", "ส้มควาย", "น้ำตก ภูเขา ชายหาด แหลม ภูผา"], memberIds:["OSM-KAMALA-01", "OSM-KAMALA-02", "OSM-KAMALA-03", "LOMA-CBT-A070", "LOMA-CBT-A075", "LOMA-CBT-A068", "LOMA-CBT-A078", "LOMA-CBT-A076", "LOMA-CBT-A073", "LOMA-CBT-A071", "LOMA-CBT-A069", "LOMA-CBT-A077", "LOMA-CBT-A074", "LOMA-CBT-A072"], priceFrom:"฿350–500 / person (est.)", duration:"Half-day · flexible", schedule:["By appointment — contact the community"], phone:"Arrange via LOMA", lat:7.948024, lng:98.295737 },
-  { id:"ban-kian", name:"ชุมชนบ้านเคียน", nameEn:"Ban Kian Community", area:"Thalang", emo:"🏛️", img:"https://storage.googleapis.com/gradient-digital-group-loma-assets/providers/LOMA-CBT-A043.jpg", about:"A Thalang heritage village — Wat Phra Nang Sang, the Nine Heroes memorial, and the historic Ya Chan / Ya Muk houses.", activities:["วัดพระนางสร้าง", "อนุสรณ์สถาน 9 วีรชน", "บ้านย่าจัน ย่ามุก"], memberIds:["OSM-BANKIAN-01", "OSM-BANKIAN-02", "OSM-BANKIAN-03", "LOMA-CBT-A043", "LOMA-CBT-A041", "LOMA-CBT-A042", "LOMA-CBT-A040", "LOMA-CBT-A038", "LOMA-CBT-A044", "LOMA-CBT-A045", "LOMA-CBT-P022", "LOMA-CBT-A039", "LOMA-CBT-P021", "LOMA-CBT-P020", "OSM-BANKIAN-112", "OSM-BANKIAN-120", "OSM-BANKIAN-133", "OSM-BANKIAN-153", "OSM-BANKIAN-185"], priceFrom:"฿350–500 / person (est.)", duration:"Half-day · flexible", schedule:["By appointment — contact the community"], phone:"Arrange via LOMA", lat:8.026604, lng:98.337714 },
-  { id:"tha-chatchai", name:"ชุมชนบ้านท่าฉัตรชัย", nameEn:"Ban Tha Chatchai Community", area:"Mai Khao (Thalang)", emo:"🌉", img:"https://storage.googleapis.com/gradient-digital-group-loma-assets/providers/LOMA-CBT-A048.jpg", about:"The northern gateway by the Sarasin Bridge — mangrove forest, local fishing, and the Crystal Sand (Sai Kaew) beach.", activities:["สะพานสารสิน", "ป่าชายเลน", "ประมงพื้นบ้าน", "หาดทรายแก้ว"], memberIds:["OSM-THACHATCHAI-01", "OSM-THACHATCHAI-02", "OSM-THACHATCHAI-03", "LOMA-CBT-A048", "LOMA-CBT-A047", "LOMA-CBT-A052", "LOMA-CBT-A049", "LOMA-CBT-P024", "LOMA-CBT-A051", "LOMA-CBT-A046", "LOMA-CBT-A050", "LOMA-CBT-P023"], priceFrom:"฿350–500 / person (est.)", duration:"Half-day · flexible", schedule:["By appointment — contact the community"], phone:"Arrange via LOMA", lat:8.096277, lng:98.301738 },
-  { id:"bang-tao", name:"ชุมชนบ้านบางเทา", nameEn:"Ban Bang Thao Community", area:"Bang Tao / Cherng Talay", emo:"🏖️", img:"https://storage.googleapis.com/gradient-digital-group-loma-assets/providers/LOMA-CBT-A060.jpg", about:"A quiet white-sand west coast, 25 min from the airport — seafront local operators for 10 km, fresh seafood and everyday village life.", activities:["หาดทรายขาว เงียบสงบ", "ผู้ประกอบการตั้งหน้าหาด 10 กิโล", "อาหารทะเลสด", "วิถีชีวิตชุมชน"], memberIds:["OSM-BANGTAO-01", "OSM-BANGTAO-02", "OSM-BANGTAO-03", "LOMA-CBT-A060", "LOMA-CBT-P031", "LOMA-CBT-P032", "LOMA-CBT-P033", "LOMA-CBT-A062", "LOMA-CBT-A061", "LOMA-CBT-A059", "LOMA-CBT-A066", "LOMA-CBT-A063", "LOMA-CBT-A064", "LOMA-CBT-A067", "LOMA-CBT-A065", "LOMA-CBT-P030", "OSM-BANGTAO-116", "OSM-BANGTAO-160"], priceFrom:"฿350–500 / person (est.)", duration:"Half-day · flexible", schedule:["By appointment — contact the community"], phone:"Arrange via LOMA", lat:7.979378, lng:98.309377 },
-  { id:"bang-rong", name:"ชุมชนบ้านบางโรง", nameEn:"Ban Bang Rong Community", area:"Pa Khlok", emo:"🛶", img:"https://storage.googleapis.com/gradient-digital-group-loma-assets/providers/LOMA-CBT-P004.jpg", about:"A Muslim fishing village in the east-coast mangroves — batik craft and fresh seafood, with hands-on pineapple picking (→ jam) and rubber tapping (→ rubber sheets) alongside the farmers.", activities:["งานคราฟ ปาเต๊ะ", "อาหารทะเลสด", "กิจกรรมเก็บสับปะรดไปทำแยม", "กิจกรรมกรีดยางไปทำยางแผ่น ร่วมกับชาวบ้าน"], memberIds:["OSM-BANGRONG-01", "OSM-BANGRONG-02", "OSM-BANGRONG-03", "LOMA-CBT-P004", "LOMA-CBT-A014", "LOMA-CBT-A011", "LOMA-CBT-A015", "LOMA-CBT-A013", "LOMA-CBT-P003", "LOMA-CBT-A016", "LOMA-CBT-A012"], priceFrom:"฿350–500 / person (est.)", duration:"Half-day · flexible", schedule:["By appointment — contact the community"], phone:"Arrange via LOMA", lat:8.030248, lng:98.399489 },
-  { id:"ban-sakhu", name:"ชุมชนบ้านสาคู", nameEn:"Ban Sakhu Community", area:"Thalang", emo:"🐟", img:"https://storage.googleapis.com/gradient-digital-group-loma-assets/providers/OSM-BANSAKHU-01.jpg", about:"A community near the airport — som khwai, local fishing, organic farming and a lively fish-tossing market.", activities:["ใกล้สนามบิน", "ส้มควาย", "ประมง", "เกษตรอินทรีย์", "ตลาดชิงปลา"], memberIds:["OSM-BANSAKHU-01", "OSM-BANSAKHU-02", "OSM-BANSAKHU-03"], priceFrom:"฿350–500 / person (est.)", duration:"Half-day · flexible", schedule:["By appointment — contact the community"], phone:"Arrange via LOMA", lat:8.100248, lng:98.31129 },
-  { id:"old-town", name:"ชุมชนย่านเมืองเก่าภูเก็ต", nameEn:"Phuket Old Town Community", area:"Old Town", emo:"🏘️", img:"https://storage.googleapis.com/gradient-digital-group-loma-assets/providers/LOMA-CBT-P002.jpg", about:"From tin mines to a Sino-European town — heritage shophouses, Phuket local food and dress, and the Sunday walking street (16:00–22:00).", activities:["อาคารเก่า ชิโน-ยูโรเปียน", "อาหารพื้นเมือง", "อาภรณ์พื้นเมืองภูเก็ต", "ถนนคนเดิน วันอาทิตย์ 16.00–22.00"], memberIds:["OSM-OLDTOWN-01", "OSM-OLDTOWN-02", "OSM-OLDTOWN-03", "LOMA-CBT-P002", "LOMA-CBT-A009", "LOMA-CBT-A006", "LOMA-CBT-A001", "LOMA-CBT-A008", "LOMA-CBT-A004", "LOMA-CBT-P001", "LOMA-CBT-A002", "LOMA-CBT-A003", "LOMA-CBT-A010", "LOMA-CBT-A005", "LOMA-CBT-A007", "OSM-OLDTOWN-102", "OSM-OLDTOWN-103", "OSM-OLDTOWN-104", "OSM-OLDTOWN-108", "OSM-OLDTOWN-109", "OSM-OLDTOWN-110", "OSM-OLDTOWN-111", "OSM-OLDTOWN-113", "OSM-OLDTOWN-114", "OSM-OLDTOWN-115", "OSM-OLDTOWN-117", "OSM-OLDTOWN-118", "OSM-OLDTOWN-121", "OSM-OLDTOWN-124", "OSM-OLDTOWN-126", "OSM-OLDTOWN-127", "OSM-OLDTOWN-129", "OSM-OLDTOWN-132", "OSM-OLDTOWN-138", "OSM-OLDTOWN-139", "OSM-OLDTOWN-140", "OSM-OLDTOWN-142", "OSM-OLDTOWN-144", "OSM-OLDTOWN-145", "OSM-OLDTOWN-146", "OSM-OLDTOWN-150", "OSM-OLDTOWN-151", "OSM-OLDTOWN-152", "OSM-OLDTOWN-154", "OSM-OLDTOWN-155", "OSM-OLDTOWN-156", "OSM-OLDTOWN-158", "OSM-OLDTOWN-159", "OSM-OLDTOWN-161", "OSM-OLDTOWN-165", "OSM-OLDTOWN-166", "OSM-OLDTOWN-167", "OSM-OLDTOWN-168", "OSM-OLDTOWN-169", "OSM-OLDTOWN-171", "OSM-OLDTOWN-173", "OSM-OLDTOWN-175", "OSM-OLDTOWN-177", "OSM-OLDTOWN-178", "OSM-OLDTOWN-182", "OSM-OLDTOWN-183", "OSM-OLDTOWN-184", "OSM-OLDTOWN-186", "OSM-OLDTOWN-187", "OSM-OLDTOWN-188", "OSM-OLDTOWN-189", "OSM-OLDTOWN-191", "OSM-OLDTOWN-193", "OSM-OLDTOWN-194", "OSM-OLDTOWN-195", "OSM-OLDTOWN-196", "OSM-OLDTOWN-197", "OSM-OLDTOWN-199"], priceFrom:"฿350–500 / person (est.)", duration:"Half-day · flexible", schedule:["By appointment — contact the community"], phone:"Arrange via LOMA", lat:7.886423, lng:98.383606 },
-  { id:"cape-panwa", name:"ชุมชนบ้านแหลมพันวา", nameEn:"Ban Laem Phanwa Community", area:"Cape Panwa", emo:"🏹", img:"https://storage.googleapis.com/gradient-digital-group-loma-assets/providers/LOMA-CBT-P036.jpg", about:"Just 9 km from town — a five-star coastline meets a fishing community with khao yam, community-grown vegetables and archery.", activities:["ห่างจากในเมืองแค่ 9 กิโล", "ข้าวยำ ผักในชุมชน", "กิจกรรมยิงธนู"], memberIds:["OSM-CAPEPANWA-01", "OSM-CAPEPANWA-02", "OSM-CAPEPANWA-03", "LOMA-CBT-P036", "LOMA-CBT-A083", "LOMA-CBT-P037", "LOMA-CBT-A082", "LOMA-CBT-P035", "LOMA-CBT-A084"], priceFrom:"฿350–500 / person (est.)", duration:"Half-day · flexible", schedule:["By appointment — contact the community"], phone:"Arrange via LOMA", lat:7.820217, lng:98.404812 }
+  { id:"kathu", name:"ชุมชนกะทู้", nameEn:"Kathu Community", area:"Kathu", emo:"⛏️", img:"https://storage.googleapis.com/gradient-digital-group-loma-assets/providers/OSM-KATHU-01.jpg", about:"Phuket's old tin-mining heart — heritage houses, an old town, deep-rooted culture and traditional rituals set against green hills.", activities:["Tin-mining old town and its heritage houses", "Long-standing local culture and ceremonies", "Green hills and streams around the valley"], memberIds:["OSM-KATHU-01", "OSM-KATHU-02", "OSM-KATHU-03", "OSM-KATHU-130", "OSM-KATHU-134"], programs:[{"name": "Old town & tin-mining heritage walk", "duration": "2 hours", "price": "฿300"}, {"name": "Shrine ceremony explained by a Kathu elder", "duration": "1 hour", "price": "฿250"}, {"name": "Kathu valley green-hills walk", "duration": "Half-day (~3h)", "price": "฿350"}], priceFrom:"฿250 / person", schedule:["By appointment — contact the community"], phone:"Arrange via LOMA", lat:7.90748, lng:98.350191, programs_status:"draft from community notes — not confirmed by the community" },
+  { id:"koh-maprao", name:"ชุมชนเกาะมะพร้าว", nameEn:"Koh Maprao (Coconut Island) Community", area:"Koh Maprao", emo:"🥥", img:"https://storage.googleapis.com/gradient-digital-group-loma-assets/providers/LOMA-CBT-P034.jpg", about:"The island closest to Phuket — 5 minutes by longtail. 2,800 rai of nature incl. 600 rai of pristine mangrove, fully organic, with a way of life kept whole. It makes 'having nothing like the city' the whole point.", activities:["Five-minute longtail crossing from the mainland", "600 rai of intact mangrove, 2,800 rai of nature", "A fully organic island and a quiet beach", "Coconut products, brooms and keepsakes made on the island", "Rubber tapping and seafood straight off the boat"], memberIds:["OSM-KOHMAPRAO-01", "OSM-KOHMAPRAO-02", "OSM-KOHMAPRAO-03", "LOMA-CBT-P034", "LOMA-CBT-A081", "LOMA-CBT-A080", "LOMA-CBT-A079"], programs:[{"name": "Longtail crossing & mangrove paddle", "duration": "Half-day (~3h)", "price": "฿450"}, {"name": "Coconut craft — brooms & keepsakes", "duration": "2 hours", "price": "฿300"}, {"name": "Rubber tapping at dawn with a smallholder", "duration": "2 hours", "price": "฿350"}, {"name": "Organic island seafood lunch", "duration": "2 hours", "price": "฿400"}], priceFrom:"฿300 / person", schedule:["By appointment — contact the community"], phone:"Arrange via LOMA", lat:7.934054, lng:98.38354, programs_status:"draft from community notes — not confirmed by the community" },
+  { id:"kamala", name:"ชุมชนกมลา", nameEn:"Kamala Community", area:"Kamala", emo:"🎨", img:"https://storage.googleapis.com/gradient-digital-group-loma-assets/providers/LOMA-CBT-A070.jpg", about:"Batik and tie-dye crafts, natural products and local sweets, framed by waterfalls, mountains, beaches and headlands.", activities:["Batik and tie-dye made by hand in the village", "Local sweets and natural products, including som khwai", "Waterfall, headland and beach within a short drive"], memberIds:["OSM-KAMALA-01", "OSM-KAMALA-02", "OSM-KAMALA-03", "LOMA-CBT-A070", "LOMA-CBT-A075", "LOMA-CBT-A068", "LOMA-CBT-A078", "LOMA-CBT-A076", "LOMA-CBT-A073", "LOMA-CBT-A071", "LOMA-CBT-A069", "LOMA-CBT-A077", "LOMA-CBT-A074", "LOMA-CBT-A072"], programs:[{"name": "Batik & tie-dye workshop — take your piece home", "duration": "Half-day (~3h)", "price": "฿550"}, {"name": "Local sweets & som khwai tasting", "duration": "1 hour", "price": "฿250"}, {"name": "Waterfall and headland walk", "duration": "Half-day (~3h)", "price": "฿300"}], priceFrom:"฿250 / person", schedule:["By appointment — contact the community"], phone:"Arrange via LOMA", lat:7.948024, lng:98.295737, programs_status:"draft from community notes — not confirmed by the community" },
+  { id:"ban-kian", name:"ชุมชนบ้านเคียน", nameEn:"Ban Kian Community", area:"Thalang", emo:"🏛️", img:"https://storage.googleapis.com/gradient-digital-group-loma-assets/providers/LOMA-CBT-A043.jpg", about:"A Thalang heritage village — Wat Phra Nang Sang, the Nine Heroes memorial, and the historic Ya Chan / Ya Muk houses.", activities:["Wat Phra Nang Sang, one of Phuket's oldest temples", "The Nine Heroes memorial and the Thalang story", "The Ya Chan and Ya Muk heritage houses"], memberIds:["OSM-BANKIAN-01", "OSM-BANKIAN-02", "OSM-BANKIAN-03", "LOMA-CBT-A043", "LOMA-CBT-A041", "LOMA-CBT-A042", "LOMA-CBT-A040", "LOMA-CBT-A038", "LOMA-CBT-A044", "LOMA-CBT-A045", "LOMA-CBT-P022", "LOMA-CBT-A039", "LOMA-CBT-P021", "LOMA-CBT-P020", "OSM-BANKIAN-112", "OSM-BANKIAN-120", "OSM-BANKIAN-133", "OSM-BANKIAN-153", "OSM-BANKIAN-185"], programs:[{"name": "Wat Phra Nang Sang with a village guide", "duration": "1 hour", "price": "฿200"}, {"name": "Nine Heroes memorial & the Thalang story", "duration": "2 hours", "price": "฿250"}, {"name": "Ya Chan & Ya Muk heritage houses", "duration": "2 hours", "price": "฿250"}], priceFrom:"฿200 / person", schedule:["By appointment — contact the community"], phone:"Arrange via LOMA", lat:8.026604, lng:98.337714, programs_status:"draft from community notes — not confirmed by the community" },
+  { id:"tha-chatchai", name:"ชุมชนบ้านท่าฉัตรชัย", nameEn:"Ban Tha Chatchai Community", area:"Mai Khao (Thalang)", emo:"🌉", img:"https://storage.googleapis.com/gradient-digital-group-loma-assets/providers/LOMA-CBT-A048.jpg", about:"The northern gateway by the Sarasin Bridge — mangrove forest, local fishing, and the Crystal Sand (Sai Kaew) beach.", activities:["Mangrove forest at Phuket's northern edge", "Sarasin Bridge and the channel crossing", "Inshore fishing the way the village still does it", "Sai Kaew beach"], memberIds:["OSM-THACHATCHAI-01", "OSM-THACHATCHAI-02", "OSM-THACHATCHAI-03", "LOMA-CBT-A048", "LOMA-CBT-A047", "LOMA-CBT-A052", "LOMA-CBT-A049", "LOMA-CBT-P024", "LOMA-CBT-A051", "LOMA-CBT-A046", "LOMA-CBT-A050", "LOMA-CBT-P023"], programs:[{"name": "Mangrove boardwalk & Sarasin Bridge", "duration": "2 hours", "price": "฿250"}, {"name": "Out with the inshore fishermen", "duration": "Half-day (~3h)", "price": "฿500"}, {"name": "Sai Kaew beach & seafood picnic", "duration": "2 hours", "price": "฿300"}], priceFrom:"฿250 / person", schedule:["By appointment — contact the community"], phone:"Arrange via LOMA", lat:8.096277, lng:98.301738, programs_status:"draft from community notes — not confirmed by the community" },
+  { id:"bang-tao", name:"ชุมชนบ้านบางเทา", nameEn:"Ban Bang Thao Community", area:"Bang Tao / Cherng Talay", emo:"🏖️", img:"https://storage.googleapis.com/gradient-digital-group-loma-assets/providers/LOMA-CBT-A060.jpg", about:"A quiet white-sand west coast, 25 min from the airport — seafront local operators for 10 km, fresh seafood and everyday village life.", activities:["Ten kilometres of quiet white-sand beach", "Family-run businesses along the beachfront", "Fresh seafood, 25 minutes from the airport"], memberIds:["OSM-BANGTAO-01", "OSM-BANGTAO-02", "OSM-BANGTAO-03", "LOMA-CBT-A060", "LOMA-CBT-P031", "LOMA-CBT-P032", "LOMA-CBT-P033", "LOMA-CBT-A062", "LOMA-CBT-A061", "LOMA-CBT-A059", "LOMA-CBT-A066", "LOMA-CBT-A063", "LOMA-CBT-A064", "LOMA-CBT-A067", "LOMA-CBT-A065", "LOMA-CBT-P030", "OSM-BANGTAO-116", "OSM-BANGTAO-160"], programs:[{"name": "Bang Tao beach walk — ten quiet kilometres", "duration": "2 hours", "price": "฿200"}, {"name": "Seafood lunch with a beachfront family", "duration": "2 hours", "price": "฿400"}], priceFrom:"฿200 / person", schedule:["By appointment — contact the community"], phone:"Arrange via LOMA", lat:7.979378, lng:98.309377, programs_status:"draft from community notes — not confirmed by the community" },
+  { id:"bang-rong", name:"ชุมชนบ้านบางโรง", nameEn:"Ban Bang Rong Community", area:"Pa Khlok", emo:"🛶", img:"https://storage.googleapis.com/gradient-digital-group-loma-assets/providers/LOMA-CBT-P004.jpg", about:"A Muslim fishing village in the east-coast mangroves — batik craft and fresh seafood, with hands-on pineapple picking (→ jam) and rubber tapping (→ rubber sheets) alongside the farmers.", activities:["Pineapple fields you work in, not just look at", "Picking pineapples and cooking them into jam", "Rubber tapping and pressing the sheets with the villagers", "Pa-te craft work and fresh seafood"], memberIds:["OSM-BANGRONG-01", "OSM-BANGRONG-02", "OSM-BANGRONG-03", "LOMA-CBT-P004", "LOMA-CBT-A014", "LOMA-CBT-A011", "LOMA-CBT-A015", "LOMA-CBT-A013", "LOMA-CBT-P003", "LOMA-CBT-A016", "LOMA-CBT-A012"], programs:[{"name": "Pick pineapples & cook the jam with the growers", "duration": "Half-day (~3h)", "price": "฿450"}, {"name": "Rubber tapping & pressing sheets with the village", "duration": "Half-day (~3h)", "price": "฿400"}, {"name": "Pa-te batik craft session", "duration": "2 hours", "price": "฿350"}, {"name": "Village seafood lunch", "duration": "2 hours", "price": "฿350"}], priceFrom:"฿350 / person", schedule:["By appointment — contact the community"], phone:"Arrange via LOMA", lat:8.030248, lng:98.399489, programs_status:"draft from community notes — not confirmed by the community" },
+  { id:"ban-sakhu", name:"ชุมชนบ้านสาคู", nameEn:"Ban Sakhu Community", area:"Thalang", emo:"🐟", img:"https://storage.googleapis.com/gradient-digital-group-loma-assets/providers/OSM-BANSAKHU-01.jpg", about:"A community near the airport — som khwai, local fishing, organic farming and a lively fish-tossing market.", activities:["Ching Pla fish market, minutes from the airport", "Organic smallholdings and som khwai", "Inshore fishing with the village"], memberIds:["OSM-BANSAKHU-01", "OSM-BANSAKHU-02", "OSM-BANSAKHU-03"], programs:[{"name": "Ching Pla fish market at first light", "duration": "1 hour", "price": "฿250"}, {"name": "Organic smallholding tour & tasting", "duration": "2 hours", "price": "฿300"}, {"name": "Inshore fishing with the village", "duration": "Half-day (~3h)", "price": "฿450"}], priceFrom:"฿250 / person", schedule:["By appointment — contact the community"], phone:"Arrange via LOMA", lat:8.100248, lng:98.31129, programs_status:"draft from community notes — not confirmed by the community" },
+  { id:"old-town", name:"ชุมชนย่านเมืองเก่าภูเก็ต", nameEn:"Phuket Old Town Community", area:"Old Town", emo:"🏘️", img:"https://storage.googleapis.com/gradient-digital-group-loma-assets/providers/LOMA-CBT-P002.jpg", about:"From tin mines to a Sino-European town — heritage shophouses, Phuket local food and dress, and the Sunday walking street (16:00–22:00).", activities:["Sino-European shophouses and how the mines built them", "The ore route to Penang that made the town", "Phuket's own food and its traditional dress", "Sunday walking street, 16:00–22:00"], memberIds:["OSM-OLDTOWN-01", "OSM-OLDTOWN-02", "OSM-OLDTOWN-03", "LOMA-CBT-P002", "LOMA-CBT-A009", "LOMA-CBT-A006", "LOMA-CBT-A001", "LOMA-CBT-A008", "LOMA-CBT-A004", "LOMA-CBT-P001", "LOMA-CBT-A002", "LOMA-CBT-A003", "LOMA-CBT-A010", "LOMA-CBT-A005", "LOMA-CBT-A007", "OSM-OLDTOWN-102", "OSM-OLDTOWN-103", "OSM-OLDTOWN-104", "OSM-OLDTOWN-108", "OSM-OLDTOWN-109", "OSM-OLDTOWN-110", "OSM-OLDTOWN-111", "OSM-OLDTOWN-113", "OSM-OLDTOWN-114", "OSM-OLDTOWN-115", "OSM-OLDTOWN-117", "OSM-OLDTOWN-118", "OSM-OLDTOWN-121", "OSM-OLDTOWN-124", "OSM-OLDTOWN-126", "OSM-OLDTOWN-127", "OSM-OLDTOWN-129", "OSM-OLDTOWN-132", "OSM-OLDTOWN-138", "OSM-OLDTOWN-139", "OSM-OLDTOWN-140", "OSM-OLDTOWN-142", "OSM-OLDTOWN-144", "OSM-OLDTOWN-145", "OSM-OLDTOWN-146", "OSM-OLDTOWN-150", "OSM-OLDTOWN-151", "OSM-OLDTOWN-152", "OSM-OLDTOWN-154", "OSM-OLDTOWN-155", "OSM-OLDTOWN-156", "OSM-OLDTOWN-158", "OSM-OLDTOWN-159", "OSM-OLDTOWN-161", "OSM-OLDTOWN-165", "OSM-OLDTOWN-166", "OSM-OLDTOWN-167", "OSM-OLDTOWN-168", "OSM-OLDTOWN-169", "OSM-OLDTOWN-171", "OSM-OLDTOWN-173", "OSM-OLDTOWN-175", "OSM-OLDTOWN-177", "OSM-OLDTOWN-178", "OSM-OLDTOWN-182", "OSM-OLDTOWN-183", "OSM-OLDTOWN-184", "OSM-OLDTOWN-186", "OSM-OLDTOWN-187", "OSM-OLDTOWN-188", "OSM-OLDTOWN-189", "OSM-OLDTOWN-191", "OSM-OLDTOWN-193", "OSM-OLDTOWN-194", "OSM-OLDTOWN-195", "OSM-OLDTOWN-196", "OSM-OLDTOWN-197", "OSM-OLDTOWN-199"], programs:[{"name": "Sino-Portuguese shophouse walk", "duration": "2 hours", "price": "฿300"}, {"name": "From tin mine to town — the Penang ore route", "duration": "2 hours", "price": "฿300"}, {"name": "Phuket traditional dress & portrait session", "duration": "1 hour", "price": "฿400"}, {"name": "Sunday walking street with a local guide", "duration": "2 hours", "price": "฿250"}], priceFrom:"฿250 / person", schedule:["Sunday walking street: 16:00–22:00", "Other programs by appointment"], phone:"Arrange via LOMA", lat:7.886423, lng:98.383606, programs_status:"draft from community notes — not confirmed by the community" },
+  { id:"cape-panwa", name:"ชุมชนบ้านแหลมพันวา", nameEn:"Ban Laem Phanwa Community", area:"Cape Panwa", emo:"🏹", img:"https://storage.googleapis.com/gradient-digital-group-loma-assets/providers/LOMA-CBT-P036.jpg", about:"Just 9 km from town — a five-star coastline meets a fishing community with khao yam, community-grown vegetables and archery.", activities:["Khao yam made with vegetables grown in the village", "Community archery", "Nine kilometres from town, past the resort strip"], memberIds:["OSM-CAPEPANWA-01", "OSM-CAPEPANWA-02", "OSM-CAPEPANWA-03", "LOMA-CBT-P036", "LOMA-CBT-A083", "LOMA-CBT-P037", "LOMA-CBT-A082", "LOMA-CBT-P035", "LOMA-CBT-A084"], programs:[{"name": "Khao yam cooking with village vegetables", "duration": "2 hours", "price": "฿400"}, {"name": "Community archery session", "duration": "1 hour", "price": "฿250"}], priceFrom:"฿250 / person", schedule:["By appointment — contact the community"], phone:"Arrange via LOMA", lat:7.820217, lng:98.404812, programs_status:"draft from community notes — not confirmed by the community" }
 ];
 function COMM(id){return COMMUNITIES.find(c=>c.id===id);}
 /* structured availability + readiness fields for booking */
@@ -1296,7 +1299,10 @@ const INTENT_MAP = {
   "Local Food":{cat:"Local Food"}, "Massage & Spa":{cat:"Massage & Wellness"},
   "Local Experience":{cat:"Community Experience"}, "Café":{cat:"Café"},
   "Souvenir":{cat:"Souvenir & Local Product"}, "Rainy Day":{rainy:true},
-  "Family Friendly":{family:true}, "Open Now":{openNow:true},
+  /* LOMA signals layer: dietary is real data (provider.dietary); "Family Friendly" was
+     dropped — it matched only hand-written mock rows, never a real provider. */
+  "Halal":{dietary:"halal"}, "Vegetarian":{dietary:"vegetarian"},
+  "Open Now":{openNow:true},
   "Half-Day Trip":{mode:"halfday"}, "Along Route":{mode:"route"}
 };
 function intentLabel(s){return String(s).replace(/\s[^\w\s&].*$/,'').trim();}
@@ -1618,7 +1624,7 @@ function screenEventDetail(){
 
 function screenHome(){
   const f=state.filter;
-  const intents=['Local Food 🍜','Massage & Spa 💆','Local Experience 🛶','Café ☕','Souvenir 🎁','Rainy Day 🌧','Family Friendly 👨‍👩‍👧','Open Now 🟢'];
+  const intents=['Local Food 🍜','Massage & Spa 💆','Local Experience 🛶','Café ☕','Souvenir 🎁','Rainy Day 🌧','Halal ☪','Vegetarian 🌱','Open Now 🟢'];
   const places=[['property','🏨','Around this property'],['elsewhere','📍','Somewhere else']];
   const areas=Object.keys(AREA_XY);
   const times=[['now','🟢 Open now'],['any','Anytime']];
@@ -1671,8 +1677,7 @@ function screenHome(){
          Handlers (data-guided) and the planner screen remain in code; restore this block to re-enable. -->
 
     <div class="h-sec">Recent recommendations</div>
-    <div class="prow" data-prov="OTH"><div class="thumb" data-photo="${P('OTH').img}" data-emo="${P('OTH').emo}"></div><div class="info"><h3>Old Town Herbal Massage</h3><div class="m">Shared 2h ago · opened by tourist ✓</div><div class="bd">${localBadge()}<span class="badge b-verified">${I.verified}Verified</span></div></div></div>
-    <div class="prow" data-prov="BRT"><div class="thumb" data-photo="${P('BRT').img}" data-emo="${P('BRT').emo}"></div><div class="info"><h3>Baan Rim Talay Local Kitchen</h3><div class="m">Shared yesterday · visit confirmed ✓</div><div class="bd">${localBadge()}<span class="badge b-pick">⭐ Staff pick</span></div></div></div>
+    ${_lomaRecentRows()}
   </div>${staffTabbar()}`;
 }
 function miniRow(id){const p=P(id);return `<div class="prow" data-prov="${id}"><div class="thumb" data-photo="${p.img}" data-emo="${p.emo}"></div><div class="info"><h3>${p.name}</h3><div class="m">${p.cat} · ${p.dist}</div><div class="bd">${localBadge()}${p.pick?'<span class="badge b-pick">⭐ Staff pick</span>':''}</div></div></div>`;}
@@ -2959,7 +2964,6 @@ function reviewVideo(p){
 }
 function touristCard(){
   const p=P(state.curProv);
-  if(!p){ return `<div class="pad" style="padding-top:40px;text-align:center"><div style="font-size:15px;font-weight:700">${T('This place isn\'t available right now.')}</div><div style="margin-top:14px"><button class="btn btn-line" data-go="${state.curList?'reclist':'selfserve'}">${I.back} ${T('All local picks')}</button></div></div>`+touristTabbar(''); }
   return `<div class="tc-hero" data-photo="${p.img}" data-emo="${p.emo}">
     <button data-go="${state.curList?'reclist':'selfserve'}" style="position:absolute;top:14px;left:14px;z-index:5;display:inline-flex;align-items:center;gap:5px;background:rgba(252,247,236,.96);border-radius:99px;padding:7px 13px;font-size:12.5px;font-weight:700;color:var(--primary);box-shadow:var(--shadow)">‹ ${state.curList?'Back to your picks':T('All local picks')}</button>
     <div style="position:absolute;top:14px;right:14px;z-index:5"><div class="langtoggle" style="background:rgba(255,255,255,.94);border-color:transparent;box-shadow:var(--shadow)">${['EN','ไทย'].map(l=>`<button class="${state.lang===l?'on':''}" data-lang="${l}">${l}</button>`).join('')}</div></div>
@@ -2984,7 +2988,7 @@ function touristCard(){
       <div class="r"><span class="k">Languages</span><span class="v">${p.lang}</span></div>
     </div>
 
-    <div class="mapbox" style="height:160px;border-radius:14px;overflow:hidden;margin-top:16px">${lomaMapEmbed(p)}</div>
+    <div class="mapbox" style="height:160px;border-radius:14px;overflow:hidden;margin-top:16px">${mapSVG()}<div class="pin sel" style="left:54%;top:70%"><div class="p"><span>${p.emo}</span></div></div><div class="you" style="left:${PARTNER.x}%;top:${PARTNER.y}%"><div class="core"></div></div></div>
 
     <div style="margin-top:18px">
       <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--primary-d);margin-bottom:8px">${T('Why you can trust this')}</div>
@@ -3096,7 +3100,7 @@ function touristRoute(){
   </div>
   <div class="pad">
     <div class="tc-by"><div class="h">🏨</div><div><b>${attribution()}</b><br><span style="font-size:11.5px">${ids.length} local ${custom?'places picked for you':'stops on your way'}</span></div></div>
-    <div class="mapbox" style="height:160px;border-radius:12px;overflow:hidden;margin-top:12px">${lomaRouteEmbed(ids)}</div>
+    <div class="mapbox" style="height:160px;border-radius:12px;overflow:hidden;margin-top:12px">${mapSVG()}${ids.map((id,i)=>{const o=P(id);return `<div class="pin ${i===0?'sel':''}" style="left:${o.mapX}%;top:${o.mapY}%"><div class="lab">${i+1}</div><div class="p"><span>${i+1}</span></div></div>`;}).join('')}<div class="you" style="left:${PARTNER.x}%;top:${PARTNER.y}%"><div class="core"></div></div></div>
     ${ids.map((id,i)=>{const p=P(id);return `<div class="prow" style="margin-top:10px"><div style="width:28px;height:28px;border-radius:50%;background:var(--primary);color:#fff;display:grid;place-items:center;font-weight:800;font-size:13px;flex:none">${i+1}</div><div class="thumb" data-photo="${p.img}" data-emo="${p.emo}" style="width:54px;height:54px"></div><div class="info"><h3 style="font-size:14px">${p.name}</h3><div class="m">${p.emo} ${p.cat} · ${p.dist} · ${p.priceText.split('·')[0].trim()}</div><div class="bd">${localBadge()}</div></div></div>`;}).join('')}
     <div class="cta2"><button class="btn btn-primary" onclick="toast('Opening route in maps…')">${I.nav} Navigate route</button><button class="btn btn-ghost" data-go="ref">${I.qr} Show code</button></div>
     <div style="font-size:11.5px;color:var(--muted);background:var(--surface-2);border-radius:9px;padding:9px 11px;margin-top:12px;text-align:center">No login or app needed. Show the plan code at any stop.</div>
@@ -4015,7 +4019,7 @@ function chCheckin(c,acct){
 
     <div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:8px">${days.map(d=>`<button data-bhday="${d.idx}" class="chip ${day===d.idx?'on':''}" style="flex:none">${d.top} ${d.num}</button>`).join('')}</div>
 
-    ${guests.length?guests.map((b,i)=>{let st=b.status||'booked'; if(st==='confirmed'||st==='requested') st='booked';
+    ${guests.length?guests.map((b,i)=>{const st=b.status||'booked';
       const chip={booked:['b-price','⏳ Awaiting check-in'],attended:['b-ready','✓ Checked in'],noshow:['b-warn','✕ No-show — ฿0 counted']}[st];
       return `<div class="pcard" style="margin-bottom:9px;padding:12px 13px">
         <div style="display:flex;align-items:center;gap:11px">
@@ -6228,7 +6232,7 @@ document.body.addEventListener('click',e=>{
   /* community host check-in — a booking only becomes a visit when the host scans the guest in */
   const cScan=e.target.closest('[data-commscan]');
   if(cScan){const a=commAcct();if(!a)return;const c=COMM(a.commId);
-    const pend=dayBookings(c,state.bhDay||0).filter(b=>{var s=b.status||'booked';return s==='booked'||s==='confirmed'||s==='requested';});
+    const pend=dayBookings(c,state.bhDay||0).filter(b=>(b.status||'booked')==='booked');
     if(!pend.length){toast('📷 Camera would open — no guests awaiting check-in on this day');return;}
     checkInBooking(pend[0],c);return;}
   const cIn=e.target.closest('[data-checkin]');
@@ -6754,7 +6758,7 @@ function lomaHydrateProviders(){
           _lomaApplySignals(o,r);   /* LOMA signals layer */
           refreshed++;
         } else {
-          var op=_lomaProvToOp(r); ops.push(op); byId[op.id]=op; added++;
+          var op=_lomaProvToOp(r); _lomaApplySignals(op,r); ops.push(op); byId[op.id]=op; added++;
         }
       });
       /* LOMA signals layer: a closed shop must never be recommendable. */
@@ -6768,8 +6772,18 @@ function lomaHydrateProviders(){
                                if(!o.duration)o.duration=(typeof DURATION_BY_CAT!=='undefined'&&DURATION_BY_CAT[o.cat])||'short';
                                if(!o.dist)o.dist=_lomaDist(o); });
       try{ if(typeof aiRefresh==='function') aiRefresh(); }catch(e){}
-      /* our grounded note beats the template-generated one where we have it */
-      ops.forEach(function(o){ if(o._why) o.ai_summary=o._why; });
+      /* aiRefresh() just recomputed the mockup's own engine over every op, clobbering
+         both our score and our note. Restore ours on top — the DB is the authority. */
+      ops.forEach(function(o){
+        if(o._why) o.ai_summary=o._why;
+        if(o.loma && o.loma.percentile!=null){
+          o.loma_score=o.loma.percentile;
+          o.overall_loma_score=o.loma.percentile;
+          o.is_hidden_gem=(o.loma.percentile>=90);
+          o.quality=Math.round((o.loma.factors.quality||0)*100);
+          o.locality=Math.round((o.loma.factors.cultural||0)*100);
+        }
+      });
       var withWhy=ops.filter(function(o){return o.reason;}).length;
       var withSet=ops.filter(function(o){return o.weather;}).length;
       try{ console.info('[LOMA] providers hydrated from DB — '+refreshed+' refreshed, '+added+' new ('+ops.length+' live, '+(before-ops.length)+' closed removed)');
@@ -6846,7 +6860,24 @@ function _lomaDist(o){
     return km<1 ? Math.round(km*1000)+' m' : (km<10?km.toFixed(1):Math.round(km))+' km';
   }catch(e){ return ''; }
 }
+/* OUR score, precomputed in Postgres by scripts/compute_score.py:
+     score = hiddenness x cultural x quality x confidence^2
+   The raw score tops out near 25 (four sub-1.0 multipliers compound), which is fine for
+   ordering and misleading to display — so the badge shows the percentile instead. */
+function _lomaScore(r){ return r.loma_score || null; }
 function _lomaApplySignals(o,r){
+  var ls=_lomaScore(r);
+  if(ls){
+    o.loma=ls;
+    o.loma_pct=ls.percentile;
+    o.loma_rank=ls.rank;
+    /* the mockup's own engine writes these; ours wins */
+    if(ls.score!=null){ o.loma_score=ls.percentile; o.overall_loma_score=ls.percentile; }
+    o.blockedReason=ls.blocked||'';
+    var fx=ls.factors||{};
+    o.f_hidden=fx.hiddenness; o.f_cultural=fx.cultural; o.f_quality=fx.quality; o.f_conf=fx.confidence;
+    o.is_hidden_gem=(ls.percentile>=90);
+  }
   var w=_lomaSetting(r);          if(w) o.weather=w;
   var why=_lomaWhy(r);            if(why){ o.reason=why; o._why=why; }
   var wl=_lomaWhyLocal(r);        if(wl) o.whyLocal=wl;
@@ -6854,13 +6885,105 @@ function _lomaApplySignals(o,r){
   o.cultural=_lomaCultural(r);
   o.dietary=r.dietary||[];
   o.complaint=_lomaComplaint(r);
-  o.closed=_lomaClosed(r);
+  o.closed=_lomaClosed(r) || (ls&&ls.blocked==='closed');
   return o;
+}
+
+/* ===== LOMA recent-recs layer ===================================================
+   "Recent recommendations" was two hardcoded rows. It now reflects what this partner
+   actually shared, from the log table via GET /events.
+================================================================================= */
+var _lomaRecent = null;          /* null = not loaded yet, [] = loaded and empty */
+var _lomaRecentFor = null;       /* which partner the cache belongs to */
+
+/* Furthest the guest got, best first. A confirmed visit is worth more than an open. */
+var _LOMA_OUTCOME = [
+  ['positive_feedback',       'left positive feedback ✓'],
+  ['provider_confirmed_visit','visit confirmed ✓'],
+  ['contact_clicked',         'guest contacted them ✓'],
+  ['direction_clicked',       'guest got directions ✓'],
+  ['provider_card_viewed',    'opened by tourist ✓'],
+  ['link_opened',             'link opened ✓']
+];
+
+function _lomaAgo(iso){
+  try{
+    var t=new Date(iso).getTime(); if(!t) return '';
+    var m=Math.max(0,(Date.now()-t)/60000);
+    if(m<60)  return Math.round(m)+'m ago';
+    if(m<1440) return Math.round(m/60)+'h ago';
+    var d=Math.round(m/1440);
+    return d===1 ? 'yesterday' : d+'d ago';
+  }catch(e){ return ''; }
+}
+
+/* Two fetches, and the split matters. /events returns the LATEST n by row_id, so a
+   single broad fetch silently misses older shares — seabreeze has 3,113 events and its
+   link_shared rows are hundreds deep. Ask for the shares BY TYPE (correct by
+   construction, tiny), then pull recent activity for the outcomes. */
+function _lomaLoadRecent(){
+  var pid=(typeof PARTNER!=='undefined'&&PARTNER&&PARTNER.id)||null;
+  if(!pid || _lomaRecentFor===pid) return;
+  _lomaRecentFor=pid;
+  var q='hotel_id='+encodeURIComponent(pid);
+  Promise.all([
+    fetch(_LOMA_API_BASE+'/events?event_type=link_shared&'+q+'&limit=50').then(function(x){return x.ok?x.json():null;}),
+    fetch(_LOMA_API_BASE+'/events?'+q+'&limit=5000').then(function(x){return x.ok?x.json():null;})
+  ]).then(function(res){
+      var shareEvs=(res[0]&&res[0].events)||[];
+      var allEvs=(res[1]&&res[1].events)||[];
+      var shares={}, outcomes={};
+      shareEvs.forEach(function(e){
+        if(!e.provider_id) return;
+        var s=shares[e.provider_id];
+        if(!s || e.server_ts>s.ts) shares[e.provider_id]={ts:e.server_ts, channel:e.channel||''};
+      });
+      allEvs.forEach(function(e){
+        if(!e.provider_id || e.event_type==='link_shared') return;
+        (outcomes[e.provider_id]=outcomes[e.provider_id]||{})[e.event_type]=e.server_ts;
+      });
+      var out=Object.keys(shares).map(function(id){
+        var got=outcomes[id]||{}, label='shared, no activity yet';
+        for(var i=0;i<_LOMA_OUTCOME.length;i++){
+          if(got[_LOMA_OUTCOME[i][0]]){ label=_LOMA_OUTCOME[i][1]; break; }
+        }
+        return {id:id, ts:shares[id].ts, channel:shares[id].channel, outcome:label};
+      });
+      out.sort(function(a,b){ return a.ts<b.ts?1:-1; });
+      _lomaRecent=out.slice(0,4);
+      try{ console.info('[LOMA] recent recommendations — '+out.length+' shared by '+pid); }catch(e){}
+      if(typeof render==='function') render();
+    })
+    .catch(function(){ _lomaRecent=[]; });
+}
+
+/* Renders into the same .prow markup the hardcoded rows used. */
+function _lomaRecentRows(){
+  _lomaLoadRecent();
+  if(_lomaRecent===null)
+    return '<div class="prow"><div class="info"><div class="m">Loading recent recommendations…</div></div></div>';
+  if(!_lomaRecent.length)
+    return '<div class="prow"><div class="info"><div class="m">Nothing shared yet. Pick a place and send a guest a QR — it will show up here.</div></div></div>';
+  return _lomaRecent.map(function(r){
+    var p=(typeof P==='function')?P(r.id):null;
+    var name=(p&&p.name)||r.id;
+    var img=(p&&p.img)||'';
+    var emo=(p&&p.emo)||'📍';
+    var badge=(p&&p.loma&&p.loma.percentile>=90)?'<span class="badge b-gem">💎 Hidden Gem</span>'
+             :((typeof localBadge==='function')?localBadge():'');
+    var via=r.channel?(' via '+r.channel):'';
+    return '<div class="prow" data-prov="'+r.id+'">'
+         + '<div class="thumb" data-photo="'+img+'" data-emo="'+emo+'"></div>'
+         + '<div class="info"><h3>'+name+'</h3>'
+         + '<div class="m">Shared '+_lomaAgo(r.ts)+via+' · '+r.outcome+'</div>'
+         + '<div class="bd">'+badge+'</div></div></div>';
+  }).join('');
 }
 
 lomaHydrateProviders();
 
-
+</script>
+<script src="data/qrcode.browser.js">
 /* ===== LOMA real-data layer: live actions ======================================
    Real Google Maps directions from the provider table, real share/referral links,
    and DB funnel logging (/events). Best-effort — nothing blocks if the API is down.
@@ -6900,46 +7023,6 @@ function lomaMapsUrl(o){
   return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(q||'Phuket');
 }
 function lomaEventMapUrl(e){ return lomaMapsUrl({ name:(e&&e.venue)||'', area:(e&&e.area)||'' }); }
-/* A real, interactive Google Map centred on the provider, from the provider table's
-   coordinates / place_id. Uses the official Maps Embed API when a key is supplied via
-   window.LOMA_MAPS_KEY or ?mapskey=..., else a keyless Google Maps embed. */
-function lomaMapEmbed(o){
-  var key=''; try{ key=window.LOMA_MAPS_KEY||new URLSearchParams(location.search).get('mapskey')||''; }catch(e){}
-  var lang=(typeof state!=='undefined'&&state.lang==='ไทย')?'th':'en', src;
-  if(key){
-    var q=(o&&o.placeId)?('place_id:'+encodeURIComponent(o.placeId))
-        :(o&&o.lat!=null&&o.lng!=null)?encodeURIComponent(o.lat+','+o.lng)
-        :encodeURIComponent([o&&o.name,o&&o.area,'Phuket'].filter(Boolean).join(' '));
-    src='https://www.google.com/maps/embed/v1/place?key='+encodeURIComponent(key)+'&q='+q+'&zoom=16&language='+lang;
-  } else {
-    var q2=(o&&o.lat!=null&&o.lng!=null)?encodeURIComponent(o.lat+','+o.lng)
-         :encodeURIComponent([o&&o.name,o&&o.area,'Phuket'].filter(Boolean).join(' '));
-    src='https://maps.google.com/maps?q='+q2+'&z=16&hl='+lang+'&output=embed';
-  }
-  return '<iframe title="Map" src="'+src+'" style="width:100%;height:100%;border:0;display:block" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>';
-}
-/* A real Google Map with the multi-stop route from the hotel through each pick, using
-   the provider table's coordinates. Embed API directions mode when a key is supplied,
-   else a keyless Google Maps directions embed (saddr/daddr). */
-function lomaRouteEmbed(ids){
-  var stops=(ids||[]).map(function(id){ return P(id); }).filter(Boolean);
-  var key=''; try{ key=window.LOMA_MAPS_KEY||new URLSearchParams(location.search).get('mapskey')||''; }catch(e){}
-  var lang=(typeof state!=='undefined'&&state.lang==='ไทย')?'th':'en';
-  function loc(o){ return (o&&o.lat!=null&&o.lng!=null) ? (o.lat+','+o.lng) : [o&&o.name,o&&o.area,'Phuket'].filter(Boolean).join(' '); }
-  var hotel=(typeof PARTNER!=='undefined'&&PARTNER)||{};
-  var origin=(hotel.lat!=null&&hotel.lng!=null)?(hotel.lat+','+hotel.lng):(hotel.name||'Phuket');
-  if(!stops.length) return lomaMapEmbed({lat:hotel.lat,lng:hotel.lng,name:hotel.name,area:'Phuket'});
-  var src;
-  if(key){
-    var dest=loc(stops[stops.length-1]);
-    var way=stops.slice(0,-1).map(loc).map(encodeURIComponent).join('|');
-    src='https://www.google.com/maps/embed/v1/directions?key='+encodeURIComponent(key)+'&origin='+encodeURIComponent(origin)+'&destination='+encodeURIComponent(dest)+(way?'&waypoints='+way:'')+'&mode=driving&language='+lang;
-  } else {
-    var daddr=stops.map(loc).map(encodeURIComponent).join('+to:');
-    src='https://maps.google.com/maps?saddr='+encodeURIComponent(origin)+'&daddr='+daddr+'&hl='+lang+'&output=embed';
-  }
-  return '<iframe title="Route map" src="'+src+'" style="width:100%;height:100%;border:0;display:block" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>';
-}
 /* The app's own base URL (so QR codes / share links point back to this deployment). */
 function lomaShareBase(){
   try{ return (location.protocol==='file:')?'https://loma.app/':(location.origin+location.pathname); }
@@ -7009,6 +7092,5 @@ if(!window._lomaLinkApplied){
 }
 
 </script>
-<script src="data/qrcode.browser.js"></script>
 </body>
 </html>
