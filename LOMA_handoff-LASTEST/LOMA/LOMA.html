@@ -1313,7 +1313,10 @@ function applyIntent(name){
 }
 function filterCatalog(opts){
   const f=Object.assign({},state.filter,opts||{});
-  let list=OPS.slice();
+  /* LOMA signals layer: closed shops and serious complaints are never listed. */
+  let list=OPS.slice().filter(o=>!o.closed && o.complaint!=='high');
+  if(f.dietary) list=list.filter(o=>(o.dietary||[]).includes(f.dietary));
+  if(f.cultural) list=list.filter(o=>o.cultural==='thai_traditional'||o.cultural==='thai_modern');
   if(f.cat) list=list.filter(o=>o.cat===f.cat);
   if(f.cats&&f.cats.length) list=list.filter(o=>f.cats.includes(o.cat));
   if(f.family) list=list.filter(o=>(o.bestFor||[]).some(t=>/famil|kid/i.test(t)));
@@ -1670,9 +1673,6 @@ function screenHome(){
     <div class="h-sec">Recent recommendations</div>
     <div class="prow" data-prov="OTH"><div class="thumb" data-photo="${P('OTH').img}" data-emo="${P('OTH').emo}"></div><div class="info"><h3>Old Town Herbal Massage</h3><div class="m">Shared 2h ago · opened by tourist ✓</div><div class="bd">${localBadge()}<span class="badge b-verified">${I.verified}Verified</span></div></div></div>
     <div class="prow" data-prov="BRT"><div class="thumb" data-photo="${P('BRT').img}" data-emo="${P('BRT').emo}"></div><div class="info"><h3>Baan Rim Talay Local Kitchen</h3><div class="m">Shared yesterday · visit confirmed ✓</div><div class="bd">${localBadge()}<span class="badge b-pick">⭐ Staff pick</span></div></div></div>
-
-    <div class="h-sec">Today's recommended local picks</div>
-    ${miniRow('RFE')}${miniRow('KLD')}
   </div>${staffTabbar()}`;
 }
 function miniRow(id){const p=P(id);return `<div class="prow" data-prov="${id}"><div class="thumb" data-photo="${p.img}" data-emo="${p.emo}"></div><div class="info"><h3>${p.name}</h3><div class="m">${p.cat} · ${p.dist}</div><div class="bd">${localBadge()}${p.pick?'<span class="badge b-pick">⭐ Staff pick</span>':''}</div></div></div>`;}
@@ -6713,8 +6713,11 @@ function _lomaProvToOp(r){
     verified:(r.verification_status==='verified'), vettingStatus:r.verification_status||'pending',
     quality:conf, locality:conf, readiness:conf, safety:conf, loma_score:conf,
     rating:r.rating, reviews:r.reviews, branches:1, lang:'', booking:'', contact:r.phone||'',
-    pick:false, bestFor:[], img:_lomaAsset(r.photo),
-    reason:'', whyLocal:'', note:r.address||'', sum:r.summary||'',
+    pick:false, bestFor:_lomaStrengths(r), img:_lomaAsset(r.photo),
+    reason:_lomaWhy(r), whyLocal:_lomaWhyLocal(r), note:r.address||'', sum:r.summary||'',
+    /* LOMA signals layer — see helpers at the end of this script */
+    weather:_lomaSetting(r), dietary:(r.dietary||[]), cultural:_lomaCultural(r),
+    complaint:_lomaComplaint(r), closed:_lomaClosed(r),
     social:r.social||{}, leads:0, opens:0, visits:0,
     /* real map + contact data straight from the provider table (for Get Directions etc.) */
     mapsUrl:r.mapsUrl||'', placeId:r.placeId||'', lat:(r.lat!=null?r.lat:null), lng:(r.lng!=null?r.lng:null),
@@ -6747,16 +6750,113 @@ function lomaHydrateProviders(){
           if(r.address!=null) o.address=r.address;
           if(r.website!=null) o.website=r.website;
           if(r.phone!=null) o.phone=r.phone;
+          _lomaApplySignals(o,r);   /* LOMA signals layer */
           refreshed++;
         } else {
           var op=_lomaProvToOp(r); ops.push(op); byId[op.id]=op; added++;
         }
       });
-      try{ console.info('[LOMA] providers hydrated from DB — '+refreshed+' refreshed, '+added+' new ('+ops.length+' total)'); }catch(e){}
+      /* LOMA signals layer: a closed shop must never be recommendable. */
+      var before=ops.length;
+      var live=ops.filter(function(o){return !o.closed;});
+      if(live.length!==ops.length){ ops.length=0; Array.prototype.push.apply(ops,live); }
+      /* Providers adopted from the DB never went through the scoring pass — it runs
+         once at load, long before this fetch resolves. Without it every adopted card
+         renders 'LOMA undefined' and an empty AI curation note. */
+      ops.forEach(function(o){ if(!o.weather)o.weather=(typeof WEATHER_BY_CAT!=='undefined'&&WEATHER_BY_CAT[o.cat])||'mixed';
+                               if(!o.duration)o.duration=(typeof DURATION_BY_CAT!=='undefined'&&DURATION_BY_CAT[o.cat])||'short';
+                               if(!o.dist)o.dist=_lomaDist(o); });
+      try{ if(typeof aiRefresh==='function') aiRefresh(); }catch(e){}
+      /* our grounded note beats the template-generated one where we have it */
+      ops.forEach(function(o){ if(o._why) o.ai_summary=o._why; });
+      var withWhy=ops.filter(function(o){return o.reason;}).length;
+      var withSet=ops.filter(function(o){return o.weather;}).length;
+      try{ console.info('[LOMA] providers hydrated from DB — '+refreshed+' refreshed, '+added+' new ('+ops.length+' live, '+(before-ops.length)+' closed removed)');
+           console.info('[LOMA] signals — '+withWhy+' with a why-visit note, '+withSet+' with a real indoor/outdoor setting'); }catch(e){}
       if(typeof render==='function') render();
     }).catch(function(){});
   }catch(e){}
 }
+/* ===== LOMA signals layer =======================================================
+   Reads the fields the real-data mapper was discarding. All of this is already on
+   every row returned by GET /providers.
+================================================================================= */
+/* Per-place indoor/outdoor beats WEATHER_BY_CAT's per-category guess. 61% of the
+   catalog is resolved from review text; the rest stays unknown and falls back. */
+function _lomaSetting(r){
+  var s=r.setting;
+  return (s==='indoor'||s==='outdoor'||s==='mixed') ? s : '';
+}
+/* The grounded visit note — every one cites the reviews it came from. 823 places. */
+function _lomaWhy(r){
+  var ra=r.review_analysis||{}, wv=ra.why_visit;
+  return (wv && wv.text) ? String(wv.text) : '';
+}
+/* What the place actually serves, judged from named dishes in the reviews. */
+function _lomaCultural(r){
+  var cl=((r.review_analysis||{}).cultural_locality)||{};
+  return cl.verdict||'';
+}
+/* A plain-English local line, built from the dishes the model cited as evidence. */
+function _lomaWhyLocal(r){
+  var cl=((r.review_analysis||{}).cultural_locality)||{};
+  var ev=(cl.evidence||[]).slice(0,3);
+  if(cl.verdict==='thai_traditional'&&ev.length) return 'Reviewers name '+ev.join(', ')+'.';
+  if(cl.verdict==='thai_modern'&&ev.length) return 'Thai, contemporary — '+ev.join(', ')+'.';
+  return '';
+}
+/* Top positive aspects, counted across reviews — not asserted. Fills bestFor. */
+function _lomaStrengths(r){
+  var pr=((r.review_analysis||{}).per_review)||[], c={};
+  pr.forEach(function(p){ (p.aspects||[]).forEach(function(a){
+    if(a && a.polarity==='positive' && a.aspect) c[a.aspect]=(c[a.aspect]||0)+1;
+  });});
+  var LABEL={food_quality:'great food',service:'good service',value:'good value',
+             atmosphere:'nice atmosphere',cleanliness:'clean',authenticity:'authentic',
+             wait_time:'quick',staff_language:'English spoken'};
+  return Object.keys(c).sort(function(a,b){return c[b]-c[a];})
+               .slice(0,3).map(function(k){return LABEL[k]||k;});
+}
+/* Worst complaint severity a real customer actually reported. */
+function _lomaComplaint(r){
+  var pr=((r.review_analysis||{}).per_review)||[], worst='';
+  pr.forEach(function(p){
+    var s=p.complaint&&p.complaint.severity;
+    if(s==='high') worst='high';
+    else if(s==='medium'&&worst!=='high') worst='medium';
+    else if(s==='low'&&!worst) worst='low';
+  });
+  return worst;
+}
+/* A closed shop cannot be visited — no score redeems that. 106 in the catalog. */
+function _lomaClosed(r){
+  var b=r.business_status;
+  return b==='CLOSED_PERMANENTLY'||b==='CLOSED_TEMPORARILY';
+}
+/* Straight-line distance from the signed-in property — the mapper left dist:'' so every
+   adopted card rendered "undefined ·". Same haversine the rest of the app uses. */
+function _lomaDist(o){
+  try{
+    var a=(typeof PARTNER!=='undefined'&&PARTNER)?PARTNER:null;
+    if(!a||a.lat==null||o.lat==null) return '';
+    var R=6371,dLat=(o.lat-a.lat)*Math.PI/180,dLng=(o.lng-a.lng)*Math.PI/180;
+    var x=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(a.lat*Math.PI/180)*Math.cos(o.lat*Math.PI/180)*Math.sin(dLng/2)*Math.sin(dLng/2);
+    var km=2*R*Math.asin(Math.sqrt(x));
+    return km<1 ? Math.round(km*1000)+' m' : (km<10?km.toFixed(1):Math.round(km))+' km';
+  }catch(e){ return ''; }
+}
+function _lomaApplySignals(o,r){
+  var w=_lomaSetting(r);          if(w) o.weather=w;
+  var why=_lomaWhy(r);            if(why){ o.reason=why; o._why=why; }
+  var wl=_lomaWhyLocal(r);        if(wl) o.whyLocal=wl;
+  var st=_lomaStrengths(r);       if(st.length) o.bestFor=st;
+  o.cultural=_lomaCultural(r);
+  o.dietary=r.dietary||[];
+  o.complaint=_lomaComplaint(r);
+  o.closed=_lomaClosed(r);
+  return o;
+}
+
 lomaHydrateProviders();
 
 </script>
