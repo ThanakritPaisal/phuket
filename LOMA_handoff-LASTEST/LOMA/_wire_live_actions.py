@@ -94,6 +94,76 @@ src = sub_once(
     "checkin-status-scan",
 )
 
+# 3e) Ask LOMA (AI) — was a fixed demo (hardcoded needs + fixed picks). Wire it to the
+#     Thai LLM via /ask: real needs extracted from the request, real matching providers.
+src = sub_once(
+    src,
+    """function askSend(t){ t=(t||'').trim();
+  if(!t){const i=document.getElementById('lomaIn'); if(i){i.value=askExample(); i.focus();} return;}
+  state.askQ=t; state.askStage=1; state.askNeeds=null; render();
+}""",
+    """function askSend(t){ t=(t||'').trim();
+  if(!t){const i=document.getElementById('lomaIn'); if(i){i.value=askExample(); i.focus();} return;}
+  state.askQ=t; state.askStage=1; state.askNeeds=null; state.askPicks=null; state.askIntro=null; state.askErr=false;
+  state.askLoading=(typeof lomaAsk==='function'); render();
+  if(typeof lomaAsk==='function') lomaAsk(t);
+}""",
+    "ask-send",
+)
+src = sub_once(
+    src,
+    """  if(state.askStage===1 && !state.askNeeds) state.askNeeds=['Local food','Open late','♿ Wheelchair OK','Not far','Budget-friendly'];""",
+    """  if(state.askStage===1 && !state.askNeeds && !state.askLoading) state.askNeeds=['Local food','Open late','♿ Wheelchair OK','Not far','Budget-friendly'];""",
+    "ask-needs-default",
+)
+src = sub_once(
+    src,
+    """    body+=user(state.askQ);
+    body+=bot(T('Got it — here is what I understood. Tap ✕ to change:'));
+    body+=`<div style="display:flex;flex-wrap:wrap;gap:6px;margin:0 0 13px 39px">${state.askNeeds.map(n=>`<span class="chip" style="display:inline-flex;align-items:center;gap:6px;background:var(--primary-l);color:var(--primary);font-weight:700">${T(n)}<button data-lomarm="${n}" style="opacity:.6;font-size:12px">✕</button></span>`).join('')}</div>`;
+    body+=bot(T('Three verified local places that fit — every baht goes 100% to the owner:'));
+    body+=`<div style="margin:0 0 6px">`+ASK_PICKS.map(x=>{const p=P(x.id); if(!p) return '';
+      return bigCard(p,{sub:T(x.why),gem:x.gem});
+    }).join('')+`</div>`;
+    body+=`<div style="font-size:11.5px;color:var(--muted);background:var(--surface-2);border-radius:9px;padding:9px 12px;margin:0 0 13px 39px;line-height:1.5">💚 ${T('No ads · no commission · shops never pay to appear. Your hotel earns Impact Credits for this.')}</div>`;
+    body+=`<div style="display:flex;flex-wrap:wrap;gap:8px;margin:0 0 6px 39px">
+      <button class="chip" data-lomaref>💸 ${T('Cheaper')}</button>
+      <button class="chip" data-lomaref>🚶 ${T('Walkable only')}</button>
+      <button class="chip" data-lomaref>🔄 ${T('Different vibe')}</button>
+    </div>`;""",
+    """    body+=user(state.askQ);
+    if(state.askLoading){
+      body+=bot(state.lang==='ไทย'?'กำลังค้นหาร้าน/สถานที่ท้องถิ่นที่ตรงกับคุณ… ✨':'Finding the best local matches for you… ✨');
+    } else if(state.askErr){
+      body+=bot(state.lang==='ไทย'?'ขออภัยค่ะ ตอนนี้เชื่อมต่อผู้ช่วย AI (thaillm) ไม่ได้ กรุณาลองใหม่อีกครั้ง 🙏':'Sorry — I could not reach the AI (thaillm) right now. Please try again. 🙏');
+      body+=`<div style="margin:2px 0 6px 39px"><button class="btn btn-coral" data-lomaretry style="width:auto;padding:10px 18px;font-weight:700">${state.lang==='ไทย'?'ลองอีกครั้ง':'Try again'}</button></div>`;
+    } else {
+    var _askReal=!!(state.askPicks&&state.askPicks.length);
+    var _askItems=_askReal?state.askPicks:ASK_PICKS;
+    body+=bot(state.askIntro||T('Got it — here is what I understood. Tap ✕ to change:'));
+    if((state.askNeeds||[]).length) body+=`<div style="display:flex;flex-wrap:wrap;gap:6px;margin:0 0 13px 39px">${state.askNeeds.map(n=>`<span class="chip" style="display:inline-flex;align-items:center;gap:6px;background:var(--primary-l);color:var(--primary);font-weight:700">${T(n)}<button data-lomarm="${n}" style="opacity:.6;font-size:12px">✕</button></span>`).join('')}</div>`;
+    body+=bot(T('Verified local places that fit — every baht goes 100% to the owner:'));
+    body+=`<div style="margin:0 0 6px">`+_askItems.map(x=>{const p=P(x.id); if(!p) return '';
+      return bigCard(p,{sub:_askReal?x.why:T(x.why),gem:!!x.gem});
+    }).join('')+`</div>`;
+    body+=`<div style="font-size:11.5px;color:var(--muted);background:var(--surface-2);border-radius:9px;padding:9px 12px;margin:0 0 13px 39px;line-height:1.5">💚 ${T('No ads · no commission · shops never pay to appear. Your hotel earns Impact Credits for this.')}</div>`;
+    body+=`<div style="display:flex;flex-wrap:wrap;gap:8px;margin:0 0 6px 39px">
+      <button class="chip" data-lomaref="${state.lang==='ไทย'?'ถูกกว่านี้':'cheaper'}">💸 ${T('Cheaper')}</button>
+      <button class="chip" data-lomaref="${state.lang==='ไทย'?'เดินถึงได้':'walkable only'}">🚶 ${T('Walkable only')}</button>
+      <button class="chip" data-lomaref="${state.lang==='ไทย'?'บรรยากาศอื่น':'different vibe'}">🔄 ${T('Different vibe')}</button>
+    </div>`;
+    }""",
+    "ask-render-picks",
+)
+src = sub_once(
+    src,
+    """  if(lomaref){toast(state.lang==='ไทย'?'แอปจริงจัดอันดับใหม่ทันทีค่ะ':'Full app re-ranks instantly 🙂');return;}""",
+    """  const lomaretry=e.target.closest('[data-lomaretry]');
+  if(lomaretry){ askSend(state.askQ||''); return; }
+  if(lomaref){var _r=lomaref.dataset.lomaref||''; askSend(((state.askQ||'')+' '+_r).trim()); return;}""",
+    "ask-refine",
+)
+
 # 4) Contact — real tel:/website link.
 src = sub_once(
     src,
@@ -265,6 +335,35 @@ function lomaContactUrl(o){
   if(o&&o.phone) return 'tel:'+String(o.phone).replace(/[^+0-9]/g,'');
   if(o&&o.website) return o.website;
   return lomaMapsUrl(o);
+}
+/* Ask LOMA (AI) — a shortlist of REAL providers relevant to the request (keyword-ranked
+   over the catalog, falling back to top-rated). */
+function lomaAskCandidates(text){
+  var ops=(window.LOMA_DATA&&window.LOMA_DATA.operators)||[];
+  var toks=String(text||'').toLowerCase().split(/[^a-z0-9฀-๿]+/).filter(function(w){return w.length>2;});
+  function sc(o){ var hay=((o.name||'')+' '+(o.cat||'')+' '+(o.area||'')+' '+((o.bestFor||[]).join(' '))+' '+(o.note||'')+' '+(o.whyLocal||'')).toLowerCase(); var s=0; for(var i=0;i<toks.length;i++){ if(hay.indexOf(toks[i])>=0) s++; } return s; }
+  var scored=ops.map(function(o){ return {o:o,s:sc(o)}; });
+  var hit=scored.filter(function(x){ return x.s>0; });
+  hit.sort(function(a,b){ return (b.s-a.s)||((b.o.loma_score||b.o.quality||0)-(a.o.loma_score||a.o.quality||0)); });
+  if(!hit.length){ scored.sort(function(a,b){ return (b.o.loma_score||b.o.quality||0)-(a.o.loma_score||a.o.quality||0); }); hit=scored; }
+  return hit.slice(0,20).map(function(x){ var o=x.o; return {id:o.id,name:o.name,cat:o.cat,area:o.area,rating:o.rating,reviews:o.reviews,priceText:o.priceText,price:o.price,hours:o.hours,address:o.address||o.note,whyLocal:o.whyLocal,summary:o.sum}; });
+}
+/* Ask LOMA (AI) — POST the request + candidates to /ask; the Thai LLM extracts the needs
+   and picks 2-4 matching providers with reasons. Populates state and re-renders. On any
+   failure it just clears the loading flag so touristAsk shows its built-in picks. */
+function lomaAsk(text){
+  var body={ message:String(text||''), lang:(typeof state!=='undefined'&&state.lang==='ไทย')?'th':'en', area:(typeof PARTNER!=='undefined'&&PARTNER&&PARTNER.area)||null, providers:lomaAskCandidates(text), limit:20 };
+  var opt={ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) };
+  try{ if(typeof AbortSignal!=='undefined' && AbortSignal.timeout) opt.signal=AbortSignal.timeout(60000); }catch(e){}
+  fetch(_lomaApiBase()+'/ask',opt).then(function(x){ return x.ok?x.json():null; }).then(function(d){
+    if(typeof state==='undefined') return;
+    state.askLoading=false;
+    if(d&&d.ok&&d.picks&&d.picks.length){
+      state.askPicks=d.picks; state.askIntro=d.intro||null; state.askErr=false;
+      if(d.needs&&d.needs.length) state.askNeeds=d.needs;
+    } else { state.askErr=true; }
+    if(typeof render==='function') render();
+  }).catch(function(){ if(typeof state!=='undefined'){ state.askLoading=false; state.askErr=true; } if(typeof render==='function') render(); });
 }
 /* Persist a saved pick on this device (survives reloads). */
 function lomaSave(id){

@@ -10,4 +10,6 @@ LOMA.html.orig
 loma-white.png
 artwork/
 data/
+!data/qrcode.browser.js
+build.sh
 _cbt_seed_inject.js
