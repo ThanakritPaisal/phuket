@@ -11,9 +11,10 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY LOMA.html /usr/share/nginx/html/index.html
 COPY LOMA.html /usr/share/nginx/html/LOMA.html
 
-# The QR renderer loads this at runtime (<script src="data/qrcode.browser.js">); without
-# it, QR codes fall back to a remote image service.
-COPY data/qrcode.browser.js /usr/share/nginx/html/data/qrcode.browser.js
+# Runtime assets in data/: the QR renderer (data/qrcode.browser.js) and the bundled
+# Leaflet map library (data/leaflet.js|css + data/images/*) that powers the real maps.
+# OSM map tiles are still fetched from the network at view time.
+COPY data/ /usr/share/nginx/html/data/
 
 # Cloud Run sends traffic to $PORT (default 8080); listen on it. nginx.conf is templated
 # at start so the same image works locally (80) and on Cloud Run (8080).

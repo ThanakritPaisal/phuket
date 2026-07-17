@@ -11,5 +11,9 @@ loma-white.png
 artwork/
 data/
 !data/qrcode.browser.js
+!data/leaflet.js
+!data/leaflet.css
+!data/images
+!data/images/*.png
 build.sh
 _cbt_seed_inject.js

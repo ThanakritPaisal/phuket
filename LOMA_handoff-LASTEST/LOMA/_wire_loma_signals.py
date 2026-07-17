@@ -114,11 +114,56 @@ function _lomaDist(o){
     return km<1 ? Math.round(km*1000)+' m' : (km<10?km.toFixed(1):Math.round(km))+' km';
   }catch(e){ return ''; }
 }
+/* Numeric great-circle km — _lomaDist returns a display string, this returns a number
+   for the "within 5 km" filter. */
+function _lomaKm(aLat,aLng,bLat,bLng){
+  if(aLat==null||bLat==null) return Infinity;
+  var R=6371,dLat=(bLat-aLat)*Math.PI/180,dLng=(bLng-aLng)*Math.PI/180;
+  var x=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(aLat*Math.PI/180)*Math.cos(bLat*Math.PI/180)*Math.sin(dLng/2)*Math.sin(dLng/2);
+  return 2*R*Math.asin(Math.sqrt(x));
+}
+/* Real social links, derived from the provider's own URL. Google stores a business's
+   chosen website in `website` (and links.website); for a Phuket SME that URL is very
+   often its Facebook page (308 places) or Instagram (23) — never TikTok (Google does
+   not return it). We show a platform's logo ONLY when the real URL points at it, and
+   the logo links to that exact URL. An own-domain or aggregator site shows nothing.
+   socialRow(p) already renders only the keys present and opens them on tap. */
+function _lomaSocial(r){
+  var urls=[];
+  if(r.website) urls.push(r.website);
+  var L=r.links||{};
+  ['website','facebook','instagram','tiktok'].forEach(function(k){ if(L[k]) urls.push(L[k]); });
+  var out={};
+  urls.forEach(function(u){
+    var s=String(u).toLowerCase();
+    if(!out.facebook  && (s.indexOf('facebook.com')>-1 || s.indexOf('fb.com')>-1)) out.facebook=u;
+    if(!out.instagram &&  s.indexOf('instagram.com')>-1) out.instagram=u;
+    if(!out.tiktok    &&  s.indexOf('tiktok.com')>-1)    out.tiktok=u;
+  });
+  return out;
+}
 /* OUR score, precomputed in Postgres by scripts/compute_score.py:
      score = hiddenness x cultural x quality x confidence^2
    The raw score tops out near 25 (four sub-1.0 multipliers compound), which is fine for
    ordering and misleading to display — so the badge shows the percentile instead. */
 function _lomaScore(r){ return r.loma_score || null; }
+
+/* Who is allowed to appear at all.
+   The original asked the mockup's own status machine:
+       filter(p => p.status==='verified' || p.status==='ai_shortlisted')
+   and that machine mints 'verified' from a hardcoded flag and 'ai_shortlisted' from its
+   own hidden-gem test — so 916 of 1,220 real providers were invisible, filed 'candidate'.
+   Our gate is the one from compute_score.py: a place is out only if recommending it
+   would be WRONG (closed, or a high-severity complaint a customer actually wrote).
+   Redefined here, after the original — a later function declaration wins.
+   `status` itself is left untouched, so verified badges behave exactly as before. */
+function liveProviders(){
+  return allProviders().filter(function(p){
+    if(p.status==='suspended') return false;          /* admin action still wins */
+    if(p.loma) return !p.closed && !p.loma.blocked;   /* our gate, for real providers */
+    return p.status==='verified'||p.status==='ai_shortlisted';  /* mock rows: unchanged */
+  });
+}
 function _lomaApplySignals(o,r){
   var ls=_lomaScore(r);
   if(ls){
@@ -138,6 +183,8 @@ function _lomaApplySignals(o,r){
   var st=_lomaStrengths(r);       if(st.length) o.bestFor=st;
   o.cultural=_lomaCultural(r);
   o.dietary=r.dietary||[];
+  o.social=_lomaSocial(r);        /* real FB/IG/TikTok from the provider's own URL */
+  o.tambon=r.tambon||'';          /* real subdistrict, for the "Somewhere else" picker */
   o.complaint=_lomaComplaint(r);
   o.closed=_lomaClosed(r) || (ls&&ls.blocked==='closed');
   return o;
@@ -248,6 +295,21 @@ src = sub_once(
 #    returns almost nothing is worse than no chip.
 #    Halal (22) and Vegetarian (264) are real, filterable, and Phuket is ~a third Muslim.
 # --------------------------------------------------------------------------------------
+# Stop folding at ingest. _lomaCat mapped Seafood and Street Food & Noodles into
+# Local Food and renamed Café & Dessert -> Café, so 157 places lost their category on
+# the way in and could never be filtered. categories.ts calls its 8 ids the single
+# source of truth; pass them through unchanged.
+src = sub_once(
+    src,
+    """function _lomaCat(c){ return ({'Café & Dessert':'Café','Street Food & Noodles':'Local Food','Seafood':'Local Food'})[c] || c || 'Local Food'; }""",
+    """/* LOMA signals layer: no folding. The 8 canonical ids in categories.ts are stored
+   on every provider; mapping them here only destroyed information. */
+function _lomaCat(c){ return c || 'Local Food'; }""",
+    "lomaCat-identity",
+)
+
+# The 7 canonical categories with a chip (Boat / Sea has 10 places — left out on request),
+# plus the real-data filters. Labels/emoji come from categories.ts.
 src = sub_once(
     src,
     """const INTENT_MAP = {
@@ -256,11 +318,15 @@ src = sub_once(
   "Souvenir":{cat:"Souvenir & Local Product"}, "Rainy Day":{rainy:true},
   "Family Friendly":{family:true}, "Open Now":{openNow:true},""",
     """const INTENT_MAP = {
-  "Local Food":{cat:"Local Food"}, "Massage & Spa":{cat:"Massage & Wellness"},
-  "Local Experience":{cat:"Community Experience"}, "Café":{cat:"Café"},
-  "Souvenir":{cat:"Souvenir & Local Product"}, "Rainy Day":{rainy:true},
-  /* LOMA signals layer: dietary is real data (provider.dietary); "Family Friendly" was
-     dropped — it matched only hand-written mock rows, never a real provider. */
+  /* LOMA signals layer: the canonical categories.ts ids, unfolded. "Family Friendly"
+     was dropped (it matched only hand-written mock rows); Halal/Vegetarian are real
+     data from provider.dietary. */
+  "Local Food":{cat:"Local Food"}, "Seafood":{cat:"Seafood"},
+  "Street Food":{cat:"Street Food & Noodles"}, "Café":{cat:"Café & Dessert"},
+  "Massage & Spa":{cat:"Massage & Wellness"},
+  "Souvenir":{cat:"Souvenir & Local Product"},
+  "Local Experience":{cat:"Community Experience"},
+  "Rainy Day":{rainy:true},
   "Halal":{dietary:"halal"}, "Vegetarian":{dietary:"vegetarian"},
   "Open Now":{openNow:true},""",
     "intent-map",
@@ -269,10 +335,227 @@ src = sub_once(
 src = sub_once(
     src,
     "const intents=['Local Food 🍜','Massage & Spa 💆','Local Experience 🛶','Café ☕','Souvenir 🎁','Rainy Day 🌧','Family Friendly 👨‍👩‍👧','Open Now 🟢'",
-    "const intents=['Local Food 🍜','Massage & Spa 💆','Local Experience 🛶','Café ☕','Souvenir 🎁','Rainy Day 🌧','Halal ☪','Vegetarian 🌱','Open Now 🟢'",
+    "const intents=['Local Food 🍜','Seafood 🦐','Street Food 🍲','Café ☕','Massage & Spa 💆','Souvenir 🎁','Local Experience 🛶','Rainy Day 🌧','Halal ☪','Vegetarian 🌱','Open Now 🟢'",
     "intent-chips",
 )
 
+# The unfolded ids are new to these lookups; without an entry they silently fall back.
+src = sub_once(
+    src,
+    "const WEATHER_BY_CAT={'Local Food':'mixed','Café':'indoor',",
+    "const WEATHER_BY_CAT={'Local Food':'mixed','Café':'indoor','Café & Dessert':'indoor','Seafood':'mixed','Street Food & Noodles':'mixed',",
+    "weather-by-cat",
+)
+src = sub_once(
+    src,
+    "const DURATION_BY_CAT={'Local Food':'short','Café':'short',",
+    "const DURATION_BY_CAT={'Local Food':'short','Café':'short','Café & Dessert':'short','Seafood':'short','Street Food & Noodles':'quick',",
+    "duration-by-cat",
+)
+
+
+# --------------------------------------------------------------------------------------
+# 7) Align the TOURIST landing with the same canonical categories as the staff chips.
+#    It ran on a THIRD taxonomy: the mockup's own lomaCat() invented "Souvenirs & Crafts",
+#    "Local Product" and "Wellness", and folded Boat / Sea into Community Experience.
+#    "Wellness" rendered a tile with 0 places — nothing in categories.ts maps to it.
+#    lomaCat() now returns the stored id unchanged, so loma_cat === cat everywhere.
+# --------------------------------------------------------------------------------------
+NEW_CATS = (
+    '/* LOMA signals layer: the canonical categories.ts ids + emoji, matching the staff\n'
+    '   chips exactly. Boat / Sea (15 places) is deliberately left out of the tiles. */\n'
+    'const LOMA_CATS=[["Local Food","🍜"],["Seafood","🦐"],["Street Food & Noodles","🍲"],'
+    '["Café & Dessert","☕"],["Massage & Wellness","💆"],'
+    '["Souvenir & Local Product","🎁"],["Community Experience","🛶"]]'
+)
+src = sub_once(
+    src,
+    'const LOMA_CATS=[["Local Food","🍜"],["Café & Dessert","☕"],["Massage & Spa","💆"],'
+    '["Souvenirs & Crafts","🎁"],["Local Product","🧺"],["Community Experience","🛶"],["Wellness","🧘"]]',
+    NEW_CATS,
+    "loma-cats",
+)
+
+# loma_cat drives the landing counts; folding it made Seafood/Street Food uncountable.
+src = sub_once(
+    src,
+    "function lomaCat(c){c=c||'';",
+    '/* LOMA signals layer: no folding — the stored category IS the canonical id. */\n'
+    'function lomaCat(c){ return c || "Local Food"; }\n'
+    "function _lomaCatLegacy(c){c=c||'';",
+    "lomaCat-identity-tourist",
+)
+
+# Subtitle + tile image for the ids the landing has never seen before.
+src = sub_once(
+    src,
+    "CAT_SUB={\n  'Local Food':'Authentic flavors',",
+    "CAT_SUB={\n  'Local Food':'Authentic flavors',\n"
+    "  'Seafood':'Off the boat, cooked simply',\n"
+    "  'Street Food & Noodles':'Bowls, woks and plastic stools',\n"
+    "  'Massage & Wellness':'Relax & rejuvenate',\n"
+    "  'Souvenir & Local Product':'Handmade with heart',",
+    "cat-sub",
+)
+src = sub_once(
+    src,
+    "const CAT_IMG={\n  'Local Food':'https://images.unsplash.com/photo-1559314809-0d155014e29e?w=400&q=70',",
+    "const CAT_IMG={\n  'Local Food':'https://images.unsplash.com/photo-1559314809-0d155014e29e?w=400&q=70',\n"
+    "  'Seafood':'https://images.unsplash.com/photo-1559314809-0d155014e29e?w=400&q=70',\n"
+    "  'Street Food & Noodles':'https://images.unsplash.com/photo-1559314809-0d155014e29e?w=400&q=70',\n"
+    "  'Massage & Wellness':'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=400&q=70',\n"
+    "  'Souvenir & Local Product':'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?w=400&q=70',",
+    "cat-img",
+)
+
+# --------------------------------------------------------------------------------------
+# 8) Real socials, not fabricated ones. demoSocial() sprinkled hash-random Facebook/
+#    Instagram/TikTok *search* URLs onto providers — so the logos linked to a search
+#    page, not a profile, and appeared on places with no social presence at all. Replace
+#    it so a logo shows ONLY when the provider's own website IS that platform, linking to
+#    the real URL. (DB providers already get o.social via _lomaApplySignals; this covers
+#    the hand-written mock rows, which reach socials through demoSocial.)
+# --------------------------------------------------------------------------------------
+src = sub_once(
+    src,
+    """function demoSocial(p){
+  if(!p||p.loma_cat==='Community Experience') return null;
+  const q=encodeURIComponent((p.name||'')+' Phuket');
+  const slug=(p.name||'').toLowerCase().replace(/[^a-z0-9]+/g,'');
+  const s={};
+  if(hsh('fb|'+p.id)%10 < 8) s.facebook ='https://www.facebook.com/search/top?q='+q;
+  if(hsh('ig|'+p.id)%10 < 6) s.instagram='https://www.instagram.com/explore/tags/'+slug+'/';
+  if(hsh('tk|'+p.id)%10 < 5) s.tiktok   ='https://www.tiktok.com/search?q='+q;
+  return Object.keys(s).length? s : null;
+}""",
+    """/* LOMA signals layer: real socials only. A logo appears iff the provider's own URL
+   is that platform, and it links to that exact URL. No hash, no search stubs. */
+function demoSocial(p){
+  var s=_lomaSocial(p);   /* reads p.website + p.links, returns matched platforms only */
+  return Object.keys(s).length ? s : null;
+}""",
+    "demoSocial",
+)
+
+# --------------------------------------------------------------------------------------
+# 9) "WHERE?" — real Phuket subdistricts, and a real 5 km radius.
+#    (a) The chips were a mix: Patong/Karon/Rawai/Chalong are tambon, but Kata, Old Town,
+#        Bang Tao and Nai Yang are beaches/neighbourhoods. Replace with the 12 real
+#        subdistricts (tambon) that have >=40 providers, centroids projected onto the
+#        stylised map with the mockup's own formula, and match "Somewhere else" on the
+#        provider's real `tambon` field.
+#    (b) "Around this property" had NO distance filter — it showed the whole island.
+#        Restrict it to within 5 km of the signed-in hotel (haversine on real coords).
+# --------------------------------------------------------------------------------------
+src = sub_once(
+    src,
+    'AREA_XY = {Patong:[58,60],Kata:[50,74],Karon:[52,70],Rawai:[54,82],Chalong:[60,72],"Old Town":[62,46],"Bang Tao":[44,34],"Nai Yang":[40,20]}',
+    '/* LOMA signals layer: the 12 real Phuket subdistricts (tambon) with >=40 providers,\n'
+    '   centroids from the provider table projected with the same _lomaProject formula. */\n'
+    'AREA_XY = {"Talat Yai":[41,72],"Talat Nuea":[40,73],"Patong":[16,70],"Wichit":[36,75],'
+    '"Karon":[16,83],"Rawai":[23,90],"Choeng Thale":[16,51],"Ratsada":[40,67],'
+    '"Chalong":[30,80],"Si Sunthon":[29,53],"Thep Krasattri":[27,39],"Kathu":[23,69]}',
+    "area-xy",
+)
+
+src = sub_once(
+    src,
+    "if(f.place==='elsewhere'&&f.destArea){const m=list.filter(o=>String(o.area).toLowerCase().includes(f.destArea.toLowerCase())); if(m.length)list=m;}",
+    "/* LOMA signals layer: property = within 5 km of the hotel; elsewhere = exact subdistrict. */\n"
+    "  if(f.place==='property' && typeof PARTNER!=='undefined' && PARTNER && PARTNER.lat!=null){\n"
+    "    list=list.filter(o=>o.lat!=null && _lomaKm(PARTNER.lat,PARTNER.lng,o.lat,o.lng)<=5);\n"
+    "  } else if(f.place==='elsewhere' && f.destArea){\n"
+    "    const m=list.filter(o=>o.tambon===f.destArea || String(o.area).toLowerCase().includes(f.destArea.toLowerCase()));\n"
+    "    if(m.length)list=m;\n"
+    "  }",
+    "place-filter",
+)
+
+# --------------------------------------------------------------------------------------
+# 10) Real maps. Every ".mapbox" was a stylised SVG with pins positioned by a fake
+#     projection. Leaflet (bundled locally in data/) + OpenStreetMap tiles replace it.
+#     Each ".pin" already carries data-prov, so we look the operator up by id for its
+#     real lat/lng — no per-screen edits, all 7 map surfaces upgrade at once.
+# --------------------------------------------------------------------------------------
+src = sub_once(
+    src,
+    "<head>",
+    '<head>\n'
+    '<link rel="stylesheet" href="data/leaflet.css">\n'
+    '<script src="data/leaflet.js"></script>\n'
+    '<style>.mapbox .leaflet-container{height:100%;width:100%;background:#dbe7e4}\n'
+    '  .mapbox .maptag{z-index:1000!important;pointer-events:none}</style>',
+    "leaflet-head",
+)
+
+MAPS = r"""
+/* ===== LOMA real maps ===========================================================
+   Upgrade every .mapbox from a stylised SVG to a Leaflet + OpenStreetMap map. Pins
+   carry data-prov, so we resolve each to its operator's real lat/lng; the hotel comes
+   from PARTNER. Re-runs on every render (innerHTML replacement wipes the maps).
+================================================================================= */
+(function(){
+  if(typeof L!=='undefined'){
+    L.Icon.Default.mergeOptions({
+      iconUrl:'data/images/marker-icon.png', iconRetinaUrl:'data/images/marker-icon-2x.png',
+      shadowUrl:'data/images/marker-shadow.png'});
+  }
+})();
+function _lomaLL(id){
+  var ops=(window.LOMA_DATA&&window.LOMA_DATA.operators)||[];
+  for(var i=0;i<ops.length;i++){ if(ops[i].id===id && ops[i].lat!=null) return {lat:ops[i].lat,lng:ops[i].lng,name:ops[i].name}; }
+  if(typeof COMM==='function'){ var c=COMM(id); if(c&&c.lat!=null) return {lat:c.lat,lng:c.lng,name:c.name}; }
+  return null;
+}
+function _lomaInitMaps(){
+  if(typeof L==='undefined') return;
+  var boxes=document.querySelectorAll('.mapbox');
+  for(var b=0;b<boxes.length;b++){
+    var box=boxes[b];
+    if(box._lmap || !box.offsetHeight) continue;      /* already upgraded, or hidden (desktop) */
+    var pts=[], seen={};
+    var pins=box.querySelectorAll('.pin[data-prov]');
+    for(var i=0;i<pins.length;i++){
+      var id=pins[i].getAttribute('data-prov'); if(seen[id]) continue; seen[id]=1;
+      var ll=_lomaLL(id); if(ll) pts.push({ll:ll, sel:pins[i].className.indexOf('sel')>-1});
+    }
+    var hotel=(typeof PARTNER!=='undefined'&&PARTNER&&PARTNER.lat!=null)?PARTNER:null;
+    if(!pts.length && !hotel) continue;               /* nothing real — keep the stylised map */
+    box._lmap=true;
+    /* Keep the caption TEXT only ("Local Food picks · 10 of 77"). The original maptag
+       embeds an inline <svg> that has no size and balloons in the Leaflet context. */
+    var tag=box.querySelector('.maptag');
+    var tagTxt=tag?(tag.textContent||'').replace(/\s+/g,' ').trim():'';
+    box.innerHTML='';
+    var map=L.map(box,{zoomControl:true,attributionControl:false,scrollWheelZoom:false,dragging:true});
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,crossOrigin:true}).addTo(map);
+    var bounds=[];
+    for(var j=0;j<pts.length;j++){
+      var p=pts[j].ll;
+      var mk=L.marker([p.lat,p.lng]).addTo(map);
+      if(p.name) mk.bindPopup(p.name);
+      if(pts[j].sel) mk.openPopup();
+      bounds.push([p.lat,p.lng]);
+    }
+    if(hotel){
+      var h=L.circleMarker([hotel.lat,hotel.lng],{radius:7,weight:2,color:'#fff',fillColor:'#0A3A73',fillOpacity:1}).addTo(map);
+      h.bindPopup((hotel.name||'Your property')); bounds.push([hotel.lat,hotel.lng]);
+    }
+    if(bounds.length>1) map.fitBounds(bounds,{padding:[26,26],maxZoom:15});
+    else map.setView(bounds[0],14);
+    if(tagTxt) box.insertAdjacentHTML('beforeend','<div class="maptag">📍 '+tagTxt+'</div>');
+    (function(m){ setTimeout(function(){ m.invalidateSize(); },80); })(map);
+  }
+}
+/* Re-init on every render (the app replaces innerHTML wholesale). Debounced so Leaflet's
+   own tile churn doesn't loop; the box._lmap guard makes re-scans cheap. */
+(function(){
+  var t=null; function go(){ if(t)clearTimeout(t); t=setTimeout(_lomaInitMaps,140); }
+  if(window.MutationObserver) new MutationObserver(go).observe(document.body,{childList:true,subtree:true});
+  if(document.readyState!=='loading') go(); else document.addEventListener('DOMContentLoaded',go);
+})();
+"""
+src = sub_once(src, "\nlomaHydrateProviders();", MAPS + "\nlomaHydrateProviders();", "maps-layer")
 
 io.open(HTML, "w", encoding="utf-8", newline="").write(src)
 print("wired LOMA.html signals layer:")
