@@ -6531,7 +6531,11 @@ function openShare(id){state.shareId=id;document.getElementById('shareOverlay').
 function shareLink(id){
   var base; try{ base=(location.protocol==='file:')?'https://loma.app/':(location.origin+location.pathname); }catch(e){ base='https://loma.app/'; }
   if(id&&EV(id)) return base+'?e='+encodeURIComponent(id)+'&ref='+refFor(id);
-  if(id==='PLAN') return base+'?plan=1';
+  if(id==='PLAN'){
+    var _ids=[]; try{ _ids=planStops().map(function(o){return o.id;}); }catch(e){}
+    var _ref=''; try{ _ref='LOMA-PLAN-'+(1000+(planTitle().length*611)%9000); }catch(e){}
+    return base+'?ps='+encodeURIComponent(_ids.join(','))+'&ref='+encodeURIComponent(_ref);
+  }
   return base+'?p='+encodeURIComponent(id)+'&ref='+refFor(id);}
 function shareMessage(id){
   if(id&&EV(id)){const e=EV(id);return `${EV_EMO[e.cat]} ${e.title}\n${attribution()}\n📅 ${e.date} · ${e.timeText}\n📍 ${e.venue}, ${e.area}\nSee details & map:\n${shareLink(id)}`;}
@@ -6610,7 +6614,7 @@ render();
 var LOMA_API_BASE = (function(){
   try{ var q=new URLSearchParams(location.search).get('api'); if(q) return q.replace(/\/+$/,''); }catch(e){}
   if(window.LOMA_API_BASE) return String(window.LOMA_API_BASE).replace(/\/+$/,'');
-  return 'http://'+(location.hostname||'localhost')+':8000';
+  return 'https://loma-logging-api-390589080797.asia-southeast3.run.app';
 })();
 function _lomaIso(di){ var d=new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate()+di);
   return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
@@ -6667,7 +6671,7 @@ var _LOMA_API_BASE = (function(){
   try{ if(typeof LOMA_API_BASE!=='undefined' && LOMA_API_BASE) return LOMA_API_BASE; }catch(e){}
   try{ var q=new URLSearchParams(location.search).get('api'); if(q) return q.replace(/\/+$/,''); }catch(e){}
   if(window.LOMA_API_BASE) return String(window.LOMA_API_BASE).replace(/\/+$/,'');
-  return 'http://'+(location.hostname||'localhost')+':8000';
+  return 'https://loma-logging-api-390589080797.asia-southeast3.run.app';
 })();
 var LOMA_ASSET_BASE = 'https://storage.googleapis.com/gradient-digital-group-loma-assets';
 function _lomaAsset(p){ if(!p) return p; return /^https?:\/\//.test(p) ? p : LOMA_ASSET_BASE+(p.charAt(0)==='/'?p:'/'+p); }
@@ -7077,7 +7081,7 @@ lomaHydrateProviders();
 function _lomaApiBase(){
   try{ if(typeof _LOMA_API_BASE!=='undefined' && _LOMA_API_BASE) return _LOMA_API_BASE; }catch(e){}
   try{ if(typeof LOMA_API_BASE!=='undefined' && LOMA_API_BASE) return LOMA_API_BASE; }catch(e){}
-  return 'http://'+(location.hostname||'localhost')+':8000';
+  return 'https://loma-logging-api-390589080797.asia-southeast3.run.app';
 }
 function lomaSession(){
   try{ var k='loma_sid', v=localStorage.getItem(k);
@@ -7216,23 +7220,27 @@ function lomaSave(id){
 function lomaApplyIncomingLink(){
   if(window._lomaLinkApplied) return;
   var qs; try{ qs=new URLSearchParams(location.search); }catch(e){ return; }
-  var pid=qs.get('p'), eid=qs.get('e'), ref=qs.get('ref');
-  if(!pid && !eid) return;
+  var pid=qs.get('p'), eid=qs.get('e'), ref=qs.get('ref'), ps=qs.get('ps');
+  /* One place (?p=) or a whole shared set (?ps=id1,id2,…). Both land on the same
+     branded picks page; a set just seeds more items. */
+  var wanted = ps ? ps.split(',').map(function(s){return s.trim();}).filter(Boolean)
+                  : (pid ? [pid] : []);
+  if(!wanted.length && !eid) return;
   var meta=ref?{ref:ref}:{};
-  if(pid && typeof P==='function' && P(pid)){
+  var valid = (typeof P==='function') ? wanted.filter(function(x){return !!P(x);}) : [];
+  if(valid.length){
     window._lomaLinkApplied=true;
     try{
       state.persona='tourist';
-      state.curProv=pid;
-      /* Land on the branded "Local picks recommended for you" scan page (not the
-         bare provider card): seed a rec list holding the shared place. */
-      state.curList={ id:'rl_link_'+pid, kind:'assisted', items:[pid], note:'',
+      state.curProv=valid[0];
+      /* Land on the branded "Local picks recommended for you" scan page (not a
+         bare provider card): seed a rec list holding every shared place. */
+      state.curList={ id:'rl_link_'+valid.join('_'), kind:'assisted', items:valid.slice(), note:'',
         hotel_name:(typeof PARTNER!=='undefined'&&PARTNER&&PARTNER.name)||'' };
       if(typeof gotoTourist==='function'){ gotoTourist('reclist'); }
       else { state.tourist='reclist'; }
     }catch(e){}
-    lomaLog('link_received', pid, null, meta);
-    lomaLog('link_opened', pid, null, meta);
+    valid.forEach(function(id){ lomaLog('link_received', id, null, meta); lomaLog('link_opened', id, null, meta); });
     if(typeof render==='function') render();
   } else if(eid && typeof EV==='function' && EV(eid)){
     window._lomaLinkApplied=true;
@@ -7244,7 +7252,7 @@ try{ lomaApplyIncomingLink(); }catch(e){}
 if(!window._lomaLinkApplied){
   try{
     var _lomaQ=new URLSearchParams(location.search);
-    if(_lomaQ.get('p')||_lomaQ.get('e')){
+    if(_lomaQ.get('p')||_lomaQ.get('e')||_lomaQ.get('ps')){
       var _lomaLinkTries=0;
       var _lomaLinkIv=setInterval(function(){
         _lomaLinkTries++;
