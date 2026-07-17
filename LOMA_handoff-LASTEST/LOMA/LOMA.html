@@ -4015,7 +4015,7 @@ function chCheckin(c,acct){
 
     <div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:8px">${days.map(d=>`<button data-bhday="${d.idx}" class="chip ${day===d.idx?'on':''}" style="flex:none">${d.top} ${d.num}</button>`).join('')}</div>
 
-    ${guests.length?guests.map((b,i)=>{const st=b.status||'booked';
+    ${guests.length?guests.map((b,i)=>{let st=b.status||'booked'; if(st==='confirmed'||st==='requested') st='booked';
       const chip={booked:['b-price','⏳ Awaiting check-in'],attended:['b-ready','✓ Checked in'],noshow:['b-warn','✕ No-show — ฿0 counted']}[st];
       return `<div class="pcard" style="margin-bottom:9px;padding:12px 13px">
         <div style="display:flex;align-items:center;gap:11px">
@@ -6228,7 +6228,7 @@ document.body.addEventListener('click',e=>{
   /* community host check-in — a booking only becomes a visit when the host scans the guest in */
   const cScan=e.target.closest('[data-commscan]');
   if(cScan){const a=commAcct();if(!a)return;const c=COMM(a.commId);
-    const pend=dayBookings(c,state.bhDay||0).filter(b=>(b.status||'booked')==='booked');
+    const pend=dayBookings(c,state.bhDay||0).filter(b=>{var s=b.status||'booked';return s==='booked'||s==='confirmed'||s==='requested';});
     if(!pend.length){toast('📷 Camera would open — no guests awaiting check-in on this day');return;}
     checkInBooking(pend[0],c);return;}
   const cIn=e.target.closest('[data-checkin]');

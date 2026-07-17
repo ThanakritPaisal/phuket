@@ -78,6 +78,22 @@ src = sub_once(
     "route-map",
 )
 
+# 3d) Provider portal check-in: DB/self-serve bookings arrive as 'confirmed' (or
+#     'requested'); the host check-in screen only recognised 'booked' as pending, so
+#     no "Check in" button appeared after a real booking. Treat them as pending.
+src = sub_once(
+    src,
+    """guests.map((b,i)=>{const st=b.status||'booked';""",
+    """guests.map((b,i)=>{let st=b.status||'booked'; if(st==='confirmed'||st==='requested') st='booked';""",
+    "checkin-status-render",
+)
+src = sub_once(
+    src,
+    """const pend=dayBookings(c,state.bhDay||0).filter(b=>(b.status||'booked')==='booked');""",
+    """const pend=dayBookings(c,state.bhDay||0).filter(b=>{var s=b.status||'booked';return s==='booked'||s==='confirmed'||s==='requested';});""",
+    "checkin-status-scan",
+)
+
 # 4) Contact — real tel:/website link.
 src = sub_once(
     src,
