@@ -1,0 +1,982 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Engineering audit of LOMA's provider scoring engine, measured by running it over the live 1,243-provider catalog.">
+<meta name="color-scheme" content="light dark">
+<title>LOMA Provider Scoring — System Audit</title>
+<style>
+  /* minimal reset — the layout below assumes zeroed defaults */
+  *, *::before, *::after { box-sizing: border-box; }
+  body, h1, h2, h3, h4, p, ol, ul, figure, blockquote { margin: 0; padding: 0; }
+  ol, ul { list-style: none; }
+  img { max-width: 100%; display: block; }
+  table { border-collapse: collapse; }
+</style>
+<style>
+  /* ============================================================
+     Palette inherited from loma-app/src/styles/tokens.css
+     (Andaman navy · spicy coral · warm ivory). Dark theme derived,
+     not inverted. Navy carries all magnitude; coral is identity only
+     and never touches data; the status ramp is reserved and always
+     paired with a text label.
+     ============================================================ */
+  :root {
+    --bg:#F6EFE1; --surface:#FCF7EC; --surface-2:#EFE5D2; --sunk:#F1E8D6;
+    --primary:#0A3A73; --primary-d:#072B55; --primary-l:#E5EBF3;
+    --accent:#F0603F;
+    --ink:#15263C; --ink-2:#3C4E62; --muted:#5B6B7D;
+    --line:#E4D8C2; --line-2:#EFE5D3;
+    --ok:#1E7A4B; --ok-l:#E3F1E8;
+    --warn:#B9760F; --warn-l:#FAF0DB;
+    --crit:#C6472A; --crit-l:#FBE7E0;
+    --track:#E7DCC7;
+
+    --f: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --fd: "DM Serif Display", "Fraunces", "Iowan Old Style", Georgia, "Times New Roman", serif;
+    --fm: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+
+    --measure: 68ch;
+    --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:22px; --s6:30px; --s8:44px; --s10:68px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg:#0C1420; --surface:#131E2E; --surface-2:#1A2739; --sunk:#0F1826;
+      --primary:#6FA0E0; --primary-d:#8FB8EC; --primary-l:#1B2C46;
+      --accent:#FF7A5C;
+      --ink:#E9EEF6; --ink-2:#BAC7D8; --muted:#8B9BAF;
+      --line:#243449; --line-2:#1D2B3D;
+      --ok:#4FBF83; --ok-l:#12301F;
+      --warn:#E0A03A; --warn-l:#33260C;
+      --crit:#F2705A; --crit-l:#3A1A13;
+      --track:#223145;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg:#0C1420; --surface:#131E2E; --surface-2:#1A2739; --sunk:#0F1826;
+    --primary:#6FA0E0; --primary-d:#8FB8EC; --primary-l:#1B2C46;
+    --accent:#FF7A5C;
+    --ink:#E9EEF6; --ink-2:#BAC7D8; --muted:#8B9BAF;
+    --line:#243449; --line-2:#1D2B3D;
+    --ok:#4FBF83; --ok-l:#12301F;
+    --warn:#E0A03A; --warn-l:#33260C;
+    --crit:#F2705A; --crit-l:#3A1A13;
+    --track:#223145;
+  }
+  :root[data-theme="light"] {
+    --bg:#F6EFE1; --surface:#FCF7EC; --surface-2:#EFE5D2; --sunk:#F1E8D6;
+    --primary:#0A3A73; --primary-d:#072B55; --primary-l:#E5EBF3;
+    --accent:#F0603F;
+    --ink:#15263C; --ink-2:#3C4E62; --muted:#5B6B7D;
+    --line:#E4D8C2; --line-2:#EFE5D3;
+    --ok:#1E7A4B; --ok-l:#E3F1E8;
+    --warn:#B9760F; --warn-l:#FAF0DB;
+    --crit:#C6472A; --crit-l:#FBE7E0;
+    --track:#E7DCC7;
+  }
+
+  body {
+    background: var(--bg); color: var(--ink);
+    font-family: var(--f); line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+    font-size: 16px;
+  }
+  .page { max-width: 1080px; margin: 0 auto; padding: var(--s8) var(--s5) var(--s10); }
+  .prose { max-width: var(--measure); }
+
+  h1, h2, h3 { text-wrap: balance; line-height: 1.18; }
+  h1 { font-family: var(--fd); font-size: clamp(34px, 5.2vw, 52px); font-weight: 400; letter-spacing: -.01em; }
+  h2 { font-family: var(--fd); font-size: clamp(23px, 3vw, 29px); font-weight: 400; margin-bottom: var(--s3); }
+  h3 { font-size: 16px; font-weight: 700; letter-spacing: -.005em; }
+  p { margin-bottom: var(--s4); }
+  .prose p:last-child { margin-bottom: 0; }
+  a { color: var(--primary); text-underline-offset: 2px; }
+  a:focus-visible, .th:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
+  strong { font-weight: 680; }
+  code, .mono { font-family: var(--fm); font-variant-numeric: tabular-nums; }
+  code { font-size: .88em; background: var(--sunk); padding: 1px 5px; border-radius: 4px; border: 1px solid var(--line-2); }
+
+  .eyebrow {
+    font-family: var(--fm); font-size: 11px; letter-spacing: .16em;
+    text-transform: uppercase; color: var(--muted); font-weight: 600;
+  }
+
+  /* ---------- masthead ---------- */
+  .mast { border-bottom: 2px solid var(--ink); padding-bottom: var(--s5); margin-bottom: var(--s6); }
+  .mast .rule { width: 62px; height: 4px; background: var(--accent); margin-bottom: var(--s4); }
+  .mast h1 { margin: var(--s2) 0 var(--s3); }
+  .mast .sub { color: var(--ink-2); font-size: 18px; max-width: var(--measure); }
+  .meta {
+    display: flex; flex-wrap: wrap; gap: var(--s2) var(--s6);
+    margin-top: var(--s5); font-family: var(--fm); font-size: 12px; color: var(--muted);
+  }
+  .meta b { color: var(--ink-2); font-weight: 600; }
+
+  section { margin-top: var(--s10); }
+  section > .prose { margin-bottom: var(--s5); }
+
+  /* ---------- verdict ---------- */
+  .verdict {
+    background: var(--surface); border: 1px solid var(--line);
+    border-left: 4px solid var(--crit);
+    border-radius: 10px; padding: var(--s5) var(--s5) var(--s5) var(--s6);
+    margin-top: var(--s6);
+  }
+  .verdict .eyebrow { color: var(--crit); }
+  .verdict p { margin: var(--s2) 0 0; max-width: var(--measure); }
+
+  /* ---------- stat tiles ---------- */
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: var(--s3); margin-top: var(--s5); }
+  .tile {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 10px; padding: var(--s4);
+    display: flex; flex-direction: column; gap: var(--s1);
+  }
+  .tile .n {
+    font-family: var(--fm); font-variant-numeric: tabular-nums;
+    font-size: 32px; font-weight: 600; letter-spacing: -.03em; line-height: 1.1;
+  }
+  .tile .n.crit { color: var(--crit); }
+  .tile .n.warn { color: var(--warn); }
+  .tile .lbl { font-size: 13px; font-weight: 650; }
+  .tile .foot { font-size: 12px; color: var(--muted); line-height: 1.45; }
+
+  /* ---------- gate plot ---------- */
+  .figure { margin-top: var(--s5); }
+  .figcap { font-size: 13px; color: var(--muted); margin-top: var(--s4); max-width: var(--measure); }
+  .plot { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: var(--s5) var(--s5) var(--s4); }
+  .plot-scroll { overflow-x: auto; }
+  .plot-inner { min-width: 620px; }
+  .row { display: grid; grid-template-columns: 132px 1fr 128px; align-items: center; gap: var(--s4); padding: var(--s2) 0; }
+  .row .name { font-size: 13px; font-weight: 650; }
+  .row .name .tag { display: block; font-family: var(--fm); font-size: 10px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; margin-top: 2px; }
+  .tag.dead { color: var(--crit); }
+  .tag.live { color: var(--ok); }
+  .tag.part { color: var(--warn); }
+  .track { position: relative; height: 30px; }
+  .track .base {
+    position: absolute; inset: 11px 0 auto 0; height: 8px;
+    background: var(--track); border-radius: 4px;
+  }
+  .bar {
+    position: absolute; top: 11px; height: 8px;
+    background: var(--primary); border-radius: 4px;
+  }
+  .med { position: absolute; top: 7px; width: 2px; height: 16px; background: var(--surface); border-radius: 1px; }
+  .th {
+    position: absolute; top: 2px; width: 2px; height: 26px;
+    background: var(--ink-2); border-radius: 1px; cursor: help;
+  }
+  .th.miss { background: var(--crit); }
+  .th::after {
+    content: attr(data-v); position: absolute; top: -13px; left: 50%; transform: translateX(-50%);
+    font-family: var(--fm); font-size: 9px; color: var(--muted); font-weight: 600;
+  }
+  .th.miss::after { color: var(--crit); }
+  .th .tip {
+    position: absolute; bottom: calc(100% + 14px); left: 50%; transform: translateX(-50%);
+    background: var(--ink); color: var(--bg); font-size: 11.5px; line-height: 1.4;
+    padding: 7px 10px; border-radius: 6px; width: max-content; max-width: 230px;
+    opacity: 0; pointer-events: none; transition: opacity .12s; z-index: 5; font-weight: 500;
+  }
+  .th:hover .tip, .th:focus-visible .tip { opacity: 1; }
+  .row .vals { font-family: var(--fm); font-size: 11.5px; color: var(--muted); font-variant-numeric: tabular-nums; text-align: right; }
+  .axis { display: flex; justify-content: space-between; font-family: var(--fm); font-size: 10px; color: var(--muted); margin: var(--s2) 0 0; padding-left: 148px; }
+  .legend { display: flex; flex-wrap: wrap; gap: var(--s5); margin-top: var(--s4); padding-top: var(--s3); border-top: 1px solid var(--line-2); font-size: 12px; color: var(--muted); }
+  .legend span { display: inline-flex; align-items: center; gap: 7px; }
+  .sw { width: 16px; height: 8px; border-radius: 4px; background: var(--primary); flex: none; }
+  .sw.th { width: 2px; height: 14px; background: var(--ink-2); border-radius: 1px; position: static; }
+  .sw.thm { width: 2px; height: 14px; background: var(--crit); border-radius: 1px; position: static; }
+
+  /* ---------- worked traces ---------- */
+  .traces { display: flex; flex-direction: column; gap: var(--s4); margin-top: var(--s5); }
+  .trace { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+  .trace-head {
+    padding: var(--s4) var(--s5); border-bottom: 1px solid var(--line);
+    display: flex; justify-content: space-between; align-items: baseline; gap: var(--s3); flex-wrap: wrap;
+  }
+  .trace-head h3 { font-size: 15px; }
+  .trace-head .facts { font-family: var(--fm); font-size: 11.5px; color: var(--muted); }
+  .chip {
+    font-family: var(--fm); font-size: 10px; font-weight: 700; letter-spacing: .08em;
+    text-transform: uppercase; padding: 3px 9px; border-radius: 20px; white-space: nowrap;
+    border: 1px solid currentColor;
+  }
+  .chip.ok { background: var(--ok-l); color: var(--ok); }
+  .chip.warn { background: var(--warn-l); color: var(--warn); }
+  .chip.crit { background: var(--crit-l); color: var(--crit); }
+  .ledger { padding: var(--s4) var(--s5) var(--s5); overflow-x: auto; }
+  .ledger-inner { min-width: 460px; }
+  .dim { margin-bottom: var(--s4); }
+  .dim-name {
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-family: var(--fm); font-size: 10.5px; font-weight: 700; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--muted);
+    border-bottom: 1px solid var(--line-2); padding-bottom: 4px; margin-bottom: 4px;
+  }
+  .dim-name .res { font-size: 15px; letter-spacing: 0; color: var(--ink); font-variant-numeric: tabular-nums; }
+  .dim-name .res.bad { color: var(--crit); }
+  .term { display: grid; grid-template-columns: 1fr 58px 84px; gap: var(--s3); font-family: var(--fm); font-size: 12px; line-height: 1.95; }
+  .term .v { text-align: right; font-variant-numeric: tabular-nums; color: var(--ink-2); }
+  .term .m { font-size: 9px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; align-self: center; }
+  .m.hc { color: var(--warn); }
+  .m.fab { color: var(--crit); }
+  .m.dead { color: var(--muted); }
+  .m.real { color: var(--ok); }
+  .term.total { border-top: 1px solid var(--line); margin-top: 3px; padding-top: 3px; font-weight: 700; }
+  .term.total .v { color: var(--ink); }
+  .overall {
+    background: var(--sunk); border-top: 1px solid var(--line);
+    padding: var(--s4) var(--s5); font-family: var(--fm); font-size: 12.5px;
+  }
+  .overall .term { grid-template-columns: 1fr 58px 84px; }
+  .keymark { display: flex; flex-wrap: wrap; gap: var(--s2) var(--s5); margin-top: var(--s4); font-size: 12px; color: var(--muted); }
+  .keymark b { font-family: var(--fm); font-size: 9.5px; letter-spacing: .07em; text-transform: uppercase; }
+
+  /* ---------- tables ---------- */
+  .tbl-wrap { overflow-x: auto; margin-top: var(--s5); border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; }
+  caption { text-align: left; padding: var(--s4) var(--s4) 0; font-size: 13px; color: var(--muted); }
+  th, td { text-align: left; padding: 10px var(--s4); border-bottom: 1px solid var(--line-2); vertical-align: top; }
+  thead th {
+    font-family: var(--fm); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--muted); font-weight: 600; border-bottom: 1px solid var(--line);
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  td.num, th.num { text-align: right; font-family: var(--fm); font-variant-numeric: tabular-nums; }
+  td.mono { font-family: var(--fm); font-size: 12.5px; }
+  .em { background: var(--crit-l); }
+
+  /* ---------- findings ---------- */
+  .finds { display: flex; flex-direction: column; gap: var(--s3); margin-top: var(--s5); }
+  .find {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+    padding: var(--s4) var(--s5); border-left: 4px solid var(--warn);
+  }
+  .find.critical { border-left-color: var(--crit); }
+  .find.fixed { border-left-color: var(--ok); }
+  .find-head { display: flex; align-items: baseline; gap: var(--s3); flex-wrap: wrap; margin-bottom: var(--s2); }
+  .find h3 { flex: 1; min-width: 240px; }
+  .pill {
+    font-family: var(--fm); font-size: 10px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase;
+    padding: 3px 8px; border-radius: 20px; white-space: nowrap;
+    background: var(--warn-l); color: var(--warn); border: 1px solid currentColor;
+  }
+  .pill.critical { background: var(--crit-l); color: var(--crit); }
+  .pill.fixed { background: var(--ok-l); color: var(--ok); }
+  .find p { margin: 0 0 var(--s2); max-width: var(--measure); font-size: 15px; }
+  .find p:last-child { margin-bottom: 0; }
+  .ev {
+    font-family: var(--fm); font-size: 12px; background: var(--sunk);
+    border: 1px solid var(--line-2); border-radius: 7px; padding: 10px var(--s3);
+    margin: var(--s3) 0; white-space: pre; overflow-x: auto; color: var(--ink-2); line-height: 1.65;
+  }
+  .src { font-family: var(--fm); font-size: 11.5px; color: var(--muted); }
+
+  /* ---------- recommendations ---------- */
+  ol.recs { list-style: none; counter-reset: r; margin-top: var(--s5); display: flex; flex-direction: column; gap: var(--s3); }
+  ol.recs li {
+    counter-increment: r; background: var(--surface); border: 1px solid var(--line);
+    border-radius: 10px; padding: var(--s4) var(--s5); display: grid;
+    grid-template-columns: 30px 1fr; gap: var(--s4); align-items: start;
+  }
+  ol.recs li::before {
+    content: counter(r); font-family: var(--fm); font-size: 15px; font-weight: 700;
+    color: var(--accent); line-height: 1.5;
+  }
+  ol.recs h3 { margin-bottom: 3px; }
+  ol.recs p { margin: 0; font-size: 14.5px; color: var(--ink-2); max-width: var(--measure); }
+  .cost { font-family: var(--fm); font-size: 11px; color: var(--muted); margin-top: var(--s2); display: block; }
+
+  footer { margin-top: var(--s10); padding-top: var(--s4); border-top: 1px solid var(--line); font-size: 12.5px; color: var(--muted); }
+  footer p { max-width: var(--measure); margin-bottom: var(--s2); }
+
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+  @media (max-width: 640px) {
+    .row { grid-template-columns: 106px 1fr; }
+    .row .vals { grid-column: 2; text-align: left; padding-top: 2px; }
+    .axis { padding-left: 122px; }
+    ol.recs li { grid-template-columns: 22px 1fr; gap: var(--s3); }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="mast">
+    <div class="rule"></div>
+    <div class="eyebrow">Engineering Audit · AI Curation Engine</div>
+    <h1>What the provider scoring system actually does</h1>
+    <p class="sub">
+      LOMA scores every Phuket provider across five dimensions to decide who gets surfaced
+      as a Hidden Gem. This is a reading of the engine as built, measured by running it over
+      the real catalog rather than by reading its documentation.
+    </p>
+    <div class="meta">
+      <span><b>Subject</b> loma-app/src/scoring.ts</span>
+      <span><b>Catalog</b> 1,243 providers · 1,208 scored</span>
+      <span><b>Method</b> engine executed over live data</span>
+      <span><b>Date</b> 17 Jul 2026</span>
+    </div>
+  </header>
+
+  <div class="verdict">
+    <div class="eyebrow">Headline</div>
+    <p>
+      Three of the five dimensions work. <strong>Readiness never fires any of its three gates —
+      not once across 1,208 providers.</strong> Risk cannot reach the threshold its own
+      specification defines for rejection. And every provider currently routed to human review
+      is selected by a hash of its ID, not by anything a reviewer wrote. The engine is
+      internally consistent and deterministic; it is measuring less than it appears to.
+    </p>
+  </div>
+
+  <section>
+    <h2>Four numbers</h2>
+    <div class="prose">
+      <p>
+        Each is the output of running <code>aiScore()</code> unmodified over the live catalog,
+        with the adapter in <code>picks.ts</code> reproduced exactly.
+      </p>
+    </div>
+    <div class="stats">
+      <div class="tile">
+        <span class="n crit">0</span>
+        <span class="lbl">Readiness gates fired</span>
+        <span class="foot">Out of 1,208 providers, across all three thresholds (&lt;58, &lt;62, &lt;70). The dimension carries 25% of the score and gates nothing.</span>
+      </div>
+      <div class="tile">
+        <span class="n crit">92</span>
+        <span class="lbl">Sent to human review by a hash</span>
+        <span class="foot">7.6% of the catalog. That is 100% of all human-review routing — no other condition ever triggers it.</span>
+      </div>
+      <div class="tile">
+        <span class="n warn">490</span>
+        <span class="lbl">Auto-verified, no human</span>
+        <span class="foot">40.6% reach <code>verified</code> unattended, though the database records <code>verification_status</code> as unverified for all 1,243.</span>
+      </div>
+      <div class="tile">
+        <span class="n warn">72 / 76</span>
+        <span class="lbl">Highest risk score achievable</span>
+        <span class="foot">The spec's auto-reject gate sits at 76. The arithmetic cannot produce it. The gate is unreachable by construction.</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>The engine, as built</h2>
+    <div class="prose">
+      <p>
+        Five dimensions combine into <code>overall_loma_score</code>, and a provider is a Hidden
+        Gem only if all five clear their thresholds at once. The design intent is stated plainly
+        in the file's own header — <em>popularity earns nothing</em> — and the Visibility Gap
+        dimension does honour it. The gap between intent and execution is elsewhere.
+      </p>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <caption>What each dimension reads, and what it contributes.</caption>
+        <thead>
+          <tr>
+            <th>Dimension</th>
+            <th>Weight</th>
+            <th>Reads</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Locality</strong></td>
+            <td class="num">0.30</td>
+            <td>Thai-script name, branch count, chain-name regex, category</td>
+            <td>Works. Inflated: branch count is hardcoded to 1, so every provider takes the +22 single-location bonus.</td>
+          </tr>
+          <tr>
+            <td><strong>Quality</strong></td>
+            <td class="num">0.25</td>
+            <td>Star rating, review count</td>
+            <td>Rating plus count only — the one approach both specifications ban by name.</td>
+          </tr>
+          <tr>
+            <td><strong>Visibility Gap</strong></td>
+            <td class="num">0.20</td>
+            <td>log₁₀ of review count, area penalty</td>
+            <td>Works, and is the most defensible dimension. Absolute rather than relative to peers.</td>
+          </tr>
+          <tr class="em">
+            <td><strong>Readiness</strong></td>
+            <td class="num">0.25</td>
+            <td>Hours, contact, price, language, image</td>
+            <td>Inert. Every input is hardcoded upstream, pinning the output to 79–95.</td>
+          </tr>
+          <tr class="em">
+            <td><strong>Risk</strong></td>
+            <td class="num">−0.30</td>
+            <td>A hash of the provider ID</td>
+            <td>Subtracted rather than gated, so strong locality can offset it. Its one live signal is fabricated.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Where the gates sit versus what the engine produces</h2>
+    <div class="prose">
+      <p>
+        A threshold can only do work if the dimension's output actually crosses it. Plotting the
+        observed range of each dimension against its thresholds shows which gates are load-bearing
+        and which are decoration. Hover a marker to see what it controls.
+      </p>
+    </div>
+
+    <div class="figure">
+      <div class="plot">
+        <div class="plot-scroll">
+          <div class="plot-inner">
+
+            <div class="row">
+              <div class="name">Locality<span class="tag live">Gate live</span></div>
+              <div class="track">
+                <div class="base"></div>
+                <div class="bar" style="left:24%; width:76%;"></div>
+                <div class="med" style="left:88%;"></div>
+                <div class="th" tabindex="0" data-v="78" style="left:78%;">
+                  <span class="tip">≥ 78 required for Hidden Gem. Inside the observed range — this gate does real work.</span>
+                </div>
+              </div>
+              <div class="vals">24 · <b>88</b> · 100</div>
+            </div>
+
+            <div class="row">
+              <div class="name">Quality<span class="tag live">Gate live</span></div>
+              <div class="track">
+                <div class="base"></div>
+                <div class="bar" style="left:0%; width:100%;"></div>
+                <div class="med" style="left:95%;"></div>
+                <div class="th" tabindex="0" data-v="72" style="left:72%;">
+                  <span class="tip">≥ 72 required for Hidden Gem. Live, but the median sits at 95 — the dimension barely discriminates.</span>
+                </div>
+              </div>
+              <div class="vals">0 · <b>95</b> · 100</div>
+            </div>
+
+            <div class="row">
+              <div class="name">Visibility Gap<span class="tag live">Gate live</span></div>
+              <div class="track">
+                <div class="base"></div>
+                <div class="bar" style="left:0%; width:100%;"></div>
+                <div class="med" style="left:33%;"></div>
+                <div class="th" tabindex="0" data-v="55" style="left:55%;">
+                  <span class="tip">≥ 55 required for Hidden Gem. Live and genuinely selective — the median of 33 sits below it.</span>
+                </div>
+              </div>
+              <div class="vals">0 · <b>33</b> · 100</div>
+            </div>
+
+            <div class="row">
+              <div class="name">Readiness<span class="tag dead">All 3 gates dead</span></div>
+              <div class="track">
+                <div class="base"></div>
+                <div class="bar" style="left:79%; width:16%;"></div>
+                <div class="med" style="left:91%;"></div>
+                <div class="th miss" tabindex="0" data-v="58" style="left:58%;">
+                  <span class="tip">&lt; 58 should route to human review. The minimum observed is 79. Fires 0 times.</span>
+                </div>
+                <div class="th miss" tabindex="0" data-v="62" style="left:62%;">
+                  <span class="tip">&lt; 62 should block Hidden Gem status. Fires 0 times.</span>
+                </div>
+                <div class="th miss" tabindex="0" data-v="70" style="left:70%;">
+                  <span class="tip">&lt; 70 should require advance contact. Fires 0 times.</span>
+                </div>
+              </div>
+              <div class="vals">79 · <b>91</b> · 95</div>
+            </div>
+
+            <div class="row">
+              <div class="name">Risk<span class="tag part">Reject gate dead</span></div>
+              <div class="track">
+                <div class="base"></div>
+                <div class="bar" style="left:12%; width:60%;"></div>
+                <div class="med" style="left:18%;"></div>
+                <div class="th" tabindex="0" data-v="45" style="left:45%;">
+                  <span class="tip">≥ 45 routes to human review. Reachable — but only via the ID hash, which supplies +42 of the required score.</span>
+                </div>
+                <div class="th miss" tabindex="0" data-v="76" style="left:76%;">
+                  <span class="tip">≥ 76 should auto-reject. Maximum achievable is 72. Unreachable by arithmetic.</span>
+                </div>
+              </div>
+              <div class="vals">12 · <b>18</b> · 72</div>
+            </div>
+
+            <div class="axis"><span>0</span><span>25</span><span>50</span><span>75</span><span>100</span></div>
+          </div>
+        </div>
+        <div class="legend">
+          <span><i class="sw"></i> Observed range across 1,208 providers</span>
+          <span><i class="sw" style="width:2px;height:14px;background:var(--surface);box-shadow:0 0 0 1px var(--muted);"></i> Median</span>
+          <span><i class="sw th"></i> Threshold that fires</span>
+          <span><i class="sw thm"></i> Threshold that never fires</span>
+        </div>
+      </div>
+      <p class="figcap">
+        Readiness sits entirely to the right of all three of its gates: the engine cannot express
+        an unready provider. Risk stops four points short of the rejection threshold its own
+        specification defines.
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Three providers, traced</h2>
+    <div class="prose">
+      <p>
+        The arithmetic below is the engine's own. Each trace was generated by recomputing every
+        term and then asserting the result equals what <code>aiScore()</code> returns for that
+        provider — all three reconcile exactly. Terms are marked by where their input comes from.
+      </p>
+      <div class="keymark">
+        <span><b class="m real">real</b> — derived from provider data</span>
+        <span><b class="m hc">hardcoded</b> — a constant supplied by the adapter</span>
+        <span><b class="m fab">fabricated</b> — derived from a hash of the ID</span>
+        <span><b class="m dead">dead</b> — a term that can never fire</span>
+      </div>
+    </div>
+
+    <div class="traces">
+
+      <!-- ============ 1 ============ -->
+      <article class="trace">
+        <div class="trace-head">
+          <div>
+            <h3>Bake The Story — คาเฟ่ภูเก็ต</h3>
+            <div class="facts">b1_0154 · Local Food · Old Town · 4.8★ · 191 reviews</div>
+          </div>
+          <span class="chip warn">Auto-verified · score 81</span>
+        </div>
+        <div class="ledger"><div class="ledger-inner">
+
+          <div class="dim">
+            <div class="dim-name"><span>Locality</span><span class="res">100</span></div>
+            <div class="term"><span>base 90 × 0.60</span><span class="v">54.0</span><span class="m hc">flat by confidence</span></div>
+            <div class="term"><span>single location +22</span><span class="v">22.0</span><span class="m hc">hardcoded</span></div>
+            <div class="term"><span>locally owned +8</span><span class="v">8.0</span><span class="m hc">hardcoded</span></div>
+            <div class="term"><span>Thai-script name +10</span><span class="v">10.0</span><span class="m real">real</span></div>
+            <div class="term"><span>Thai name + food category +6</span><span class="v">6.0</span><span class="m real">real</span></div>
+            <div class="term total"><span>only 16 of 100 points are real signal</span><span class="v">100.0</span><span></span></div>
+          </div>
+
+          <div class="dim">
+            <div class="dim-name"><span>Quality</span><span class="res">100</span></div>
+            <div class="term"><span>base 98 × 0.55 <em>(itself rating + count)</em></span><span class="v">53.9</span><span class="m real">real</span></div>
+            <div class="term"><span>(rating 4.8 − 3.4) × 28</span><span class="v">39.2</span><span class="m real">rating, again</span></div>
+            <div class="term"><span>reviews ≥ 25 +8</span><span class="v">8.0</span><span class="m real">real</span></div>
+            <div class="term"><span>verified +5</span><span class="v">5.0</span><span class="m hc">hardcoded</span></div>
+            <div class="term total"><span>raw 106.1 — clamped to the ceiling</span><span class="v">100.0</span><span></span></div>
+          </div>
+
+          <div class="dim">
+            <div class="dim-name"><span>Visibility Gap</span><span class="res">41</span></div>
+            <div class="term"><span>fame from log₁₀(191+1) on a fixed 11–700 scale</span><span class="v">69</span><span class="m real">real</span></div>
+            <div class="term"><span>100 − fame</span><span class="v">31.0</span><span></span></div>
+            <div class="term"><span>rating ≥ 4.3 +10</span><span class="v">10.0</span><span class="m real">real</span></div>
+            <div class="term total"><span>below the 55 bar — this is what blocks Hidden Gem</span><span class="v">41.0</span><span></span></div>
+          </div>
+
+          <div class="dim">
+            <div class="dim-name"><span>Readiness</span><span class="res">91</span></div>
+            <div class="term"><span>base 84 × 0.68</span><span class="v">57.1</span><span class="m hc">floor 66</span></div>
+            <div class="term"><span>hours +8</span><span class="v">8.0</span><span class="m hc">never empty</span></div>
+            <div class="term"><span>contact +8</span><span class="v">8.0</span><span class="m hc">never empty</span></div>
+            <div class="term"><span>price text +6</span><span class="v">6.0</span><span class="m hc">never empty</span></div>
+            <div class="term"><span>English +8</span><span class="v">8.0</span><span class="m hc">all 1,243</span></div>
+            <div class="term"><span>has image +4</span><span class="v">4.0</span><span class="m real">real</span></div>
+            <div class="term total"><span>30 of 34 bonus points are automatic</span><span class="v">91.1</span><span></span></div>
+          </div>
+
+          <div class="dim">
+            <div class="dim-name"><span>Risk</span><span class="res">18</span></div>
+            <div class="term"><span>100 − safety 82</span><span class="v">18.0</span><span class="m hc">caps at 22</span></div>
+            <div class="term"><span>hash("risk|b1_0154") % 100 = 18 → no hit</span><span class="v">0.0</span><span class="m fab">fabricated</span></div>
+            <div class="term"><span>no price text +10</span><span class="v">0.0</span><span class="m dead">dead</span></div>
+            <div class="term total"><span>a clean record and a lucky hash are indistinguishable</span><span class="v">18.0</span><span></span></div>
+          </div>
+
+        </div></div>
+        <div class="overall">
+          <div class="term"><span>locality 100 × 0.30</span><span class="v">30.0</span><span></span></div>
+          <div class="term"><span>quality 100 × 0.25</span><span class="v">25.0</span><span></span></div>
+          <div class="term"><span>gap 41 × 0.20</span><span class="v">8.2</span><span></span></div>
+          <div class="term"><span>readiness 91 × 0.25</span><span class="v">22.8</span><span></span></div>
+          <div class="term"><span>risk 18 × −0.30</span><span class="v">−5.4</span><span></span></div>
+          <div class="term total"><span><strong>overall_loma_score</strong> → status <code>verified</code>, no human involved</span><span class="v">81</span><span></span></div>
+        </div>
+      </article>
+
+      <!-- ============ 2 ============ -->
+      <article class="trace">
+        <div class="trace-head">
+          <div>
+            <h3>Beach Coconuts Bowls Restaurant &amp; Cafe</h3>
+            <div class="facts">b1_0537 · Café &amp; Dessert · Rawai · 4.8★ · 331 reviews</div>
+          </div>
+          <span class="chip crit">Flagged for complaints · score 63</span>
+        </div>
+        <div class="ledger"><div class="ledger-inner">
+
+          <div class="dim">
+            <div class="dim-name"><span>Locality</span><span class="res">88</span></div>
+            <div class="term"><span>base 96 × 0.60</span><span class="v">57.6</span><span class="m hc">flat by confidence</span></div>
+            <div class="term"><span>single location +22</span><span class="v">22.0</span><span class="m hc">hardcoded</span></div>
+            <div class="term"><span>locally owned +8</span><span class="v">8.0</span><span class="m hc">hardcoded</span></div>
+            <div class="term"><span>Thai-script name +10</span><span class="v">0.0</span><span class="m real">real</span></div>
+            <div class="term total"><span>an 88 built almost entirely from constants</span><span class="v">87.6</span><span></span></div>
+          </div>
+
+          <div class="dim">
+            <div class="dim-name"><span>Quality</span><span class="res">100</span></div>
+            <div class="term"><span>base 98 × 0.55</span><span class="v">53.9</span><span class="m real">real</span></div>
+            <div class="term"><span>(rating 4.8 − 3.4) × 28</span><span class="v">39.2</span><span class="m real">rating, again</span></div>
+            <div class="term"><span>reviews ≥ 25 +8</span><span class="v">8.0</span><span class="m real">real</span></div>
+            <div class="term"><span>verified +5</span><span class="v">5.0</span><span class="m hc">hardcoded</span></div>
+            <div class="term total"><span>a perfect quality score, from 4.8★ alone</span><span class="v">106.1</span><span></span></div>
+          </div>
+
+          <div class="dim">
+            <div class="dim-name"><span>Visibility Gap</span><span class="res">28</span></div>
+            <div class="term"><span>fame from log₁₀(331+1)</span><span class="v">82</span><span class="m real">real</span></div>
+            <div class="term"><span>100 − fame</span><span class="v">18.0</span><span></span></div>
+            <div class="term"><span>rating ≥ 4.3 +10</span><span class="v">10.0</span><span class="m real">real</span></div>
+            <div class="term total"><span></span><span class="v">28.0</span><span></span></div>
+          </div>
+
+          <div class="dim">
+            <div class="dim-name"><span>Readiness</span><span class="res">88</span></div>
+            <div class="term"><span>base 80 × 0.68</span><span class="v">54.4</span><span class="m hc">floor 66</span></div>
+            <div class="term"><span>hours + contact + price + English</span><span class="v">30.0</span><span class="m hc">all automatic</span></div>
+            <div class="term"><span>has image +4</span><span class="v">4.0</span><span class="m real">real</span></div>
+            <div class="term total"><span></span><span class="v">88.4</span><span></span></div>
+          </div>
+
+          <div class="dim">
+            <div class="dim-name"><span>Risk</span><span class="res bad">54</span></div>
+            <div class="term"><span>100 − safety 88</span><span class="v">12.0</span><span class="m hc">caps at 22</span></div>
+            <div class="term"><span>hash("risk|b1_0537") % 100 = <strong>5</strong> → hit</span><span class="v">+42.0</span><span class="m fab">fabricated</span></div>
+            <div class="term"><span>no price text +10</span><span class="v">0.0</span><span class="m dead">dead</span></div>
+            <div class="term total"><span>78% of this provider's risk is a hash of its ID</span><span class="v">54.0</span><span></span></div>
+          </div>
+
+        </div></div>
+        <div class="overall">
+          <div class="term"><span>locality 88 × 0.30</span><span class="v">26.4</span><span></span></div>
+          <div class="term"><span>quality 100 × 0.25</span><span class="v">25.0</span><span></span></div>
+          <div class="term"><span>gap 28 × 0.20</span><span class="v">5.6</span><span></span></div>
+          <div class="term"><span>readiness 88 × 0.25</span><span class="v">22.0</span><span></span></div>
+          <div class="term"><span>risk 54 × −0.30</span><span class="v">−16.2</span><span></span></div>
+          <div class="term total"><span><strong>overall_loma_score</strong> → <code>needs_human_review</code>, flagged “Repeated complaint pattern in recent reviews”</span><span class="v">63</span><span></span></div>
+        </div>
+      </article>
+
+      <!-- ============ 3 ============ -->
+      <article class="trace">
+        <div class="trace-head">
+          <div>
+            <h3>Tandoori Flames</h3>
+            <div class="facts">b1_0657 · Local Food · Patong · 4.8★ · 23,107 reviews</div>
+          </div>
+          <span class="chip ok">Correctly not a gem · score 72</span>
+        </div>
+        <div class="ledger"><div class="ledger-inner">
+
+          <div class="dim">
+            <div class="dim-name"><span>Locality</span><span class="res">88</span></div>
+            <div class="term"><span>base 96 × 0.60</span><span class="v">57.6</span><span class="m hc">flat by confidence</span></div>
+            <div class="term"><span>single location +22</span><span class="v">22.0</span><span class="m hc">hardcoded</span></div>
+            <div class="term"><span>locally owned +8</span><span class="v">8.0</span><span class="m hc">hardcoded</span></div>
+            <div class="term"><span>Thai-script name +10</span><span class="v">0.0</span><span class="m real">real</span></div>
+            <div class="term total"><span>a 23k-review tourist-strip restaurant scores 88 on “local”</span><span class="v">87.6</span><span></span></div>
+          </div>
+
+          <div class="dim">
+            <div class="dim-name"><span>Quality</span><span class="res">100</span></div>
+            <div class="term"><span>base 98 × 0.55 + (4.8 − 3.4) × 28 + 8 + 5</span><span class="v">106.1</span><span class="m real">real</span></div>
+            <div class="term total"><span>identical to the 191-review café above — no separation</span><span class="v">100.0</span><span></span></div>
+          </div>
+
+          <div class="dim">
+            <div class="dim-name"><span>Visibility Gap</span><span class="res">0</span></div>
+            <div class="term"><span>fame from log₁₀(23,107+1) — pegged at ceiling</span><span class="v">100</span><span class="m real">real</span></div>
+            <div class="term"><span>100 − fame</span><span class="v">0.0</span><span></span></div>
+            <div class="term"><span>rating ≥ 4.3 +10</span><span class="v">10.0</span><span class="m real">real</span></div>
+            <div class="term"><span>tourist-strip area (Patong) −12</span><span class="v">−12.0</span><span class="m real">real</span></div>
+            <div class="term total"><span>raw −2, clamped to 0 — the dimension that works</span><span class="v">0.0</span><span></span></div>
+          </div>
+
+          <div class="dim">
+            <div class="dim-name"><span>Readiness</span><span class="res">95</span></div>
+            <div class="term"><span>base 90 × 0.68 + 30 automatic + image</span><span class="v">95.2</span><span class="m hc">mostly constants</span></div>
+          </div>
+
+          <div class="dim">
+            <div class="dim-name"><span>Risk</span><span class="res">12</span></div>
+            <div class="term"><span>100 − safety 88</span><span class="v">12.0</span><span class="m hc">caps at 22</span></div>
+            <div class="term"><span>hash % 100 = 18 → no hit</span><span class="v">0.0</span><span class="m fab">fabricated</span></div>
+          </div>
+
+        </div></div>
+        <div class="overall">
+          <div class="term"><span>locality 88 × 0.30</span><span class="v">26.4</span><span></span></div>
+          <div class="term"><span>quality 100 × 0.25</span><span class="v">25.0</span><span></span></div>
+          <div class="term"><span>gap 0 × 0.20</span><span class="v">0.0</span><span></span></div>
+          <div class="term"><span>readiness 95 × 0.25</span><span class="v">23.8</span><span></span></div>
+          <div class="term"><span>risk 12 × −0.30</span><span class="v">−3.6</span><span></span></div>
+          <div class="term total"><span><strong>overall_loma_score</strong> → <code>candidate</code>. Visibility Gap alone kept it out.</span><span class="v">72</span><span></span></div>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="prose" style="margin-top: var(--s5);">
+      <p>
+        Read together the three make the shape plain. <strong>All three score 88–100 on Locality and
+        exactly 100 on Quality</strong> — a Thai family café, a beachside bowl shop, and a 23,000-review
+        Patong restaurant are indistinguishable on four of the five dimensions. Only Visibility Gap
+        separates them, and it is the one dimension doing the work the engine was built for. The
+        café is auto-verified without review; the bowl shop is sent to a reviewer because of its ID.
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Findings</h2>
+
+    <div class="finds">
+
+      <article class="find critical">
+        <div class="find-head">
+          <h3>Risk, complaint flags and review trend are derived from a hash of the provider ID</h3>
+          <span class="pill critical">Critical</span>
+        </div>
+        <p>
+          <code>scoreRisk()</code> adds 42 points when <code>hsh("risk|" + p.id) % 100 &lt; 7</code>,
+          and <code>riskFlags()</code> attaches the user-facing string
+          <em>“Repeated complaint pattern in recent reviews”</em> on the same condition. No review is
+          consulted. It fires for a fixed 7% of providers, stably — the same businesses every run.
+        </p>
+        <div class="ev">b1_0537   rating=4.8  reviews=331   → needs_human_review
+b1_0643   rating=4.4  reviews=6562  → needs_human_review</div>
+        <p>
+          Because +42 alone clears the <code>risk &gt;= 45</code> gate, and nothing else can reach it,
+          <strong>this hash is the sole cause of all 92 human-review routings.</strong> The same
+          pattern drives <code>review_signal_status</code>, <code>freshness_status</code> and
+          <code>last_checked_at</code>. It is clearly demo scaffolding carried over from the v2
+          prototype — the concern is that it now renders to users as evidence.
+        </p>
+        <p class="src">scoring.ts:199, 207, 350–356</p>
+      </article>
+
+      <article class="find critical">
+        <div class="find-head">
+          <h3>Readiness is inert: every input is hardcoded before it reaches the engine</h3>
+          <span class="pill critical">Critical</span>
+        </div>
+        <p>
+          The adapter supplies constants rather than data — <code>lang: "Thai · English"</code> awards
+          the English bonus to all 1,243 providers; <code>priceText: p.price || "Price varies"</code>
+          and <code>contact: p.phone ? "Phone" : "In person"</code> are never falsy. The floor lands at
+          79, above every threshold.
+        </p>
+        <p>
+          Two consequences follow. The specification's hard rule — <em>no contact, no opening hours →
+          not tourist-ready</em> — cannot be expressed, because contact is never missing. And the
+          <code>"Price not clearly stated"</code> and <code>"Safety below threshold"</code> flags are
+          dead code, firing 0 times each.
+        </p>
+        <p class="src">picks.ts:110–124 · scoring.ts:187–195, 210 · copy.ts:53–63</p>
+      </article>
+
+      <article class="find critical">
+        <div class="find-head">
+          <h3>490 providers reach “verified” with no human involved</h3>
+          <span class="pill critical">Critical</span>
+        </div>
+        <p>
+          <code>verified: true</code> is hardcoded in the adapter. Its comment states that every
+          provider comes from the community-based-tourism registry — true when the catalog held 255
+          records, false now that 1,124 of 1,243 arrive from OpenStreetMap and TAT. Directory-sourced
+          providers skip the human queue, so 407 TAT listings and 83 CBT records self-verify.
+        </p>
+        <p>
+          This inverts the specification's stated first principle: <em>AI must never decide “Verified
+          Local” alone.</em> Meanwhile the database records <code>verification_status: "unverified"</code>
+          for every one of the 1,243. The engine believes everything is verified; the data says nothing is.
+        </p>
+        <p class="src">picks.ts:112 · scoring.ts:365</p>
+      </article>
+
+      <article class="find critical">
+        <div class="find-head">
+          <h3>106 closed businesses are live in the catalog</h3>
+          <span class="pill critical">Critical</span>
+        </div>
+        <p>
+          <code>business_status</code> holds 85 <code>CLOSED_PERMANENTLY</code> and 21
+          <code>CLOSED_TEMPORARILY</code>. The field is stripped from the client bundle during
+          finalisation and read by no code anywhere, though the specification makes “not closed” a
+          hard-required readiness field. Tourists can currently be sent to businesses that no longer exist.
+        </p>
+        <p class="src">finalize_batch.py:44</p>
+      </article>
+
+      <article class="find">
+        <div class="find-head">
+          <h3>Quality is star rating and review count — the one method both specs ban</h3>
+          <span class="pill">Warning</span>
+        </div>
+        <p>
+          Both specifications reject this explicitly: <em>“Do not score only by star rating”</em> and
+          <em>“ห้ามใช้ดาวเฉลี่ยอย่างเดียว”</em>. The required inputs — sentiment, recency, consistency,
+          complaint severity, review authenticity — are absent. The dimension also saturates: a median
+          of 95 against a threshold of 72 means it separates almost nothing.
+        </p>
+        <p class="src">scoring.ts:162–175</p>
+      </article>
+
+      <article class="find">
+        <div class="find-head">
+          <h3>The weighting matches neither specification</h3>
+          <span class="pill">Warning</span>
+        </div>
+        <p>
+          Three documents define three different formulas, and the code follows a fourth. More
+          consequentially, both specs and the code subtract risk rather than gating on it — so a
+          risky provider can be carried by strong locality and good reviews, which the revised spec
+          calls out as the reason to gate.
+        </p>
+        <div class="ev">                 locality  quality  gap   readiness   risk
+v1 spec            0.25     0.25    0.20    0.20     − 0.30
+v2 spec            0.30     0.30    0.25    0.15     gate before scoring
+scoring.ts         0.30     0.25    0.20    0.25     − 0.30</div>
+        <p>
+          Hidden-Gem thresholds diverge too: both specs call for 70 / 70 / 60 / 60; the code uses
+          78 / 72 / 55 / 62. No document accounts for the difference.
+        </p>
+        <p class="src">scoring.ts:331–339, 222–228</p>
+      </article>
+
+      <article class="find fixed">
+        <div class="find-head">
+          <h3>The evidence the engine needs is now in the database</h3>
+          <span class="pill fixed">Resolved</span>
+        </div>
+        <p>
+          4,730 Google review bodies were sitting unread in Postgres and shipped to the client on every
+          boot. They are now analysed: <strong>4,200 per-review labels across 823 providers</strong>, each
+          claim citing the review index it came from, with complaint type and severity, star-versus-text
+          disagreement, and a grounded visit note.
+        </p>
+        <p>
+          That is enough to replace the hash with real complaint evidence and to give Quality the
+          sentiment and recency both specs ask for. Alongside it: halal coverage rose from 11 to 23
+          confirmed places with 14 more queued for verification, and indoor/outdoor resolution went
+          from 8% to 61% of the catalog.
+        </p>
+        <p class="src">scripts/analyze_reviews.py · scripts/detect_attributes.py · scripts/photo_setting.py</p>
+      </article>
+
+    </div>
+  </section>
+
+  <section>
+    <h2>Status distribution today</h2>
+    <div class="prose">
+      <p>
+        With no human approvals recorded, this is what the engine decides on its own. Note that
+        <code>needs_human_review</code> and the hash-flagged population are the same 92 providers.
+      </p>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <caption>Engine output across 1,208 scored providers.</caption>
+        <thead>
+          <tr><th>Status</th><th class="num">Providers</th><th class="num">Share</th><th>What produced it</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>verified</code></td><td class="num">490</td><td class="num">40.6%</td><td>Hardcoded <code>verified: true</code> plus a non-pipeline source</td></tr>
+          <tr><td><code>candidate</code></td><td class="num">485</td><td class="num">40.1%</td><td>Default — cleared nothing, failed nothing</td></tr>
+          <tr><td><code>ai_shortlisted</code></td><td class="num">141</td><td class="num">11.7%</td><td>Passed all five Hidden Gem thresholds</td></tr>
+          <tr class="em"><td><code>needs_human_review</code></td><td class="num">92</td><td class="num">7.6%</td><td>The ID hash, in every case</td></tr>
+          <tr><td><code>rejected</code></td><td class="num">0</td><td class="num">0%</td><td>Requires overall &lt; 38; the floor observed is 33 but never with a passing risk score</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>What to do, in order</h2>
+    <ol class="recs">
+      <li>
+        <div>
+          <h3>Gate on closure</h3>
+          <p>Restore <code>business_status</code> to the bundle and drop non-operational providers from the catalog. Removes 106 wrong recommendations outright.</p>
+          <span class="cost">One filter · no model involved</span>
+        </div>
+      </li>
+      <li>
+        <div>
+          <h3>Delete the hash; read the complaints instead</h3>
+          <p>Remove the <code>hsh("risk|"…)</code> branch and <code>review_signal_status</code>, and derive risk from the stored complaint severity. Human review starts reflecting what reviewers actually wrote.</p>
+          <span class="cost">Evidence already in Postgres</span>
+        </div>
+      </li>
+      <li>
+        <div>
+          <h3>Un-hardcode the readiness inputs, then gate on them</h3>
+          <p>Pass real hours, contact, price and language through the adapter and add the specification's hard rule. A quarter of the score's weight starts doing work.</p>
+          <span class="cost">Adapter change · fields already present</span>
+        </div>
+      </li>
+      <li>
+        <div>
+          <h3>Stop auto-verifying</h3>
+          <p>Replace <code>verified: true</code> with the real <code>verification_status</code>, and reserve <code>verified</code> for human approval. Rename the AI-only outcome to <code>hidden_gem_candidate</code>.</p>
+          <span class="cost">Restores the spec's first principle</span>
+        </div>
+      </li>
+      <li>
+        <div>
+          <h3>Give Quality the inputs both specs demand</h3>
+          <p>Feed sentiment, recency and evidence count from the stored labels, and publish a confidence alongside the score — five Google-selected reviews cannot support more.</p>
+          <span class="cost">823 providers ready now</span>
+        </div>
+      </li>
+      <li>
+        <div>
+          <h3>Make Visibility Gap relative</h3>
+          <p>Swap the hardcoded log₁₀ range for an exposure percentile within category and area, as the revised spec requires. <code>category</code> and <code>area</code> are already indexed columns.</p>
+          <span class="cost">One window function</span>
+        </div>
+      </li>
+    </ol>
+  </section>
+
+  <footer>
+    <p>
+      <strong>Method.</strong> <code>scoring.ts</code> and <code>copy.ts</code> were compiled and executed
+      unmodified over <code>providers.json</code>, with the <code>toPick()</code> adapter reproduced
+      field-for-field. Ranges, gate counts and status distributions are observed outputs across the 1,208
+      providers that pass the catalog filter, not estimates. Spec references are to
+      <code>hidden_gem_instructions.md</code> and <code>updated_instructions.md</code>.
+    </p>
+    <p>
+      <strong>Caveat.</strong> Review coverage is capped by the Google Places API at five reviews per
+      place, and those five are selected for relevance rather than sampled — 82% came back positive.
+      Sentiment derived from them is real evidence but weak evidence, and any confidence attached to it
+      should say so.
+    </p>
+  </footer>
+
+</div>
+</body>
+</html>

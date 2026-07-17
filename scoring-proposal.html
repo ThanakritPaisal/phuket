@@ -1,0 +1,542 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="LOMA provider scoring, proposed: one hard gate, then every place ranked by hiddenness x cultural x quality x confidence-squared. Full logic and five traced examples.">
+<meta name="color-scheme" content="light dark">
+<title>LOMA Provider Scoring — Proposed Design</title>
+<style>
+  /* minimal reset — the layout below assumes zeroed defaults */
+  *, *::before, *::after { box-sizing: border-box; }
+  body, h1, h2, h3, h4, p, ol, ul, figure, blockquote { margin: 0; padding: 0; }
+  ol, ul { list-style: none; }
+  img { max-width: 100%; display: block; }
+  table { border-collapse: collapse; }
+</style>
+<style>
+  :root {
+    --bg:#F6EFE1; --surface:#FCF7EC; --surface-2:#EFE5D2; --sunk:#F1E8D6;
+    --primary:#0A3A73; --primary-d:#072B55; --primary-l:#E5EBF3; --accent:#F0603F;
+    --ink:#15263C; --ink-2:#3C4E62; --muted:#5B6B7D;
+    --line:#E4D8C2; --line-2:#EFE5D3;
+    --ok:#1E7A4B; --ok-l:#E3F1E8; --warn:#B9760F; --warn-l:#FAF0DB;
+    --crit:#C6472A; --crit-l:#FBE7E0; --track:#E7DCC7;
+    --f: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --fd: "DM Serif Display", "Fraunces", "Iowan Old Style", Georgia, "Times New Roman", serif;
+    --fm: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    --measure: 68ch;
+    --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:22px; --s6:30px; --s8:44px; --s10:68px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg:#0C1420; --surface:#131E2E; --surface-2:#1A2739; --sunk:#0F1826;
+      --primary:#6FA0E0; --primary-d:#8FB8EC; --primary-l:#1B2C46; --accent:#FF7A5C;
+      --ink:#E9EEF6; --ink-2:#BAC7D8; --muted:#8B9BAF;
+      --line:#243449; --line-2:#1D2B3D;
+      --ok:#4FBF83; --ok-l:#12301F; --warn:#E0A03A; --warn-l:#33260C;
+      --crit:#F2705A; --crit-l:#3A1A13; --track:#223145;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg:#0C1420; --surface:#131E2E; --surface-2:#1A2739; --sunk:#0F1826;
+    --primary:#6FA0E0; --primary-d:#8FB8EC; --primary-l:#1B2C46; --accent:#FF7A5C;
+    --ink:#E9EEF6; --ink-2:#BAC7D8; --muted:#8B9BAF;
+    --line:#243449; --line-2:#1D2B3D;
+    --ok:#4FBF83; --ok-l:#12301F; --warn:#E0A03A; --warn-l:#33260C;
+    --crit:#F2705A; --crit-l:#3A1A13; --track:#223145;
+  }
+  :root[data-theme="light"] {
+    --bg:#F6EFE1; --surface:#FCF7EC; --surface-2:#EFE5D2; --sunk:#F1E8D6;
+    --primary:#0A3A73; --primary-d:#072B55; --primary-l:#E5EBF3; --accent:#F0603F;
+    --ink:#15263C; --ink-2:#3C4E62; --muted:#5B6B7D;
+    --line:#E4D8C2; --line-2:#EFE5D3;
+    --ok:#1E7A4B; --ok-l:#E3F1E8; --warn:#B9760F; --warn-l:#FAF0DB;
+    --crit:#C6472A; --crit-l:#FBE7E0; --track:#E7DCC7;
+  }
+
+  body { background: var(--bg); color: var(--ink); font-family: var(--f); line-height: 1.62; font-size: 16px; -webkit-font-smoothing: antialiased; }
+  .page { max-width: 1080px; margin: 0 auto; padding: var(--s8) var(--s5) var(--s10); }
+  .prose { max-width: var(--measure); }
+  h1, h2, h3 { text-wrap: balance; line-height: 1.18; }
+  h1 { font-family: var(--fd); font-size: clamp(34px, 5.2vw, 52px); font-weight: 400; letter-spacing: -.01em; }
+  h2 { font-family: var(--fd); font-size: clamp(23px, 3vw, 29px); font-weight: 400; margin-bottom: var(--s3); }
+  h3 { font-size: 16px; font-weight: 700; }
+  p { margin-bottom: var(--s4); }
+  .prose p:last-child { margin-bottom: 0; }
+  a { color: var(--primary); }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  strong { font-weight: 680; }
+  code { font-family: var(--fm); font-size: .88em; background: var(--sunk); padding: 1px 5px; border-radius: 4px; border: 1px solid var(--line-2); }
+  .eyebrow { font-family: var(--fm); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+
+  .mast { border-bottom: 2px solid var(--ink); padding-bottom: var(--s5); margin-bottom: var(--s6); }
+  .mast .rule { width: 62px; height: 4px; background: var(--accent); margin-bottom: var(--s4); }
+  .mast h1 { margin: var(--s2) 0 var(--s3); }
+  .mast .sub { color: var(--ink-2); font-size: 18px; max-width: var(--measure); }
+  .meta { display: flex; flex-wrap: wrap; gap: var(--s2) var(--s6); margin-top: var(--s5); font-family: var(--fm); font-size: 12px; color: var(--muted); }
+  .meta b { color: var(--ink-2); font-weight: 600; }
+  section { margin-top: var(--s10); }
+  section > .prose { margin-bottom: var(--s5); }
+
+  .thesis { background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--primary); border-radius: 10px; padding: var(--s5) var(--s5) var(--s5) var(--s6); margin-top: var(--s6); }
+  .thesis .eyebrow { color: var(--primary); }
+  .thesis p { margin: var(--s2) 0 0; max-width: var(--measure); }
+  .thesis .big { font-family: var(--fd); font-size: 25px; line-height: 1.34; color: var(--ink); margin-top: var(--s3); }
+
+  .formula { font-family: var(--fm); font-size: 13px; background: var(--sunk); border: 1px solid var(--line-2); border-radius: 8px; padding: var(--s4) var(--s5); margin: var(--s4) 0; white-space: pre; overflow-x: auto; line-height: 1.8; color: var(--ink-2); }
+  .formula b { color: var(--ink); font-weight: 700; }
+  .formula .c { color: var(--muted); }
+
+  /* factor blocks */
+  .factor { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; margin-top: var(--s4); overflow: hidden; }
+  .factor-head { display: flex; align-items: baseline; gap: var(--s3); padding: var(--s4) var(--s5); border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+  .factor-head .k { font-family: var(--fm); font-size: 12px; font-weight: 700; color: var(--accent); }
+  .factor-head h3 { flex: 1; min-width: 180px; }
+  .factor-head .rng { font-family: var(--fm); font-size: 11px; color: var(--muted); }
+  .factor-body { padding: var(--s4) var(--s5) var(--s5); }
+  .factor-body > p { max-width: var(--measure); font-size: 14.5px; color: var(--ink-2); }
+  .factor-body .formula { margin-bottom: 0; }
+
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: var(--s3); margin-top: var(--s5); }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: var(--s4); }
+  .card h3 { margin-bottom: var(--s2); font-size: 14px; }
+  .card p { margin: 0; font-size: 13.5px; color: var(--ink-2); }
+  .card .n { font-family: var(--fm); font-size: 26px; font-weight: 600; letter-spacing: -.03em; display: block; margin-bottom: 2px; }
+  .card .n.ok { color: var(--ok); } .card .n.crit { color: var(--crit); } .card .n.warn { color: var(--warn); }
+
+  /* worked traces */
+  .ex { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; margin-top: var(--s4); }
+  .ex.held { border-left: 3px solid var(--crit); }
+  .ex.good { border-left: 3px solid var(--ok); }
+  .ex.weak { border-left: 3px solid var(--warn); }
+  .ex-head { padding: var(--s4) var(--s5); border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; gap: var(--s3); flex-wrap: wrap; align-items: baseline; }
+  .ex-head h3 { font-size: 15px; }
+  .ex-head .facts { font-family: var(--fm); font-size: 11.5px; color: var(--muted); margin-top: 2px; }
+  .chip { font-family: var(--fm); font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; padding: 3px 9px; border-radius: 20px; border: 1px solid currentColor; white-space: nowrap; }
+  .chip.ok { background: var(--ok-l); color: var(--ok); }
+  .chip.warn { background: var(--warn-l); color: var(--warn); }
+  .chip.crit { background: var(--crit-l); color: var(--crit); }
+  .calc { padding: var(--s4) var(--s5); overflow-x: auto; }
+  .calc-inner { min-width: 480px; }
+  .cline { display: grid; grid-template-columns: 96px 1fr 72px; gap: var(--s3); font-family: var(--fm); font-size: 12px; line-height: 1.95; align-items: baseline; }
+  .cline .f { font-size: 10px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); }
+  .cline .v { text-align: right; font-variant-numeric: tabular-nums; color: var(--ink-2); font-weight: 700; }
+  .cline.sub { color: var(--muted); }
+  .cline.sub .v { font-weight: 400; }
+  .cline.total { border-top: 1px solid var(--line); margin-top: var(--s2); padding-top: var(--s2); }
+  .cline.total .v { color: var(--ink); font-size: 14px; }
+  .ex-foot { background: var(--sunk); border-top: 1px solid var(--line); padding: var(--s3) var(--s5); font-size: 13.5px; color: var(--ink-2); }
+  .ex-foot strong { color: var(--ink); }
+
+  .tbl-wrap { overflow-x: auto; margin-top: var(--s4); border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; }
+  th, td { text-align: left; padding: 9px var(--s4); border-bottom: 1px solid var(--line-2); vertical-align: top; }
+  thead th { font-family: var(--fm); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); font-weight: 600; border-bottom: 1px solid var(--line); }
+  tbody tr:last-child td { border-bottom: none; }
+  td.num { text-align: right; font-family: var(--fm); font-variant-numeric: tabular-nums; }
+  td.mono { font-family: var(--fm); font-size: 12.5px; }
+
+  ul.plain { display: flex; flex-direction: column; gap: var(--s2); margin-top: var(--s4); }
+  ul.plain li { display: grid; grid-template-columns: 16px 1fr; gap: var(--s3); font-size: 15px; color: var(--ink-2); max-width: var(--measure); }
+  ul.plain li::before { content: "—"; color: var(--accent); font-weight: 700; }
+
+  footer { margin-top: var(--s10); padding-top: var(--s4); border-top: 1px solid var(--line); font-size: 12.5px; color: var(--muted); }
+  footer p { max-width: var(--measure); margin-bottom: var(--s2); }
+
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+  @media (max-width: 680px) { .cline { grid-template-columns: 72px 1fr 60px; } }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="mast">
+    <div class="rule"></div>
+    <div class="eyebrow">Design Proposal · AI Curation Engine v2 · complete logic</div>
+    <h1>One gate, then rank everything</h1>
+    <p class="sub">
+      The full scoring logic, every constant, and five worked examples traced term by term
+      against the live catalog. Written to be argued with.
+    </p>
+    <div class="meta">
+      <span><b>Replaces</b> loma-app/src/scoring.ts</span>
+      <span><b>Run against</b> 1,240 providers with coordinates</span>
+      <span><b>Scored</b> 1,043 · held 197</span>
+      <span><b>Date</b> 17 Jul 2026</span>
+    </div>
+  </header>
+
+  <div class="thesis">
+    <div class="eyebrow">The idea</div>
+    <p class="big">
+      Exclude a place only when recommending it would be <em>wrong</em>. Everything else
+      is a matter of degree, so everything else belongs in the score.
+    </p>
+    <p>
+      One hard gate — closed, or a serious complaint. Then every remaining place gets a
+      number, and the number is a <strong>product, not a sum</strong>: nothing compensates for
+      anything. A Nordic bistro is not deleted from the catalog; it ranks 440th.
+    </p>
+  </div>
+
+  <section>
+    <h2>The whole thing, on one line</h2>
+    <div class="formula"><b>score = 100 × hiddenness × cultural × quality × confidence²</b>
+
+  <span class="c">hiddenness   0…1   is it quieter than its neighbourhood would predict?</span>
+  <span class="c">cultural     0.05…1  is what it serves actually Thai?</span>
+  <span class="c">quality      0…1   what do customers say, and how badly do they complain?</span>
+  <span class="c">confidence   0…0.55  how much do we actually know? (squared — see below)</span></div>
+    <div class="prose">
+      <p>
+        <strong>Multiplication is the design.</strong> An additive score is what we are replacing:
+        it let four near-constant dimensions outvote the one that worked, and let a great
+        location excuse a bad signal. In a product, a near-zero anywhere sinks the result and
+        no amount of star rating buys it back.
+      </p>
+    </div>
+    <div class="cards">
+      <div class="card"><span class="n ok">1,043</span><h3>Places scored</h3><p>Out of 1,240 with coordinates. Nothing is discarded for being uninteresting.</p></div>
+      <div class="card"><span class="n crit">197</span><h3>Held by the one gate</h3><p>106 closed · 91 with a high-severity complaint, awaiting a person.</p></div>
+      <div class="card"><span class="n">24 / 50</span><h3>Old Town share of the top 50</h3><p>Was 76 of 101 under peer-group ranking. The residual fixed the geography.</p></div>
+      <div class="card"><span class="n ok">0</span><h3>Thin-evidence places in the top 50</h3><p>Under 25 reviews. Was 8 before confidence was squared.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>The only hard gate</h2>
+    <div class="prose">
+      <p>
+        A gate is justified when surfacing the place would be a mistake regardless of how good
+        it is. Two conditions qualify. Everything else that used to be a gate — locality,
+        quality, evidence volume — is now a multiplier.
+      </p>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Condition</th><th>Why it is a gate and not a factor</th><th class="num">Count</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="mono">business_status ∈<br>(CLOSED_PERMANENTLY,<br>&nbsp;CLOSED_TEMPORARILY)</td>
+            <td>A closed business cannot be visited. No score can make that acceptable, and the spec makes “not closed” a hard-required field.</td>
+            <td class="num">106</td>
+          </tr>
+          <tr>
+            <td class="mono">any complaint with<br>severity = "high"</td>
+            <td>Overcharging, scam, hygiene, safety — reported by a real customer, in text. Goes to a person, not to a ranking.</td>
+            <td class="num">91</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>The four factors, in full</h2>
+
+    <div class="factor">
+      <div class="factor-head">
+        <span class="k">×1</span>
+        <h3>hiddenness — quieter than its neighbourhood predicts</h3>
+        <span class="rng">0 … 1</span>
+      </div>
+      <div class="factor-body">
+        <p>
+          “Hidden” is a residual, not a threshold. The old engine asked “fewer than 700 reviews?”
+          on a fixed log scale, which compares a village café to a Patong institution. Instead we
+          ask what exposure a place <em>should</em> have, given its category and how much tourist
+          attention its surroundings already receive — then measure the shortfall.
+        </p>
+        <div class="formula">nb_attention = Σ reviews of catalog places within 500m   <span class="c">(our own coords — free)</span>
+band         = quintile of nb_attention across the catalog        <span class="c">→ 0…4</span>
+
+expected     = median( log₁₀(reviews+1) ) for (category, band)    <span class="c">groups ≥5, else catalog median</span>
+actual       = log₁₀(reviews + 1)
+h_raw        = expected − actual                                  <span class="c">+ve = quieter than predicted</span>
+
+<b>hiddenness   = 1 / (1 + e^(−1.2 × h_raw))</b>                          <span class="c">0.5 = exactly as known as expected</span></div>
+        <p style="margin-top:var(--s4)">
+          <strong>This replaced the peer group, and that is why the geography works.</strong> Partitioning
+          by category × area left 7 usable groups and buried 76 of 101 results in Old Town, discarding
+          56 places whose group was too small. Density as a <em>term</em> rather than a <em>partition</em>
+          still honours the spec's point — a Patong shop is not naively compared to a village one —
+          without fragmenting the catalog.
+        </p>
+      </div>
+    </div>
+
+    <div class="factor">
+      <div class="factor-head">
+        <span class="k">×2</span>
+        <h3>cultural — is what it serves actually Thai?</h3>
+        <span class="rng">0.05 … 1.00</span>
+      </div>
+      <div class="factor-body">
+        <p>
+          An LLM reads the reviews for <em>named dishes, ingredients and crafts</em> and returns one
+          enum plus its evidence. It never judges ownership — that is a separate question and reviews
+          cannot answer it. A Thai-sounding name is not evidence; a Thai dish being served is.
+        </p>
+        <div class="tbl-wrap" style="margin-top:0">
+          <table>
+            <thead><tr><th>Verdict</th><th class="num">Multiplier</th><th>Meaning</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">thai_traditional</td><td class="num">1.00</td><td>Thai / Phuket / regional Thai food, traditional recipes, local craft</td></tr>
+              <tr><td class="mono">thai_modern</td><td class="num">0.85</td><td>Thai identity, contemporary presentation</td></tr>
+              <tr><td class="mono">cannot_tell</td><td class="num">0.35</td><td>Reviews never describe the offering. Unknown is uncertainty, so it damps — it does not delete.</td></tr>
+              <tr><td class="mono">(never judged)</td><td class="num">0.30</td><td>No reviews at all to read</td></tr>
+              <tr><td class="mono">international</td><td class="num">0.10</td><td>Italian, Nordic, steakhouse, Japanese, burgers</td></tr>
+              <tr><td class="mono">expat_tourist_oriented</td><td class="num">0.05</td><td>Western breakfast, sports bar, generic beach café</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="margin-top:var(--s4)">
+          <strong>These six numbers are the most arguable constants in the design</strong> and the easiest
+          to tune. They encode a product opinion — how much LOMA cares about Thai-ness — not a fact.
+        </p>
+      </div>
+    </div>
+
+    <div class="factor">
+      <div class="factor-head">
+        <span class="k">×3</span>
+        <h3>quality — what customers said, and how badly</h3>
+        <span class="rng">0 … 1</span>
+      </div>
+      <div class="factor-body">
+        <p>
+          Sentiment from the stored per-review labels, not the star average — the method both
+          specifications ban by name. Complaints multiply it down by severity, so one serious
+          report costs far more than a mild one.
+        </p>
+        <div class="formula">s        = mean( positive→1.0, mixed→0.5, negative→0.0 )   <span class="c">over labelled reviews</span>
+           <span class="c">falls back to (rating − 3) / 2 when no labels exist</span>
+
+penalty  = min over complaints of:  high→0.15   medium→0.55   low→0.85
+
+<b>quality  = s × penalty</b></div>
+      </div>
+    </div>
+
+    <div class="factor">
+      <div class="factor-head">
+        <span class="k">×4</span>
+        <h3>confidence — how much do we actually know?</h3>
+        <span class="rng">0 … 0.55, then squared</span>
+      </div>
+      <div class="factor-body">
+        <p>
+          This replaces the 60-review floor that used to exclude 114 places. Thin evidence now
+          <em>damps</em> instead of deleting: a new and genuinely good place ranks low and climbs as
+          evidence arrives, rather than being invisible until it crosses an arbitrary line.
+        </p>
+        <div class="formula">vol        = min(1, log₁₀(reviews+1) / 2.3)     <span class="c">≈1.0 at 200 reviews</span>
+ev         = min(1, labelled_reviews / 5)      <span class="c">Google caps us at 5</span>
+
+<b>confidence = min(0.55, 0.15 + 0.5 × vol × (0.4 + 0.6 × ev))</b></div>
+        <p style="margin-top:var(--s4)">
+          <strong>The 0.55 cap is deliberate and permanent.</strong> Google returns at most five reviews,
+          selected for relevance rather than sampled — 82% came back positive. Five non-random reviews
+          out of a median of 236 ratings cannot support high confidence, and the score should not
+          pretend otherwise. Only a second source or a human can lift this.
+        </p>
+        <p style="margin-top:var(--s3)">
+          <strong>Why squared.</strong> Linear confidence was not enough. A 7-review place with a perfect
+          record reached <strong>#47 of 1,043</strong> because its hiddenness was 0.883 — exactly the
+          “5 stars from 3 reviews” trap. Squaring dropped it to #188 and took thin-evidence places in
+          the top 50 from <strong>8 to 0</strong>, while the real finds barely moved (Huensamkham 12→14,
+          โย โภชนา 6→4).
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Five providers, traced term by term</h2>
+    <div class="prose">
+      <p>
+        Every number below is observed output from running the pipeline against the live database.
+        One works, one exposes the weak spot, two are correctly sunk for different reasons, one is held.
+      </p>
+    </div>
+
+    <article class="ex good">
+      <div class="ex-head">
+        <div>
+          <h3>เฮือนสามคำ Huensamkham</h3>
+          <div class="facts">b1_0393 · Local Food · Old Town · 4.9★ · 62 reviews</div>
+        </div>
+        <span class="chip ok">#14 of 1,043 · score 19.29</span>
+      </div>
+      <div class="calc"><div class="calc-inner">
+        <div class="cline sub"><span class="f">Hiddenness</span><span>4 catalog places within 500m, 2,152 reviews between them → band 1</span><span class="v"></span></div>
+        <div class="cline sub"><span class="f"></span><span>expected log₁₀ exposure for (Local Food, band 1) = 2.348 · actual = 1.799</span><span class="v"></span></div>
+        <div class="cline"><span class="f"></span><span>h_raw = 2.348 − 1.799 = <b>+0.549</b> → sigmoid</span><span class="v">0.659</span></div>
+        <div class="cline"><span class="f">Cultural</span><span><code>thai_traditional</code> — khao soi, kanom jeen namgneaw, kapao moo</span><span class="v">1.00</span></div>
+        <div class="cline"><span class="f">Quality</span><span>5 of 5 reviews positive · no complaints</span><span class="v">1.00</span></div>
+        <div class="cline"><span class="f">Confidence</span><span>vol 0.782 (62 reviews) · ev 1.0 (5 labelled) → 0.541, squared</span><span class="v">0.293</span></div>
+        <div class="cline total"><span class="f">Score</span><span>100 × 0.659 × 1.00 × 1.00 × 0.293</span><span class="v">19.29</span></div>
+      </div></div>
+      <div class="ex-foot">
+        <strong>The shape we are looking for.</strong> Quiet street, Northern Thai dishes named by four
+        separate reviewers, nothing wrong with it. Every factor near its ceiling except hiddenness,
+        which is honest — 62 reviews is quiet, not invisible.
+      </div>
+    </article>
+
+    <article class="ex weak">
+      <div class="ex-head">
+        <div>
+          <h3>ร้านอาหาร <span style="font-weight:400;color:var(--muted)">— literally “restaurant”</span></h3>
+          <div class="facts">b1_0332 · Local Food · Phuket Town · 4.9★ · 7 reviews</div>
+        </div>
+        <span class="chip warn">#188 · the weak spot</span>
+      </div>
+      <div class="calc"><div class="calc-inner">
+        <div class="cline sub"><span class="f">Hiddenness</span><span>59 places within 500m, 34,394 reviews between them → band 4, a busy area</span><span class="v"></span></div>
+        <div class="cline"><span class="f"></span><span>h_raw = 2.591 − 0.903 = <b>+1.688</b> — extremely quiet for where it sits</span><span class="v">0.883</span></div>
+        <div class="cline"><span class="f">Cultural</span><span><code>thai_traditional</code> — rice, curry, soup, nam prik kapi</span><span class="v">1.00</span></div>
+        <div class="cline"><span class="f">Quality</span><span>5 of 5 positive</span><span class="v">1.00</span></div>
+        <div class="cline"><span class="f">Confidence</span><span>vol 0.393 (only 7 reviews) → 0.346, squared</span><span class="v">0.120</span></div>
+        <div class="cline total"><span class="f">Score</span><span>100 × 0.883 × 1.00 × 1.00 × 0.120</span><span class="v">10.58</span></div>
+      </div></div>
+      <div class="ex-foot">
+        <strong>This is the case to argue about.</strong> Seven reviews, and confidence is the only thing
+        holding it down — squaring moved it from #47 to #188, but it still outranks 855 places on
+        almost no evidence. It might be a real find. It might be a shop with a generic name and seven
+        friends. <strong>The system cannot tell, and the score does not claim to.</strong>
+      </div>
+    </article>
+
+    <article class="ex">
+      <div class="ex-head">
+        <div>
+          <h3>NUMA Nordic Bistro — Phuket Town</h3>
+          <div class="facts">b1_0049 · Local Food · Patong · 5.0★ · 89 reviews</div>
+        </div>
+        <span class="chip">#440 · sunk by cultural</span>
+      </div>
+      <div class="calc"><div class="calc-inner">
+        <div class="cline"><span class="f">Hiddenness</span><span>h_raw +0.637 — genuinely under-discovered, and the score says so</span><span class="v">0.682</span></div>
+        <div class="cline"><span class="f">Cultural</span><span><code>international</code> — fried oysters, Ribeye, Broccoli Ricotta</span><span class="v">0.10</span></div>
+        <div class="cline"><span class="f">Quality</span><span>5 of 5 positive · flawless record</span><span class="v">1.00</span></div>
+        <div class="cline"><span class="f">Confidence</span><span>0.55 (capped), squared</span><span class="v">0.303</span></div>
+        <div class="cline total"><span class="f">Score</span><span>100 × 0.682 × <b>0.10</b> × 1.00 × 0.303</span><span class="v">2.06</span></div>
+      </div></div>
+      <div class="ex-foot">
+        Ranked <strong>#1 in the previous draft.</strong> Every factor is excellent except one, and because
+        the score is a product, that one factor caps it at a tenth of its potential. <strong>A perfect
+        rating cannot buy it back</strong> — which is precisely what the additive composite could not
+        express. It is still in the catalog, still searchable. It is simply not a hidden Thai gem.
+      </div>
+    </article>
+
+    <article class="ex">
+      <div class="ex-head">
+        <div>
+          <h3>Tandoori Flames</h3>
+          <div class="facts">b1_0657 · Local Food · Patong · 4.8★ · 23,107 reviews</div>
+        </div>
+        <span class="chip">#1000 · sunk by fame</span>
+      </div>
+      <div class="calc"><div class="calc-inner">
+        <div class="cline"><span class="f">Hiddenness</span><span>expected 2.554 · actual 4.364 → h_raw <b>−1.81</b> — vastly better known than predicted</span><span class="v">0.102</span></div>
+        <div class="cline"><span class="f">Cultural</span><span><code>international</code> — chicken tikka, lamb vindaloo, garlic naan</span><span class="v">0.10</span></div>
+        <div class="cline"><span class="f">Quality</span><span>5 of 5 positive · 4.8★ across 23,107 ratings</span><span class="v">1.00</span></div>
+        <div class="cline"><span class="f">Confidence</span><span>0.55 (capped), squared — the most evidence in the catalog</span><span class="v">0.303</span></div>
+        <div class="cline total"><span class="f">Score</span><span>100 × <b>0.102</b> × <b>0.10</b> × 1.00 × 0.303</span><span class="v">0.31</span></div>
+      </div></div>
+      <div class="ex-foot">
+        <strong>Two factors sink it independently</strong>, and both are correct. It is a genuinely
+        excellent restaurant with the highest confidence in the catalog — and it is famous, and it is
+        Indian. LOMA's whole thesis is that popularity earns nothing; here that thesis is arithmetic.
+      </div>
+    </article>
+
+    <article class="ex held">
+      <div class="ex-head">
+        <div>
+          <h3>Clear 85 Shabu&amp;Yakiniku สาขานาบอน</h3>
+          <div class="facts">b1_0041 · Local Food · Phuket Town · 4.9★ · 2,054 reviews</div>
+        </div>
+        <span class="chip crit">Held · no score</span>
+      </div>
+      <div class="calc"><div class="calc-inner">
+        <div class="cline sub"><span class="f">Gate</span><span>3 of 5 reviews negative · complaints: medium, <b>high</b>, medium</span><span class="v">HELD</span></div>
+        <div class="cline sub"><span class="f">Quality</span><span>would have been 0.4 sentiment × 0.15 high-severity penalty = 0.06</span><span class="v">0.06</span></div>
+        <div class="cline total"><span class="f">Score</span><span>not computed — a person decides before this is surfaced</span><span class="v">—</span></div>
+      </div></div>
+      <div class="ex-foot">
+        A 4.9★ place with 2,054 ratings. <strong>The star average says it is excellent; three of its five
+        most relevant reviews are negative and one reports a serious problem.</strong> Note the quality
+        factor would have sunk it to 0.06 anyway — the gate is belt and braces, because a serious
+        complaint deserves a person rather than a low rank.
+      </div>
+    </article>
+  </section>
+
+  <section>
+    <h2>What we tested, including what broke</h2>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>What we tried</th><th>What happened</th><th>What changed</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Filtering with gates</strong></td><td class="mono">92% of the catalog got no score at all. 56 places passed every gate and still could not be ranked.</td><td>One hard gate; everything else became a multiplier.</td></tr>
+          <tr><td><strong>Peer groups (category × area)</strong></td><td class="mono">7 usable groups. 76 of 101 results in Old Town.</td><td>Replaced by a density-adjusted residual. Top-50 Old Town share fell to 24.</td></tr>
+          <tr><td><strong>Residual with no evidence floor</strong></td><td class="mono">1-review 5.0★ places at the top.</td><td>A 60-review floor — then that excluded 114 places, so it became confidence instead.</td></tr>
+          <tr><td><strong>Linear confidence</strong></td><td class="mono">A 7-review place reached #47. 8 thin-evidence places in the top 50.</td><td>Squared it. Thin places in the top 50: 8 → 0.</td></tr>
+          <tr><td><strong>Ranking with no cultural factor</strong></td><td class="mono">A Nordic bistro, a steakhouse and a weed shop at #1, #2, #5.</td><td>Split locality into cultural (LLM, works) and ownership (still weak).</td></tr>
+          <tr><td><strong>Treating the review ban as covering all of locality</strong></td><td class="mono">Blocked the model from a judgement it makes reliably.</td><td>Reviews are banned for <em>ownership</em>, not for <em>what is on the plate</em>.</td></tr>
+          <tr><td><strong>LLM inference for halal</strong></td><td class="mono">Zero signals across 144 reviews. A keyword scan found 37.</td><td>Dropped. Rules beat the model.</td></tr>
+          <tr><td><strong>Photos for setting, and for cuisine</strong></td><td class="mono">58% on setting. <code>cannot_tell</code> on 38 of 60 for cuisine — including NUMA and Huensamkham.</td><td>Photos are a weak fallback. Text is the instrument.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>What we drop</h2>
+    <ul class="plain">
+      <li><strong>The weighted composite.</strong> Four near-constant dimensions diluting the one that worked.</li>
+      <li><strong><code>is_hidden_gem</code> as a boolean.</strong> There is no natural threshold. Surface the top N; the rest still exist.</li>
+      <li><strong>The ID hash</strong> and everything derived from it: risk, complaint flags, review trend, freshness.</li>
+      <li><strong><code>branches</code>.</strong> Only three names in the catalog have multiple real locations; the chain regex already catches all three.</li>
+      <li><strong><code>safety</code>.</strong> A constant between 78 and 96 that made its own threshold unreachable.</li>
+      <li><strong>The Patong/Kata/Karon regex.</strong> Superseded by neighbourhood attention, computed from coordinates we already hold.</li>
+      <li><strong>The 60-review floor.</strong> Became confidence.</li>
+      <li><strong>Auto-verification.</strong> <code>verified</code> becomes a human act.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Open questions — the things to argue about</h2>
+    <ul class="plain">
+      <li><strong>The six cultural multipliers.</strong> 1.00 / 0.85 / 0.35 / 0.30 / 0.10 / 0.05. These are a product opinion about how much Thai-ness matters, not a measurement. If <code>international</code> should be 0.25 rather than 0.10, that is a business call and a one-line change.</li>
+      <li><strong>Ownership is still unmeasured.</strong> Cultural locality says what is served; nothing in this design says who owns it. A Thai restaurant backed by large capital scores exactly like a family kitchen. <code>acceptsCashOnly</code> from a Google re-pull ($24.45) is the only structural signal available.</li>
+      <li><strong>The 7-review case.</strong> Still #188 on almost no evidence. Steeper damping, a soft floor, or accept it as the price of not filtering — this is a judgement call, not a bug.</li>
+      <li><strong>Never show this number.</strong> Four sub-1.0 multipliers compound, so the top score is 24.87, not 90-something. Fine for ordering, misleading as “24.87 out of 100”. Surface a rank or a percentile.</li>
+      <li><strong>The 500m radius and the sigmoid's 1.2.</strong> Both picked by hand, neither tuned against anything.</li>
+    </ul>
+  </section>
+
+  <footer>
+    <p>
+      <strong>Method.</strong> The pipeline was implemented and run against all 1,240 providers with
+      coordinates in the live database. Every figure — the funnel, both rankings, all five traces —
+      is observed output, not an estimate. Neighbourhood attention is computed from our own catalog
+      coordinates and costs nothing. Cultural locality is stored in
+      <code>review_analysis.cultural_locality</code> for 808 places, each verdict citing the dishes it
+      was based on; quality uses the 4,200 per-review labels in the same record.
+    </p>
+    <p>
+      <strong>Caveat.</strong> Ownership is not measured anywhere in this design, and the confidence cap
+      of 0.55 reflects a real limit: Google returns five reviews, chosen for relevance rather than
+      sampled. Everything here ranks well on what a place <em>serves</em> and how <em>quietly</em> it does
+      it. Whether it is locally <em>owned</em> remains a question for a registry, a partner, or a person.
+    </p>
+  </footer>
+
+</div>
+</body>
+</html>
