@@ -61,6 +61,23 @@ src = sub_once(
     "directions-event-staff",
 )
 
+# 3b) Recommendation-card map — swap the stylised SVG map for a real Google Map centred
+#     on the provider's DB coordinates.
+src = sub_once(
+    src,
+    """<div class="mapbox" style="height:160px;border-radius:14px;overflow:hidden;margin-top:16px">${mapSVG()}<div class="pin sel" style="left:54%;top:70%"><div class="p"><span>${p.emo}</span></div></div><div class="you" style="left:${PARTNER.x}%;top:${PARTNER.y}%"><div class="core"></div></div></div>""",
+    """<div class="mapbox" style="height:160px;border-radius:14px;overflow:hidden;margin-top:16px">${lomaMapEmbed(p)}</div>""",
+    "card-map",
+)
+
+# 3c) Route / Plan card map — real Google Map with the multi-stop route.
+src = sub_once(
+    src,
+    """<div class="mapbox" style="height:160px;border-radius:12px;overflow:hidden;margin-top:12px">${mapSVG()}${ids.map((id,i)=>{const o=P(id);return `<div class="pin ${i===0?'sel':''}" style="left:${o.mapX}%;top:${o.mapY}%"><div class="lab">${i+1}</div><div class="p"><span>${i+1}</span></div></div>`;}).join('')}<div class="you" style="left:${PARTNER.x}%;top:${PARTNER.y}%"><div class="core"></div></div></div>""",
+    """<div class="mapbox" style="height:160px;border-radius:12px;overflow:hidden;margin-top:12px">${lomaRouteEmbed(ids)}</div>""",
+    "route-map",
+)
+
 # 4) Contact — real tel:/website link.
 src = sub_once(
     src,
@@ -111,12 +128,23 @@ src = sub_once(src, """width:152px;height:152px;margin:14px auto">${qrSVG()}""",
 src = sub_once(src, """padding:10px;border:1px solid var(--line)">${qrSVG()}""",
                """padding:10px;border:1px solid var(--line)">${lomaQR(lomaShareBase())}""", "qr-reclist")
 
-# Load the shipped QR library so lomaQR can render a real, scannable code.
-src = sub_once(src, "</body>",
-               """<script src="data/qrcode.browser.js"></script>\n</body>""", "qr-lib")
+# Guard the recommendation card so an unresolved provider id never blanks the page.
+src = sub_once(
+    src,
+    """function touristCard(){
+  const p=P(state.curProv);
+  return""",
+    """function touristCard(){
+  const p=P(state.curProv);
+  if(!p){ return `<div class="pad" style="padding-top:40px;text-align:center"><div style="font-size:15px;font-weight:700">${T('This place isn\\'t available right now.')}</div><div style="margin-top:14px"><button class="btn btn-line" data-go="${state.curList?'reclist':'selfserve'}">${I.back} ${T('All local picks')}</button></div></div>`+touristTabbar(''); }
+  return""",
+    "touristCard-guard",
+)
 
 # --------------------------------------------------------------------------------------
 # 9) Append the live-actions JS layer (helpers + inbound deep-link + logging).
+#    NOTE: this must run BEFORE injecting the external QR-lib <script src>, so the
+#    rfind("</script>") below targets the MAIN app script (not the lib's closing tag).
 # --------------------------------------------------------------------------------------
 LAYER = r"""
 /* ===== LOMA real-data layer: live actions ======================================
@@ -158,6 +186,46 @@ function lomaMapsUrl(o){
   return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(q||'Phuket');
 }
 function lomaEventMapUrl(e){ return lomaMapsUrl({ name:(e&&e.venue)||'', area:(e&&e.area)||'' }); }
+/* A real, interactive Google Map centred on the provider, from the provider table's
+   coordinates / place_id. Uses the official Maps Embed API when a key is supplied via
+   window.LOMA_MAPS_KEY or ?mapskey=..., else a keyless Google Maps embed. */
+function lomaMapEmbed(o){
+  var key=''; try{ key=window.LOMA_MAPS_KEY||new URLSearchParams(location.search).get('mapskey')||''; }catch(e){}
+  var lang=(typeof state!=='undefined'&&state.lang==='ไทย')?'th':'en', src;
+  if(key){
+    var q=(o&&o.placeId)?('place_id:'+encodeURIComponent(o.placeId))
+        :(o&&o.lat!=null&&o.lng!=null)?encodeURIComponent(o.lat+','+o.lng)
+        :encodeURIComponent([o&&o.name,o&&o.area,'Phuket'].filter(Boolean).join(' '));
+    src='https://www.google.com/maps/embed/v1/place?key='+encodeURIComponent(key)+'&q='+q+'&zoom=16&language='+lang;
+  } else {
+    var q2=(o&&o.lat!=null&&o.lng!=null)?encodeURIComponent(o.lat+','+o.lng)
+         :encodeURIComponent([o&&o.name,o&&o.area,'Phuket'].filter(Boolean).join(' '));
+    src='https://maps.google.com/maps?q='+q2+'&z=16&hl='+lang+'&output=embed';
+  }
+  return '<iframe title="Map" src="'+src+'" style="width:100%;height:100%;border:0;display:block" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>';
+}
+/* A real Google Map with the multi-stop route from the hotel through each pick, using
+   the provider table's coordinates. Embed API directions mode when a key is supplied,
+   else a keyless Google Maps directions embed (saddr/daddr). */
+function lomaRouteEmbed(ids){
+  var stops=(ids||[]).map(function(id){ return P(id); }).filter(Boolean);
+  var key=''; try{ key=window.LOMA_MAPS_KEY||new URLSearchParams(location.search).get('mapskey')||''; }catch(e){}
+  var lang=(typeof state!=='undefined'&&state.lang==='ไทย')?'th':'en';
+  function loc(o){ return (o&&o.lat!=null&&o.lng!=null) ? (o.lat+','+o.lng) : [o&&o.name,o&&o.area,'Phuket'].filter(Boolean).join(' '); }
+  var hotel=(typeof PARTNER!=='undefined'&&PARTNER)||{};
+  var origin=(hotel.lat!=null&&hotel.lng!=null)?(hotel.lat+','+hotel.lng):(hotel.name||'Phuket');
+  if(!stops.length) return lomaMapEmbed({lat:hotel.lat,lng:hotel.lng,name:hotel.name,area:'Phuket'});
+  var src;
+  if(key){
+    var dest=loc(stops[stops.length-1]);
+    var way=stops.slice(0,-1).map(loc).map(encodeURIComponent).join('|');
+    src='https://www.google.com/maps/embed/v1/directions?key='+encodeURIComponent(key)+'&origin='+encodeURIComponent(origin)+'&destination='+encodeURIComponent(dest)+(way?'&waypoints='+way:'')+'&mode=driving&language='+lang;
+  } else {
+    var daddr=stops.map(loc).map(encodeURIComponent).join('+to:');
+    src='https://maps.google.com/maps?saddr='+encodeURIComponent(origin)+'&daddr='+daddr+'&hl='+lang+'&output=embed';
+  }
+  return '<iframe title="Route map" src="'+src+'" style="width:100%;height:100%;border:0;display:block" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>';
+}
 /* The app's own base URL (so QR codes / share links point back to this deployment). */
 function lomaShareBase(){
   try{ return (location.protocol==='file:')?'https://loma.app/':(location.origin+location.pathname); }
@@ -231,6 +299,11 @@ idx = src.rfind("</script>")
 if idx == -1:
     raise SystemExit("[live-actions] no </script> found")
 src = src[:idx] + LAYER + "\n" + src[idx:]
+
+# Only now load the shipped QR library (its own <script> tag, after the app script),
+# so lomaQR can render a real, scannable code. Placed after the layer append on purpose.
+src = sub_once(src, "</body>",
+               """<script src="data/qrcode.browser.js"></script>\n</body>""", "qr-lib")
 
 io.open(HTML, "w", encoding="utf-8", newline="").write(src)
 print("wired LOMA.html live actions (directions/contact/save/share/referral + logging)")

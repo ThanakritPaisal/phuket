@@ -2959,6 +2959,7 @@ function reviewVideo(p){
 }
 function touristCard(){
   const p=P(state.curProv);
+  if(!p){ return `<div class="pad" style="padding-top:40px;text-align:center"><div style="font-size:15px;font-weight:700">${T('This place isn\'t available right now.')}</div><div style="margin-top:14px"><button class="btn btn-line" data-go="${state.curList?'reclist':'selfserve'}">${I.back} ${T('All local picks')}</button></div></div>`+touristTabbar(''); }
   return `<div class="tc-hero" data-photo="${p.img}" data-emo="${p.emo}">
     <button data-go="${state.curList?'reclist':'selfserve'}" style="position:absolute;top:14px;left:14px;z-index:5;display:inline-flex;align-items:center;gap:5px;background:rgba(252,247,236,.96);border-radius:99px;padding:7px 13px;font-size:12.5px;font-weight:700;color:var(--primary);box-shadow:var(--shadow)">‹ ${state.curList?'Back to your picks':T('All local picks')}</button>
     <div style="position:absolute;top:14px;right:14px;z-index:5"><div class="langtoggle" style="background:rgba(255,255,255,.94);border-color:transparent;box-shadow:var(--shadow)">${['EN','ไทย'].map(l=>`<button class="${state.lang===l?'on':''}" data-lang="${l}">${l}</button>`).join('')}</div></div>
@@ -2983,7 +2984,7 @@ function touristCard(){
       <div class="r"><span class="k">Languages</span><span class="v">${p.lang}</span></div>
     </div>
 
-    <div class="mapbox" style="height:160px;border-radius:14px;overflow:hidden;margin-top:16px">${mapSVG()}<div class="pin sel" style="left:54%;top:70%"><div class="p"><span>${p.emo}</span></div></div><div class="you" style="left:${PARTNER.x}%;top:${PARTNER.y}%"><div class="core"></div></div></div>
+    <div class="mapbox" style="height:160px;border-radius:14px;overflow:hidden;margin-top:16px">${lomaMapEmbed(p)}</div>
 
     <div style="margin-top:18px">
       <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--primary-d);margin-bottom:8px">${T('Why you can trust this')}</div>
@@ -3095,7 +3096,7 @@ function touristRoute(){
   </div>
   <div class="pad">
     <div class="tc-by"><div class="h">🏨</div><div><b>${attribution()}</b><br><span style="font-size:11.5px">${ids.length} local ${custom?'places picked for you':'stops on your way'}</span></div></div>
-    <div class="mapbox" style="height:160px;border-radius:12px;overflow:hidden;margin-top:12px">${mapSVG()}${ids.map((id,i)=>{const o=P(id);return `<div class="pin ${i===0?'sel':''}" style="left:${o.mapX}%;top:${o.mapY}%"><div class="lab">${i+1}</div><div class="p"><span>${i+1}</span></div></div>`;}).join('')}<div class="you" style="left:${PARTNER.x}%;top:${PARTNER.y}%"><div class="core"></div></div></div>
+    <div class="mapbox" style="height:160px;border-radius:12px;overflow:hidden;margin-top:12px">${lomaRouteEmbed(ids)}</div>
     ${ids.map((id,i)=>{const p=P(id);return `<div class="prow" style="margin-top:10px"><div style="width:28px;height:28px;border-radius:50%;background:var(--primary);color:#fff;display:grid;place-items:center;font-weight:800;font-size:13px;flex:none">${i+1}</div><div class="thumb" data-photo="${p.img}" data-emo="${p.emo}" style="width:54px;height:54px"></div><div class="info"><h3 style="font-size:14px">${p.name}</h3><div class="m">${p.emo} ${p.cat} · ${p.dist} · ${p.priceText.split('·')[0].trim()}</div><div class="bd">${localBadge()}</div></div></div>`;}).join('')}
     <div class="cta2"><button class="btn btn-primary" onclick="toast('Opening route in maps…')">${I.nav} Navigate route</button><button class="btn btn-ghost" data-go="ref">${I.qr} Show code</button></div>
     <div style="font-size:11.5px;color:var(--muted);background:var(--surface-2);border-radius:9px;padding:9px 11px;margin-top:12px;text-align:center">No login or app needed. Show the plan code at any stop.</div>
@@ -6759,8 +6760,7 @@ function lomaHydrateProviders(){
 }
 lomaHydrateProviders();
 
-</script>
-<script src="data/qrcode.browser.js">
+
 /* ===== LOMA real-data layer: live actions ======================================
    Real Google Maps directions from the provider table, real share/referral links,
    and DB funnel logging (/events). Best-effort — nothing blocks if the API is down.
@@ -6800,6 +6800,46 @@ function lomaMapsUrl(o){
   return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(q||'Phuket');
 }
 function lomaEventMapUrl(e){ return lomaMapsUrl({ name:(e&&e.venue)||'', area:(e&&e.area)||'' }); }
+/* A real, interactive Google Map centred on the provider, from the provider table's
+   coordinates / place_id. Uses the official Maps Embed API when a key is supplied via
+   window.LOMA_MAPS_KEY or ?mapskey=..., else a keyless Google Maps embed. */
+function lomaMapEmbed(o){
+  var key=''; try{ key=window.LOMA_MAPS_KEY||new URLSearchParams(location.search).get('mapskey')||''; }catch(e){}
+  var lang=(typeof state!=='undefined'&&state.lang==='ไทย')?'th':'en', src;
+  if(key){
+    var q=(o&&o.placeId)?('place_id:'+encodeURIComponent(o.placeId))
+        :(o&&o.lat!=null&&o.lng!=null)?encodeURIComponent(o.lat+','+o.lng)
+        :encodeURIComponent([o&&o.name,o&&o.area,'Phuket'].filter(Boolean).join(' '));
+    src='https://www.google.com/maps/embed/v1/place?key='+encodeURIComponent(key)+'&q='+q+'&zoom=16&language='+lang;
+  } else {
+    var q2=(o&&o.lat!=null&&o.lng!=null)?encodeURIComponent(o.lat+','+o.lng)
+         :encodeURIComponent([o&&o.name,o&&o.area,'Phuket'].filter(Boolean).join(' '));
+    src='https://maps.google.com/maps?q='+q2+'&z=16&hl='+lang+'&output=embed';
+  }
+  return '<iframe title="Map" src="'+src+'" style="width:100%;height:100%;border:0;display:block" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>';
+}
+/* A real Google Map with the multi-stop route from the hotel through each pick, using
+   the provider table's coordinates. Embed API directions mode when a key is supplied,
+   else a keyless Google Maps directions embed (saddr/daddr). */
+function lomaRouteEmbed(ids){
+  var stops=(ids||[]).map(function(id){ return P(id); }).filter(Boolean);
+  var key=''; try{ key=window.LOMA_MAPS_KEY||new URLSearchParams(location.search).get('mapskey')||''; }catch(e){}
+  var lang=(typeof state!=='undefined'&&state.lang==='ไทย')?'th':'en';
+  function loc(o){ return (o&&o.lat!=null&&o.lng!=null) ? (o.lat+','+o.lng) : [o&&o.name,o&&o.area,'Phuket'].filter(Boolean).join(' '); }
+  var hotel=(typeof PARTNER!=='undefined'&&PARTNER)||{};
+  var origin=(hotel.lat!=null&&hotel.lng!=null)?(hotel.lat+','+hotel.lng):(hotel.name||'Phuket');
+  if(!stops.length) return lomaMapEmbed({lat:hotel.lat,lng:hotel.lng,name:hotel.name,area:'Phuket'});
+  var src;
+  if(key){
+    var dest=loc(stops[stops.length-1]);
+    var way=stops.slice(0,-1).map(loc).map(encodeURIComponent).join('|');
+    src='https://www.google.com/maps/embed/v1/directions?key='+encodeURIComponent(key)+'&origin='+encodeURIComponent(origin)+'&destination='+encodeURIComponent(dest)+(way?'&waypoints='+way:'')+'&mode=driving&language='+lang;
+  } else {
+    var daddr=stops.map(loc).map(encodeURIComponent).join('+to:');
+    src='https://maps.google.com/maps?saddr='+encodeURIComponent(origin)+'&daddr='+daddr+'&hl='+lang+'&output=embed';
+  }
+  return '<iframe title="Route map" src="'+src+'" style="width:100%;height:100%;border:0;display:block" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>';
+}
 /* The app's own base URL (so QR codes / share links point back to this deployment). */
 function lomaShareBase(){
   try{ return (location.protocol==='file:')?'https://loma.app/':(location.origin+location.pathname); }
@@ -6869,5 +6909,6 @@ if(!window._lomaLinkApplied){
 }
 
 </script>
+<script src="data/qrcode.browser.js"></script>
 </body>
 </html>
