@@ -1269,9 +1269,13 @@ function filterCatalog(opts){
   if(f.maxMin) list=list.filter(o=>distMin(o)<=f.maxMin);
   if(f.budget==='low') list=list.filter(o=>o.price==='฿');
   if(f.budget==='low-med') list=list.filter(o=>o.price==='฿'||o.price==='฿฿');
-  /* LOMA signals layer: property = within 5 km of the hotel; elsewhere = exact subdistrict. */
+  /* LOMA signals layer: property = within 5 km of the hotel; elsewhere = exact subdistrict.
+     Both narrow ONLY when the narrowed set is non-empty — otherwise the list would be
+     wiped for sparse island-wide categories (Local Experience, Boat) whose nearest
+     place sits just past 5 km, leaving the screen with no picks. */
   if(f.place==='property' && typeof PARTNER!=='undefined' && PARTNER && PARTNER.lat!=null){
-    list=list.filter(o=>o.lat!=null && _lomaKm(PARTNER.lat,PARTNER.lng,o.lat,o.lng)<=5);
+    const near=list.filter(o=>o.lat!=null && _lomaKm(PARTNER.lat,PARTNER.lng,o.lat,o.lng)<=5);
+    if(near.length) list=near;
   } else if(f.place==='elsewhere' && f.destArea){
     const m=list.filter(o=>o.tambon===f.destArea || String(o.area).toLowerCase().includes(f.destArea.toLowerCase()));
     if(m.length)list=m;

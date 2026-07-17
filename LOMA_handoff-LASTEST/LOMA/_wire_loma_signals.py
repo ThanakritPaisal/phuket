@@ -461,9 +461,13 @@ src = sub_once(
 src = sub_once(
     src,
     "if(f.place==='elsewhere'&&f.destArea){const m=list.filter(o=>String(o.area).toLowerCase().includes(f.destArea.toLowerCase())); if(m.length)list=m;}",
-    "/* LOMA signals layer: property = within 5 km of the hotel; elsewhere = exact subdistrict. */\n"
+    "/* LOMA signals layer: property = within 5 km of the hotel; elsewhere = exact subdistrict.\n"
+    "     Both narrow ONLY when the narrowed set is non-empty — otherwise the list would be\n"
+    "     wiped for sparse island-wide categories (Local Experience, Boat) whose nearest\n"
+    "     place sits just past 5 km, leaving the screen with no picks. */\n"
     "  if(f.place==='property' && typeof PARTNER!=='undefined' && PARTNER && PARTNER.lat!=null){\n"
-    "    list=list.filter(o=>o.lat!=null && _lomaKm(PARTNER.lat,PARTNER.lng,o.lat,o.lng)<=5);\n"
+    "    const near=list.filter(o=>o.lat!=null && _lomaKm(PARTNER.lat,PARTNER.lng,o.lat,o.lng)<=5);\n"
+    "    if(near.length) list=near;\n"
     "  } else if(f.place==='elsewhere' && f.destArea){\n"
     "    const m=list.filter(o=>o.tambon===f.destArea || String(o.area).toLowerCase().includes(f.destArea.toLowerCase()));\n"
     "    if(m.length)list=m;\n"
