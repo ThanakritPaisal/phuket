@@ -6,6 +6,10 @@ services:
     build: .
     image: loma-prototype-web
     container_name: loma-prototype
+    # The image defaults to PORT=8080 (for Cloud Run); locally we want nginx on 80
+    # to match the "8080:80" mapping and the wget healthcheck below.
+    environment:
+      - PORT=80
     ports:
       - "8080:80"
     restart: unless-stopped

@@ -257,6 +257,104 @@ def nl_parse(q: NLQuery) -> dict[str, Any]:
 
 
 # --------------------------------------------------------------------------------------
+# Google Places (New) — powers the provider "import from Google" flow (/places/search):
+# a real Text Search biased to Phuket, mapped to the shape the registration form expects.
+# --------------------------------------------------------------------------------------
+_PLACES_KEY = _os.environ.get("PLACES_API_KEY", "")
+_PHUKET_AREAS = [
+    "Rawai", "Kata", "Karon", "Patong", "Chalong", "Kathu", "Kamala", "Surin",
+    "Bang Tao", "Cherng Talay", "Nai Yang", "Nai Harn", "Mai Khao", "Thalang",
+    "Cape Panwa", "Old Town", "Phuket Town",
+]
+
+
+def _places_cat(primary: Optional[str], types: Optional[list]) -> str:
+    t = " ".join([primary or ""] + (types or [])).lower()
+    if any(k in t for k in ("cafe", "coffee", "bakery", "dessert", "tea_house")):
+        return "Café"
+    if any(k in t for k in ("spa", "massage", "wellness", "beauty", "sauna")):
+        return "Massage & Wellness"
+    if any(k in t for k in ("gift", "souvenir", "market", "jewelry", "craft", "book_store", "clothing")):
+        return "Souvenir & Local Product"
+    if any(k in t for k in ("tourist_attraction", "museum", "park", "aquarium", "zoo", "farm", "cultural", "temple", "art_gallery")):
+        return "Community Experience"
+    return "Local Food"
+
+
+def _places_price(level: Optional[str]) -> str:
+    return {
+        "PRICE_LEVEL_INEXPENSIVE": "฿", "PRICE_LEVEL_MODERATE": "฿฿",
+        "PRICE_LEVEL_EXPENSIVE": "฿฿฿", "PRICE_LEVEL_VERY_EXPENSIVE": "฿฿฿฿",
+    }.get(level or "", "฿฿")
+
+
+def _places_area(address: Optional[str]) -> str:
+    low = (address or "").lower()
+    for a in _PHUKET_AREAS:
+        if a.lower() in low:
+            return a
+    return "Phuket"
+
+
+def _place_photo_uri(photo_name: str) -> str:
+    """Resolve a Places photo resource to a public (keyless) image URL."""
+    if not photo_name or not _PLACES_KEY:
+        return ""
+    try:
+        req = _urlreq.Request(
+            f"https://places.googleapis.com/v1/{photo_name}/media"
+            f"?maxHeightPx=400&maxWidthPx=600&skipHttpRedirect=true&key={_PLACES_KEY}")
+        with _urlreq.urlopen(req, timeout=8) as r:
+            return _json.load(r).get("photoUri", "")
+    except Exception:
+        return ""
+
+
+@app.get("/places/search")
+def places_search(q: str = Query(..., min_length=2), photos: bool = True) -> list[dict[str, Any]]:
+    """Real Google Places Text Search, Phuket-biased, shaped for the import form."""
+    if not _PLACES_KEY:
+        raise HTTPException(status_code=503, detail="PLACES_API_KEY not configured")
+    body = {
+        "textQuery": f"{q} Phuket", "maxResultCount": 6, "languageCode": "en",
+        "locationBias": {"circle": {"center": {"latitude": 7.9, "longitude": 98.36}, "radius": 45000.0}},
+    }
+    fields = ("places.id,places.displayName,places.formattedAddress,places.rating,"
+              "places.userRatingCount,places.primaryType,places.types,places.nationalPhoneNumber,"
+              "places.regularOpeningHours.weekdayDescriptions,places.priceLevel,places.location,"
+              "places.photos.name")
+    try:
+        req = _urlreq.Request(
+            "https://places.googleapis.com/v1/places:searchText",
+            data=_json.dumps(body).encode(),
+            headers={"Content-Type": "application/json", "X-Goog-Api-Key": _PLACES_KEY,
+                     "X-Goog-FieldMask": fields}, method="POST")
+        with _urlreq.urlopen(req, timeout=20) as r:
+            data = _json.load(r)
+    except Exception as exc:  # upstream/network failure
+        raise HTTPException(status_code=502, detail=f"places upstream error: {exc}")
+    out: list[dict[str, Any]] = []
+    for p in data.get("places", []):
+        loc = p.get("location") or {}
+        photo_name = ((p.get("photos") or [{}])[0] or {}).get("name", "")
+        out.append({
+            "name": (p.get("displayName") or {}).get("text", ""),
+            "cat": _places_cat(p.get("primaryType"), p.get("types")),
+            "area": _places_area(p.get("formattedAddress")),
+            "address": p.get("formattedAddress", ""),
+            "rating": p.get("rating", 0),
+            "reviews": p.get("userRatingCount", 0),
+            "hours": ((p.get("regularOpeningHours") or {}).get("weekdayDescriptions") or [""])[0],
+            "phone": p.get("nationalPhoneNumber", ""),
+            "price": _places_price(p.get("priceLevel")),
+            "placeId": p.get("id", ""),
+            "lat": loc.get("latitude"), "lng": loc.get("longitude"),
+            "img": _place_photo_uri(photo_name) if photos else "",
+        })
+    return out
+
+
+# --------------------------------------------------------------------------------------
 # Grounded AI (Thai LLM / Typhoon) — powers "Ask LOMA" natural-language discovery (/ask):
 # the model extracts the traveller's needs and picks the best-matching real providers,
 # using ONLY the provider data the client sends (or that we retrieve from the provider
