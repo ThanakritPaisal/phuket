@@ -56,7 +56,7 @@ export default function CommunityBookings({ c, onGo }: CommScreenProps) {
               borderRadius: 12,
             }}
           >
-            No LOMA bookings yet. Hotels contact you directly — there is no "Book Now" here.
+            No LOMA bookings yet. Guests book you in-app, or hotels contact you directly.
           </div>
         ) : (
           bookings.map((b) => {
@@ -94,7 +94,9 @@ export default function CommunityBookings({ c, onGo }: CommScreenProps) {
                       {b.guest} · {b.pax} guest{b.pax > 1 ? "s" : ""}
                     </div>
                     <div style={{ fontSize: 11.5, color: "var(--muted)" }}>
-                      {fmtDate(b.date)} · sent by {b.hotel} · <b>{b.ref}</b>
+                      {fmtDate(b.date)}
+                      {b.round ? ` · ${b.round}` : ""} ·{" "}
+                      {b.self ? "booked in-app" : `sent by ${b.hotel}`} · <b>{b.ref}</b>
                     </div>
                     <div style={{ marginTop: 6 }}>
                       <span className={`badge ${badge.cls}`}>{badge.label}</span>

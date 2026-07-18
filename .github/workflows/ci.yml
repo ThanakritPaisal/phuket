@@ -1,0 +1,47 @@
+name: CI
+
+# Fast validation on every push / PR — no cloud access, no secrets.
+#   * API compiles (py_compile)
+#   * LOMA.html builds from the patchers and every inline <script> parses
+
+on:
+  pull_request:
+  push:
+    branches: [main, dev]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Compile the API
+        run: python -m py_compile loma-app/logging-api/*.py
+
+      - name: Build the prototype (apply patchers)
+        run: bash LOMA_handoff-LASTEST/LOMA/build.sh
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Validate built LOMA.html (every inline script parses)
+        run: |
+          node -e '
+            const fs = require("fs");
+            const h = fs.readFileSync("LOMA_handoff-LASTEST/LOMA/LOMA.html", "utf8");
+            const re = /<script\b([^>]*)>([\s\S]*?)<\/script>/g;
+            let m, i = 0, ok = 0, bad = 0;
+            while ((m = re.exec(h))) {
+              if (/src=/.test(m[1])) continue;
+              i++;
+              try { if (m[2].trim()) new Function(m[2]); ok++; }
+              catch (e) { bad++; console.error("script #" + i + " ERROR: " + e.message); }
+            }
+            console.log("inline scripts ok: " + ok + "/" + i);
+            if (bad) process.exit(1);
+          '

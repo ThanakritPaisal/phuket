@@ -21,5 +21,3 @@ LOMA-handover.zip
 
 # throwaway feasibility-test output (osm_phuket_candidates.json is KEPT)
 osm_sample_enriched.json
-
-# node_modules / dist are ignored by loma-app/.gitignore

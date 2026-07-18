@@ -132,7 +132,7 @@ export default function Recommended({ onGoTab }: { onGoTab: (t: TouristTab) => v
           </div>
         )}
 
-        <button
+        {/* <button
           className="btn btn-line"
           style={{ marginTop: 6 }}
           onClick={() => onGoTab("explore")}
@@ -145,7 +145,7 @@ export default function Recommended({ onGoTab }: { onGoTab: (t: TouristTab) => v
           onClick={() => onGoTab("community")}
         >
           🛶 See community experiences across Phuket ›
-        </button>
+        </button> */}
         <div style={{ textAlign: "center", fontSize: 11, color: "var(--muted)", marginTop: 12 }}>
           Shared with you via LOMA · no app, no login
         </div>

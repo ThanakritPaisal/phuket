@@ -12,9 +12,29 @@ serves analytics for the three product questions:
 
 Everything at once: `GET /stats/summary`. Raw log: `GET /events`.
 
+## Bookings (community experiences)
+
+DB-backed booking system for the community-experience flow (table **`booking`**). A
+booking is **not** a visit — only a host check-in (`status=attended`) counts as income.
+
+| Method | Endpoint | Purpose |
+|--------|----------|---------|
+| `GET` | `/bookings?community_id=&status=&date=` | list bookings (host reads their own community) |
+| `POST` | `/bookings` | tourist self-books a slot — server mints the `ref` |
+| `PATCH` | `/bookings/{ref}` | host check-in / no-show (`{"status":"attended"}`) |
+| `DELETE` | `/bookings/{ref}` | guest cancels a self-serve booking |
+| `GET` | `/bookings/availability?community_id=&date=&round=` | seats left for a slot |
+
+`POST /bookings` body: `{ "community_id": "bang-rong", "date": "2026-07-13",
+"round": "Morning · 09:00", "pax": 2, "hotel": "...", "guest": "..." }`. Responses match
+the web app's `Booking` type (`src/bookings.ts`) 1:1. Seed the demo bookings once with
+`python seed_bookings.py`. The frontend hydrates from `GET /bookings` at boot and syncs
+every create/cancel/check-in back, falling back to localStorage when the API is down.
+
 ## Storage
 
-PostgreSQL (DigitalOcean managed). Database **`loma`**, table **`log`**. The connection
+PostgreSQL (DigitalOcean managed). Database **`loma`**, tables **`log`**, **`provider`**,
+**`booking`**. The connection
 string is read from `POSTGRESQL_CONNECTING_STRING` in the **repo-root `.env`** (see
 [`db.py`](db.py)). `db.py setup()` creates the database and table if missing and runs
 automatically on app startup — or run it standalone:

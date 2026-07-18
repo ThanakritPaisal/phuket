@@ -1,0 +1,131 @@
+name: Deploy to Cloud Run (gradient-digital-group)
+
+# CI/CD for the LOMA stack:
+#   * loma-api  — FastAPI logging/providers/ask service  (loma-app/logging-api)  -> Cloud Run
+#   * loma-web  — nginx serving the built LOMA.html       (LOMA_handoff-LASTEST/LOMA) -> Cloud Run
+#
+# The API deploys first; its public URL is baked into LOMA.html so the web talks to it.
+# One-time setup (APIs, Workload Identity Federation, Secret Manager, IAM) is in DEPLOY.md.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      deploy_api:
+        description: "Deploy the API"
+        type: boolean
+        default: true
+      deploy_web:
+        description: "Deploy the web"
+        type: boolean
+        default: true
+
+env:
+  PROJECT_ID: gradient-digital-group
+  REGION: asia-southeast1
+  API_SERVICE: loma-api
+  WEB_SERVICE: loma-web
+
+# Never run two deploys of the same ref at once.
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  id-token: write # required for keyless auth (Workload Identity Federation)
+
+jobs:
+  deploy-api:
+    name: Deploy API (Cloud Run)
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.deploy_api }}
+    runs-on: ubuntu-latest
+    outputs:
+      api_url: ${{ steps.url.outputs.url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+
+      - uses: google-github-actions/setup-gcloud@v2
+
+      - name: Deploy loma-api
+        run: |
+          gcloud run deploy "$API_SERVICE" \
+            --project "$PROJECT_ID" --region "$REGION" \
+            --source loma-app/logging-api \
+            --allow-unauthenticated \
+            --cpu 1 --memory 512Mi --min-instances 0 --max-instances 4 --timeout 60 \
+            --set-env-vars "LOMA_LOG_CORS=*" \
+            --set-secrets "POSTGRESQL_CONNECTING_STRING=loma-postgres-conn:latest,THAILLM_API_KEY=loma-thaillm-key:latest,GEMINI_API_KEY=loma-gemini-key:latest,PLACES_API_KEY=loma-places-key:latest" \
+            --quiet
+
+      - name: Capture API URL
+        id: url
+        run: |
+          URL=$(gcloud run services describe "$API_SERVICE" \
+            --project "$PROJECT_ID" --region "$REGION" --format='value(status.url)')
+          echo "url=$URL" >> "$GITHUB_OUTPUT"
+          echo "### 🟢 loma-api → $URL" >> "$GITHUB_STEP_SUMMARY"
+
+  deploy-web:
+    name: Deploy Web (Cloud Run)
+    if: ${{ always() && (github.event_name != 'workflow_dispatch' || inputs.deploy_web) && !cancelled() && (needs.deploy-api.result == 'success' || needs.deploy-api.result == 'skipped') }}
+    needs: deploy-api
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Resolve API URL
+        id: api
+        run: |
+          URL="${{ needs.deploy-api.outputs.api_url }}"
+          if [ -z "$URL" ]; then
+            # deploy-api was skipped — read the already-deployed service URL.
+            echo "deploy-api skipped; will resolve after auth"
+          fi
+          echo "url=$URL" >> "$GITHUB_OUTPUT"
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+
+      - uses: google-github-actions/setup-gcloud@v2
+
+      - name: Build LOMA.html (patchers + bake API URL)
+        run: |
+          API_URL="${{ steps.api.outputs.url }}"
+          if [ -z "$API_URL" ]; then
+            API_URL=$(gcloud run services describe "$API_SERVICE" \
+              --project "$PROJECT_ID" --region "$REGION" --format='value(status.url)' 2>/dev/null || true)
+          fi
+          echo "Baking API base: ${API_URL:-<none, page will use its default>}"
+          LOMA_API_BASE="$API_URL" bash LOMA_handoff-LASTEST/LOMA/build.sh
+
+      - name: Deploy loma-web
+        run: |
+          gcloud run deploy "$WEB_SERVICE" \
+            --project "$PROJECT_ID" --region "$REGION" \
+            --source LOMA_handoff-LASTEST/LOMA \
+            --allow-unauthenticated \
+            --cpu 1 --memory 256Mi --min-instances 0 --max-instances 4 --timeout 60 \
+            --quiet
+
+      - name: Capture Web URL
+        run: |
+          URL=$(gcloud run services describe "$WEB_SERVICE" \
+            --project "$PROJECT_ID" --region "$REGION" --format='value(status.url)')
+          echo "### 🟢 loma-web → $URL" >> "$GITHUB_STEP_SUMMARY"

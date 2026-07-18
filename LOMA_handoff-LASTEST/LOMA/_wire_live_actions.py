@@ -1,0 +1,424 @@
+#!/usr/bin/env python3
+"""One-shot patcher: make LOMA.html's tourist actions real and DB-connected.
+
+  * Get Directions  -> real Google Maps, using the provider table's mapsUrl / placeId /
+                       coordinates (populated by _wire_real_data.py), with a name+area
+                       search fallback. Applies to provider cards AND event cards.
+  * Contact / Save  -> real tel:/website links and a persistent device save.
+  * Share via       -> a real, self-locating link (?p=<id>&ref=<code>) that opens the
+                       actual app; the app now handles that incoming link and opens the
+                       right card. Native share stays; every send is logged.
+  * Referral code   -> the code is carried in the share link and logged end-to-end.
+  * Funnel logging  -> share / open / directions / contact POST to the DB (/events),
+                       matching the logging-api event taxonomy.
+
+All best-effort — nothing blocks if the API is down. Idempotent (marker-guarded).
+Run AFTER _wire_booking_backend.py and _wire_real_data.py:
+
+    python _wire_live_actions.py
+"""
+import io, sys
+
+HTML = "LOMA.html"
+MARKER = "LOMA real-data layer: live actions"
+
+src = io.open(HTML, encoding="utf-8").read()
+if MARKER in src:
+    print("already wired — nothing to do")
+    sys.exit(0)
+
+
+def sub_once(text, old, new, label):
+    n = text.count(old)
+    if n != 1:
+        raise SystemExit(f"[{label}] expected exactly 1 match, found {n}")
+    return text.replace(old, new)
+
+
+# --------------------------------------------------------------------------------------
+# 1) Get Directions — provider card (real maps from the DB provider row) + funnel log.
+# --------------------------------------------------------------------------------------
+src = sub_once(
+    src,
+    """<button class="btn btn-coral" onclick="toast('Opening maps…')">${I.nav} ${T('Get Directions')}</button>""",
+    """<a class="btn btn-coral" href="${lomaMapsUrl(p)}" target="_blank" rel="noopener" onclick="lomaLog('provider_card_viewed','${p.id}','directions',{action:'directions'})">${I.nav} ${T('Get Directions')}</a>""",
+    "directions-provider",
+)
+
+# 2) Get Directions — tourist event card.
+src = sub_once(
+    src,
+    """<button class="btn btn-primary" onclick="toast('Opening in Google Maps…')">${I.nav} Get Directions</button>""",
+    """<a class="btn btn-primary" href="${lomaEventMapUrl(e)}" target="_blank" rel="noopener">${I.nav} Get Directions</a>""",
+    "directions-event-tourist",
+)
+
+# 3) Directions — staff event detail.
+src = sub_once(
+    src,
+    """<button class="btn btn-ghost" onclick="toast('Opening in maps…')">${I.nav} Directions</button>""",
+    """<a class="btn btn-ghost" href="${lomaEventMapUrl(e)}" target="_blank" rel="noopener">${I.nav} Directions</a>""",
+    "directions-event-staff",
+)
+
+# 3b) Recommendation-card map — swap the stylised SVG map for a real Google Map centred
+#     on the provider's DB coordinates.
+src = sub_once(
+    src,
+    """<div class="mapbox" style="height:160px;border-radius:14px;overflow:hidden;margin-top:16px">${mapSVG()}<div class="pin sel" style="left:54%;top:70%"><div class="p"><span>${p.emo}</span></div></div><div class="you" style="left:${PARTNER.x}%;top:${PARTNER.y}%"><div class="core"></div></div></div>""",
+    """<div class="mapbox" style="height:160px;border-radius:14px;overflow:hidden;margin-top:16px">${lomaMapEmbed(p)}</div>""",
+    "card-map",
+)
+
+# 3c) Route / Plan card map — real Google Map with the multi-stop route.
+src = sub_once(
+    src,
+    """<div class="mapbox" style="height:160px;border-radius:12px;overflow:hidden;margin-top:12px">${mapSVG()}${ids.map((id,i)=>{const o=P(id);return `<div class="pin ${i===0?'sel':''}" style="left:${o.mapX}%;top:${o.mapY}%"><div class="lab">${i+1}</div><div class="p"><span>${i+1}</span></div></div>`;}).join('')}<div class="you" style="left:${PARTNER.x}%;top:${PARTNER.y}%"><div class="core"></div></div></div>""",
+    """<div class="mapbox" style="height:160px;border-radius:12px;overflow:hidden;margin-top:12px">${lomaRouteEmbed(ids)}</div>""",
+    "route-map",
+)
+
+# 3d) Provider portal check-in: DB/self-serve bookings arrive as 'confirmed' (or
+#     'requested'); the host check-in screen only recognised 'booked' as pending, so
+#     no "Check in" button appeared after a real booking. Treat them as pending.
+src = sub_once(
+    src,
+    """guests.map((b,i)=>{const st=b.status||'booked';""",
+    """guests.map((b,i)=>{let st=b.status||'booked'; if(st==='confirmed'||st==='requested') st='booked';""",
+    "checkin-status-render",
+)
+src = sub_once(
+    src,
+    """const pend=dayBookings(c,state.bhDay||0).filter(b=>(b.status||'booked')==='booked');""",
+    """const pend=dayBookings(c,state.bhDay||0).filter(b=>{var s=b.status||'booked';return s==='booked'||s==='confirmed'||s==='requested';});""",
+    "checkin-status-scan",
+)
+
+# 3e) Ask LOMA (AI) — was a fixed demo (hardcoded needs + fixed picks). Wire it to the
+#     Thai LLM via /ask: real needs extracted from the request, real matching providers.
+src = sub_once(
+    src,
+    """function askSend(t){ t=(t||'').trim();
+  if(!t){const i=document.getElementById('lomaIn'); if(i){i.value=askExample(); i.focus();} return;}
+  state.askQ=t; state.askStage=1; state.askNeeds=null; render();
+}""",
+    """function askSend(t){ t=(t||'').trim();
+  if(!t){const i=document.getElementById('lomaIn'); if(i){i.value=askExample(); i.focus();} return;}
+  state.askQ=t; state.askStage=1; state.askNeeds=null; state.askPicks=null; state.askIntro=null; state.askErr=false;
+  state.askLoading=(typeof lomaAsk==='function'); render();
+  if(typeof lomaAsk==='function') lomaAsk(t);
+}""",
+    "ask-send",
+)
+src = sub_once(
+    src,
+    """  if(state.askStage===1 && !state.askNeeds) state.askNeeds=['Local food','Open late','♿ Wheelchair OK','Not far','Budget-friendly'];""",
+    """  if(state.askStage===1 && !state.askNeeds && !state.askLoading) state.askNeeds=['Local food','Open late','♿ Wheelchair OK','Not far','Budget-friendly'];""",
+    "ask-needs-default",
+)
+src = sub_once(
+    src,
+    """    body+=user(state.askQ);
+    body+=bot(T('Got it — here is what I understood. Tap ✕ to change:'));
+    body+=`<div style="display:flex;flex-wrap:wrap;gap:6px;margin:0 0 13px 39px">${state.askNeeds.map(n=>`<span class="chip" style="display:inline-flex;align-items:center;gap:6px;background:var(--primary-l);color:var(--primary);font-weight:700">${T(n)}<button data-lomarm="${n}" style="opacity:.6;font-size:12px">✕</button></span>`).join('')}</div>`;
+    body+=bot(T('Three verified local places that fit — every baht goes 100% to the owner:'));
+    body+=`<div style="margin:0 0 6px">`+ASK_PICKS.map(x=>{const p=P(x.id); if(!p) return '';
+      return bigCard(p,{sub:T(x.why),gem:x.gem});
+    }).join('')+`</div>`;
+    body+=`<div style="font-size:11.5px;color:var(--muted);background:var(--surface-2);border-radius:9px;padding:9px 12px;margin:0 0 13px 39px;line-height:1.5">💚 ${T('No ads · no commission · shops never pay to appear. Your hotel earns Impact Credits for this.')}</div>`;
+    body+=`<div style="display:flex;flex-wrap:wrap;gap:8px;margin:0 0 6px 39px">
+      <button class="chip" data-lomaref>💸 ${T('Cheaper')}</button>
+      <button class="chip" data-lomaref>🚶 ${T('Walkable only')}</button>
+      <button class="chip" data-lomaref>🔄 ${T('Different vibe')}</button>
+    </div>`;""",
+    """    body+=user(state.askQ);
+    if(state.askLoading){
+      body+=bot(state.lang==='ไทย'?'กำลังค้นหาร้าน/สถานที่ท้องถิ่นที่ตรงกับคุณ… ✨':'Finding the best local matches for you… ✨');
+    } else if(state.askErr){
+      body+=bot(state.lang==='ไทย'?'ขออภัยค่ะ ตอนนี้เชื่อมต่อผู้ช่วย AI (thaillm) ไม่ได้ กรุณาลองใหม่อีกครั้ง 🙏':'Sorry — I could not reach the AI (thaillm) right now. Please try again. 🙏');
+      body+=`<div style="margin:2px 0 6px 39px"><button class="btn btn-coral" data-lomaretry style="width:auto;padding:10px 18px;font-weight:700">${state.lang==='ไทย'?'ลองอีกครั้ง':'Try again'}</button></div>`;
+    } else {
+    var _askReal=!!(state.askPicks&&state.askPicks.length);
+    var _askItems=_askReal?state.askPicks:ASK_PICKS;
+    body+=bot(state.askIntro||T('Got it — here is what I understood. Tap ✕ to change:'));
+    if((state.askNeeds||[]).length) body+=`<div style="display:flex;flex-wrap:wrap;gap:6px;margin:0 0 13px 39px">${state.askNeeds.map(n=>`<span class="chip" style="display:inline-flex;align-items:center;gap:6px;background:var(--primary-l);color:var(--primary);font-weight:700">${T(n)}<button data-lomarm="${n}" style="opacity:.6;font-size:12px">✕</button></span>`).join('')}</div>`;
+    body+=bot(T('Verified local places that fit — every baht goes 100% to the owner:'));
+    body+=`<div style="margin:0 0 6px">`+_askItems.map(x=>{const p=P(x.id); if(!p) return '';
+      return bigCard(p,{sub:_askReal?x.why:T(x.why),gem:!!x.gem});
+    }).join('')+`</div>`;
+    body+=`<div style="font-size:11.5px;color:var(--muted);background:var(--surface-2);border-radius:9px;padding:9px 12px;margin:0 0 13px 39px;line-height:1.5">💚 ${T('No ads · no commission · shops never pay to appear. Your hotel earns Impact Credits for this.')}</div>`;
+    body+=`<div style="display:flex;flex-wrap:wrap;gap:8px;margin:0 0 6px 39px">
+      <button class="chip" data-lomaref="${state.lang==='ไทย'?'ถูกกว่านี้':'cheaper'}">💸 ${T('Cheaper')}</button>
+      <button class="chip" data-lomaref="${state.lang==='ไทย'?'เดินถึงได้':'walkable only'}">🚶 ${T('Walkable only')}</button>
+      <button class="chip" data-lomaref="${state.lang==='ไทย'?'บรรยากาศอื่น':'different vibe'}">🔄 ${T('Different vibe')}</button>
+    </div>`;
+    }""",
+    "ask-render-picks",
+)
+src = sub_once(
+    src,
+    """  if(lomaref){toast(state.lang==='ไทย'?'แอปจริงจัดอันดับใหม่ทันทีค่ะ':'Full app re-ranks instantly 🙂');return;}""",
+    """  const lomaretry=e.target.closest('[data-lomaretry]');
+  if(lomaretry){ askSend(state.askQ||''); return; }
+  if(lomaref){var _r=lomaref.dataset.lomaref||''; askSend(((state.askQ||'')+' '+_r).trim()); return;}""",
+    "ask-refine",
+)
+
+# 4) Contact — real tel:/website link.
+src = sub_once(
+    src,
+    """<button class="btn btn-ghost" onclick="toast('Contacting provider…')">${I.phone} ${T('Contact')}</button>""",
+    """<a class="btn btn-ghost" href="${lomaContactUrl(p)}" onclick="lomaLog('provider_card_viewed','${p.id}','contact',{action:'contact'})">${I.phone} ${T('Contact')}</a>""",
+    "contact",
+)
+
+# 5) Save — persist to this device for real.
+src = sub_once(
+    src,
+    """<button class="btn btn-line" onclick="toast('Saved to this device')">${I.heart} ${T('Save')}</button>""",
+    """<button class="btn btn-line" onclick="lomaSave('${p.id}')">${I.heart} ${T('Save')}</button>""",
+    "save",
+)
+
+# 6) shareLink — real, self-locating URL that the app can open.
+src = sub_once(
+    src,
+    """function shareLink(id){
+  if(id&&EV(id)) return 'https://loma.app/e/'+refFor(id);
+  return id==='PLAN' ? 'https://loma.app/r/LOMA-PLAN-'+(1000+(state.filter.mode==='route'?state.routeDest:'plan').length*611%9000) : 'https://loma.app/r/'+refFor(id);}""",
+    """function shareLink(id){
+  var base; try{ base=(location.protocol==='file:')?'https://loma.app/':(location.origin+location.pathname); }catch(e){ base='https://loma.app/'; }
+  if(id&&EV(id)) return base+'?e='+encodeURIComponent(id)+'&ref='+refFor(id);
+  if(id==='PLAN') return base+'?plan=1';
+  return base+'?p='+encodeURIComponent(id)+'&ref='+refFor(id);}""",
+    "shareLink",
+)
+
+# 7) Log the share the moment the guest opens a channel (WhatsApp/LINE/SMS/Email).
+src = sub_once(
+    src,
+    """  const openBtn=(label,href,color)=>`<a href="${href}" target="_blank" rel="noopener" class="btn" style="background:${color};color:#fff;margin-top:10px;text-decoration:none">↗ Open in ${label}</a>`;""",
+    """  const openBtn=(label,href,color)=>`<a href="${href}" target="_blank" rel="noopener" class="btn" style="background:${color};color:#fff;margin-top:10px;text-decoration:none" onclick="lomaLog('link_shared','${id}','${label}')">↗ Open in ${label}</a>`;""",
+    "share-openbtn-log",
+)
+
+# 8) Real, scannable QR codes (encode the actual link) — referral card + share preview
+#    + the hotel counter standees. Falls back to a QR image service if the shipped lib
+#    (data/qrcode.browser.js -> window.LomaQR) isn't loaded.
+src = sub_once(src, """<div class="qr">${qrSVG()}</div>""",
+               """<div class="qr">${lomaQR(shareLink(p.id))}</div>""", "qr-tourist-ref")
+src = sub_once(src, """width:150px;height:150px;margin:0 auto 8px">${qrSVG()}""",
+               """width:150px;height:150px;margin:0 auto 8px">${lomaQR(link)}""", "qr-share-preview")
+src = sub_once(src, """width:152px;height:152px;margin:14px auto">${qrSVG()}""",
+               """width:152px;height:152px;margin:14px auto">${lomaQR(lomaShareBase())}""", "qr-standee")
+src = sub_once(src, """padding:10px;border:1px solid var(--line)">${qrSVG()}""",
+               """padding:10px;border:1px solid var(--line)">${lomaQR(lomaShareBase())}""", "qr-reclist")
+
+# Guard the recommendation card so an unresolved provider id never blanks the page.
+src = sub_once(
+    src,
+    """function touristCard(){
+  const p=P(state.curProv);
+  return""",
+    """function touristCard(){
+  const p=P(state.curProv);
+  if(!p){ return `<div class="pad" style="padding-top:40px;text-align:center"><div style="font-size:15px;font-weight:700">${T('This place isn\\'t available right now.')}</div><div style="margin-top:14px"><button class="btn btn-line" data-go="${state.curList?'reclist':'selfserve'}">${I.back} ${T('All local picks')}</button></div></div>`+touristTabbar(''); }
+  return""",
+    "touristCard-guard",
+)
+
+# --------------------------------------------------------------------------------------
+# 9) Append the live-actions JS layer (helpers + inbound deep-link + logging).
+#    NOTE: this must run BEFORE injecting the external QR-lib <script src>, so the
+#    rfind("</script>") below targets the MAIN app script (not the lib's closing tag).
+# --------------------------------------------------------------------------------------
+LAYER = r"""
+/* ===== LOMA real-data layer: live actions ======================================
+   Real Google Maps directions from the provider table, real share/referral links,
+   and DB funnel logging (/events). Best-effort — nothing blocks if the API is down.
+================================================================================= */
+function _lomaApiBase(){
+  try{ if(typeof _LOMA_API_BASE!=='undefined' && _LOMA_API_BASE) return _LOMA_API_BASE; }catch(e){}
+  try{ if(typeof LOMA_API_BASE!=='undefined' && LOMA_API_BASE) return LOMA_API_BASE; }catch(e){}
+  return 'http://'+(location.hostname||'localhost')+':8000';
+}
+function lomaSession(){
+  try{ var k='loma_sid', v=localStorage.getItem(k);
+    if(!v){ v='ts_'+Math.abs((Date.now()^(location.href.length*2654435761))>>>0).toString(36)
+              +Math.floor((typeof performance!=='undefined'?performance.now():0)).toString(36);
+            localStorage.setItem(k,v); }
+    return v;
+  }catch(e){ return 'ts_anon'; }
+}
+/* POST one funnel event to the DB (fire-and-forget). Shapes match logging-api EventIn. */
+function lomaLog(type, provider_id, channel, meta){
+  try{
+    var body={ event_type:type, tourist_session_id:lomaSession(),
+      hotel_id:(typeof PARTNER!=='undefined'&&PARTNER&&PARTNER.id)||null,
+      provider_id:provider_id||null, channel:channel||null, metadata:meta||{} };
+    fetch(_lomaApiBase()+'/events',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(body), keepalive:true}).catch(function(){});
+  }catch(e){}
+}
+/* Real Google Maps URL for a provider operator, straight from the provider table:
+   mapsUrl -> place_id search -> lat/lng directions -> name+area search. */
+function lomaMapsUrl(o){
+  if(o){
+    if(o.mapsUrl) return o.mapsUrl;
+    if(o.placeId) return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(o.name||'')+'&query_place_id='+encodeURIComponent(o.placeId);
+    if(o.lat!=null&&o.lng!=null) return 'https://www.google.com/maps/dir/?api=1&destination='+encodeURIComponent(o.lat+','+o.lng);
+  }
+  var q=[o&&o.name, o&&o.area, 'Phuket'].filter(Boolean).join(' ');
+  return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(q||'Phuket');
+}
+function lomaEventMapUrl(e){ return lomaMapsUrl({ name:(e&&e.venue)||'', area:(e&&e.area)||'' }); }
+/* A real, interactive Google Map centred on the provider, from the provider table's
+   coordinates / place_id. Uses the official Maps Embed API when a key is supplied via
+   window.LOMA_MAPS_KEY or ?mapskey=..., else a keyless Google Maps embed. */
+function lomaMapEmbed(o){
+  var key=''; try{ key=window.LOMA_MAPS_KEY||new URLSearchParams(location.search).get('mapskey')||''; }catch(e){}
+  var lang=(typeof state!=='undefined'&&state.lang==='ไทย')?'th':'en', src;
+  if(key){
+    var q=(o&&o.placeId)?('place_id:'+encodeURIComponent(o.placeId))
+        :(o&&o.lat!=null&&o.lng!=null)?encodeURIComponent(o.lat+','+o.lng)
+        :encodeURIComponent([o&&o.name,o&&o.area,'Phuket'].filter(Boolean).join(' '));
+    src='https://www.google.com/maps/embed/v1/place?key='+encodeURIComponent(key)+'&q='+q+'&zoom=16&language='+lang;
+  } else {
+    var q2=(o&&o.lat!=null&&o.lng!=null)?encodeURIComponent(o.lat+','+o.lng)
+         :encodeURIComponent([o&&o.name,o&&o.area,'Phuket'].filter(Boolean).join(' '));
+    src='https://maps.google.com/maps?q='+q2+'&z=16&hl='+lang+'&output=embed';
+  }
+  return '<iframe title="Map" src="'+src+'" style="width:100%;height:100%;border:0;display:block" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>';
+}
+/* A real Google Map with the multi-stop route from the hotel through each pick, using
+   the provider table's coordinates. Embed API directions mode when a key is supplied,
+   else a keyless Google Maps directions embed (saddr/daddr). */
+function lomaRouteEmbed(ids){
+  var stops=(ids||[]).map(function(id){ return P(id); }).filter(Boolean);
+  var key=''; try{ key=window.LOMA_MAPS_KEY||new URLSearchParams(location.search).get('mapskey')||''; }catch(e){}
+  var lang=(typeof state!=='undefined'&&state.lang==='ไทย')?'th':'en';
+  function loc(o){ return (o&&o.lat!=null&&o.lng!=null) ? (o.lat+','+o.lng) : [o&&o.name,o&&o.area,'Phuket'].filter(Boolean).join(' '); }
+  var hotel=(typeof PARTNER!=='undefined'&&PARTNER)||{};
+  var origin=(hotel.lat!=null&&hotel.lng!=null)?(hotel.lat+','+hotel.lng):(hotel.name||'Phuket');
+  if(!stops.length) return lomaMapEmbed({lat:hotel.lat,lng:hotel.lng,name:hotel.name,area:'Phuket'});
+  var src;
+  if(key){
+    var dest=loc(stops[stops.length-1]);
+    var way=stops.slice(0,-1).map(loc).map(encodeURIComponent).join('|');
+    src='https://www.google.com/maps/embed/v1/directions?key='+encodeURIComponent(key)+'&origin='+encodeURIComponent(origin)+'&destination='+encodeURIComponent(dest)+(way?'&waypoints='+way:'')+'&mode=driving&language='+lang;
+  } else {
+    var daddr=stops.map(loc).map(encodeURIComponent).join('+to:');
+    src='https://maps.google.com/maps?saddr='+encodeURIComponent(origin)+'&daddr='+daddr+'&hl='+lang+'&output=embed';
+  }
+  return '<iframe title="Route map" src="'+src+'" style="width:100%;height:100%;border:0;display:block" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>';
+}
+/* The app's own base URL (so QR codes / share links point back to this deployment). */
+function lomaShareBase(){
+  try{ return (location.protocol==='file:')?'https://loma.app/':(location.origin+location.pathname); }
+  catch(e){ return 'https://loma.app/'; }
+}
+/* A real, scannable QR that encodes `text`. Uses the shipped QR lib (window.LomaQR);
+   falls back to a QR image service if the lib didn't load. */
+function lomaQR(text){
+  var t=text||lomaShareBase();
+  try{
+    if(window.LomaQR && LomaQR.create){
+      var qr=LomaQR.create(t,{errorCorrectionLevel:'M'}), d=qr.modules.data, n=qr.modules.size, cells='';
+      for(var y=0;y<n;y++)for(var x=0;x<n;x++){ if(d[y*n+x]) cells+='<rect x="'+x+'" y="'+y+'" width="1" height="1"/>'; }
+      return '<svg viewBox="0 0 '+n+' '+n+'" width="100%" height="100%" fill="#0A3A73" shape-rendering="crispEdges">'+cells+'</svg>';
+    }
+  }catch(e){}
+  return '<img alt="QR code" src="https://api.qrserver.com/v1/create-qr-code/?margin=0&size=220x220&data='+encodeURIComponent(t)+'" style="width:100%;height:100%;object-fit:contain"/>';
+}
+/* Real contact link — phone, else website, else maps. */
+function lomaContactUrl(o){
+  if(o&&o.phone) return 'tel:'+String(o.phone).replace(/[^+0-9]/g,'');
+  if(o&&o.website) return o.website;
+  return lomaMapsUrl(o);
+}
+/* Ask LOMA (AI) — a shortlist of REAL providers relevant to the request (keyword-ranked
+   over the catalog, falling back to top-rated). */
+function lomaAskCandidates(text){
+  var ops=(window.LOMA_DATA&&window.LOMA_DATA.operators)||[];
+  var toks=String(text||'').toLowerCase().split(/[^a-z0-9฀-๿]+/).filter(function(w){return w.length>2;});
+  function sc(o){ var hay=((o.name||'')+' '+(o.cat||'')+' '+(o.area||'')+' '+((o.bestFor||[]).join(' '))+' '+(o.note||'')+' '+(o.whyLocal||'')).toLowerCase(); var s=0; for(var i=0;i<toks.length;i++){ if(hay.indexOf(toks[i])>=0) s++; } return s; }
+  var scored=ops.map(function(o){ return {o:o,s:sc(o)}; });
+  var hit=scored.filter(function(x){ return x.s>0; });
+  hit.sort(function(a,b){ return (b.s-a.s)||((b.o.loma_score||b.o.quality||0)-(a.o.loma_score||a.o.quality||0)); });
+  if(!hit.length){ scored.sort(function(a,b){ return (b.o.loma_score||b.o.quality||0)-(a.o.loma_score||a.o.quality||0); }); hit=scored; }
+  return hit.slice(0,20).map(function(x){ var o=x.o; return {id:o.id,name:o.name,cat:o.cat,area:o.area,rating:o.rating,reviews:o.reviews,priceText:o.priceText,price:o.price,hours:o.hours,address:o.address||o.note,whyLocal:o.whyLocal,summary:o.sum}; });
+}
+/* Ask LOMA (AI) — POST the request + candidates to /ask; the Thai LLM extracts the needs
+   and picks 2-4 matching providers with reasons. Populates state and re-renders. On any
+   failure it just clears the loading flag so touristAsk shows its built-in picks. */
+function lomaAsk(text){
+  var body={ message:String(text||''), lang:(typeof state!=='undefined'&&state.lang==='ไทย')?'th':'en', area:(typeof PARTNER!=='undefined'&&PARTNER&&PARTNER.area)||null, providers:lomaAskCandidates(text), limit:20 };
+  var opt={ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) };
+  try{ if(typeof AbortSignal!=='undefined' && AbortSignal.timeout) opt.signal=AbortSignal.timeout(60000); }catch(e){}
+  fetch(_lomaApiBase()+'/ask',opt).then(function(x){ return x.ok?x.json():null; }).then(function(d){
+    if(typeof state==='undefined') return;
+    state.askLoading=false;
+    if(d&&d.ok&&d.picks&&d.picks.length){
+      state.askPicks=d.picks; state.askIntro=d.intro||null; state.askErr=false;
+      if(d.needs&&d.needs.length) state.askNeeds=d.needs;
+    } else { state.askErr=true; }
+    if(typeof render==='function') render();
+  }).catch(function(){ if(typeof state!=='undefined'){ state.askLoading=false; state.askErr=true; } if(typeof render==='function') render(); });
+}
+/* Persist a saved pick on this device (survives reloads). */
+function lomaSave(id){
+  try{ var k='loma_saved', a=JSON.parse(localStorage.getItem(k)||'[]');
+    if(a.indexOf(id)<0){ a.push(id); localStorage.setItem(k,JSON.stringify(a)); }
+    if(typeof SAVED!=='undefined'&&SAVED&&SAVED.add) SAVED.add(id);
+  }catch(e){}
+  if(typeof toast==='function') toast('Saved to this device');
+}
+/* Incoming share/referral link: ?p=<providerId>&ref=<code> (or ?e=<eventId>). Opens the
+   matching card as a tourist and logs received + opened. Runs once; retried while the
+   provider catalog finishes hydrating from the DB. */
+function lomaApplyIncomingLink(){
+  if(window._lomaLinkApplied) return;
+  var qs; try{ qs=new URLSearchParams(location.search); }catch(e){ return; }
+  var pid=qs.get('p'), eid=qs.get('e'), ref=qs.get('ref');
+  if(!pid && !eid) return;
+  var meta=ref?{ref:ref}:{};
+  if(pid && typeof P==='function' && P(pid)){
+    window._lomaLinkApplied=true;
+    try{ state.persona='tourist'; state.curProv=pid; state.tourist='card'; }catch(e){}
+    lomaLog('link_received', pid, null, meta);
+    lomaLog('link_opened', pid, null, meta);
+    if(typeof render==='function') render();
+  } else if(eid && typeof EV==='function' && EV(eid)){
+    window._lomaLinkApplied=true;
+    lomaLog('link_received', null, null, {event:eid, ref:ref||''});
+    lomaLog('link_opened', null, null, {event:eid, ref:ref||''});
+  }
+}
+try{ lomaApplyIncomingLink(); }catch(e){}
+if(!window._lomaLinkApplied){
+  try{
+    var _lomaQ=new URLSearchParams(location.search);
+    if(_lomaQ.get('p')||_lomaQ.get('e')){
+      var _lomaLinkTries=0;
+      var _lomaLinkIv=setInterval(function(){
+        _lomaLinkTries++;
+        try{ lomaApplyIncomingLink(); }catch(e){}
+        if(window._lomaLinkApplied || _lomaLinkTries>20) clearInterval(_lomaLinkIv);
+      }, 500);
+    }
+  }catch(e){}
+}
+"""
+
+idx = src.rfind("</script>")
+if idx == -1:
+    raise SystemExit("[live-actions] no </script> found")
+src = src[:idx] + LAYER + "\n" + src[idx:]
+
+# Only now load the shipped QR library (its own <script> tag, after the app script),
+# so lomaQR can render a real, scannable code. Placed after the layer append on purpose.
+src = sub_once(src, "</body>",
+               """<script src="data/qrcode.browser.js"></script>\n</body>""", "qr-lib")
+
+io.open(HTML, "w", encoding="utf-8", newline="").write(src)
+print("wired LOMA.html live actions (directions/contact/save/share/referral + logging)")

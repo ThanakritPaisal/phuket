@@ -27,12 +27,12 @@ from __future__ import annotations
 import os
 from typing import Any, Optional
 
-from fastapi import FastAPI, Query
+from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from psycopg.types.json import Jsonb
 from pydantic import BaseModel, Field
 
-from db import LOG_TABLE, get_conn, setup
+from db import BOOKING_TABLE, LOG_TABLE, get_conn, setup
 
 # --------------------------------------------------------------------------------------
 # Event taxonomy — kept in sync with the frontend (src/logger.ts / src/impact.ts).
@@ -256,6 +256,238 @@ def nl_parse(q: NLQuery) -> dict[str, Any]:
     return _gemini_parse(q.text) or _keyword_parse(q.text)
 
 
+# --------------------------------------------------------------------------------------
+# Google Places (New) — powers the provider "import from Google" flow (/places/search):
+# a real Text Search biased to Phuket, mapped to the shape the registration form expects.
+# --------------------------------------------------------------------------------------
+_PLACES_KEY = _os.environ.get("PLACES_API_KEY", "")
+_PHUKET_AREAS = [
+    "Rawai", "Kata", "Karon", "Patong", "Chalong", "Kathu", "Kamala", "Surin",
+    "Bang Tao", "Cherng Talay", "Nai Yang", "Nai Harn", "Mai Khao", "Thalang",
+    "Cape Panwa", "Old Town", "Phuket Town",
+]
+
+
+def _places_cat(primary: Optional[str], types: Optional[list]) -> str:
+    t = " ".join([primary or ""] + (types or [])).lower()
+    if any(k in t for k in ("cafe", "coffee", "bakery", "dessert", "tea_house")):
+        return "Café"
+    if any(k in t for k in ("spa", "massage", "wellness", "beauty", "sauna")):
+        return "Massage & Wellness"
+    if any(k in t for k in ("gift", "souvenir", "market", "jewelry", "craft", "book_store", "clothing")):
+        return "Souvenir & Local Product"
+    if any(k in t for k in ("tourist_attraction", "museum", "park", "aquarium", "zoo", "farm", "cultural", "temple", "art_gallery")):
+        return "Community Experience"
+    return "Local Food"
+
+
+def _places_price(level: Optional[str]) -> str:
+    return {
+        "PRICE_LEVEL_INEXPENSIVE": "฿", "PRICE_LEVEL_MODERATE": "฿฿",
+        "PRICE_LEVEL_EXPENSIVE": "฿฿฿", "PRICE_LEVEL_VERY_EXPENSIVE": "฿฿฿฿",
+    }.get(level or "", "฿฿")
+
+
+def _places_area(address: Optional[str]) -> str:
+    low = (address or "").lower()
+    for a in _PHUKET_AREAS:
+        if a.lower() in low:
+            return a
+    return "Phuket"
+
+
+def _place_photo_uri(photo_name: str) -> str:
+    """Resolve a Places photo resource to a public (keyless) image URL."""
+    if not photo_name or not _PLACES_KEY:
+        return ""
+    try:
+        req = _urlreq.Request(
+            f"https://places.googleapis.com/v1/{photo_name}/media"
+            f"?maxHeightPx=400&maxWidthPx=600&skipHttpRedirect=true&key={_PLACES_KEY}")
+        with _urlreq.urlopen(req, timeout=8) as r:
+            return _json.load(r).get("photoUri", "")
+    except Exception:
+        return ""
+
+
+@app.get("/places/search")
+def places_search(q: str = Query(..., min_length=2), photos: bool = True) -> list[dict[str, Any]]:
+    """Real Google Places Text Search, Phuket-biased, shaped for the import form."""
+    if not _PLACES_KEY:
+        raise HTTPException(status_code=503, detail="PLACES_API_KEY not configured")
+    body = {
+        "textQuery": f"{q} Phuket", "maxResultCount": 6, "languageCode": "en",
+        "locationBias": {"circle": {"center": {"latitude": 7.9, "longitude": 98.36}, "radius": 45000.0}},
+    }
+    fields = ("places.id,places.displayName,places.formattedAddress,places.rating,"
+              "places.userRatingCount,places.primaryType,places.types,places.nationalPhoneNumber,"
+              "places.regularOpeningHours.weekdayDescriptions,places.priceLevel,places.location,"
+              "places.photos.name")
+    try:
+        req = _urlreq.Request(
+            "https://places.googleapis.com/v1/places:searchText",
+            data=_json.dumps(body).encode(),
+            headers={"Content-Type": "application/json", "X-Goog-Api-Key": _PLACES_KEY,
+                     "X-Goog-FieldMask": fields}, method="POST")
+        with _urlreq.urlopen(req, timeout=20) as r:
+            data = _json.load(r)
+    except Exception as exc:  # upstream/network failure
+        raise HTTPException(status_code=502, detail=f"places upstream error: {exc}")
+    out: list[dict[str, Any]] = []
+    for p in data.get("places", []):
+        loc = p.get("location") or {}
+        photo_name = ((p.get("photos") or [{}])[0] or {}).get("name", "")
+        out.append({
+            "name": (p.get("displayName") or {}).get("text", ""),
+            "cat": _places_cat(p.get("primaryType"), p.get("types")),
+            "area": _places_area(p.get("formattedAddress")),
+            "address": p.get("formattedAddress", ""),
+            "rating": p.get("rating", 0),
+            "reviews": p.get("userRatingCount", 0),
+            "hours": ((p.get("regularOpeningHours") or {}).get("weekdayDescriptions") or [""])[0],
+            "phone": p.get("nationalPhoneNumber", ""),
+            "price": _places_price(p.get("priceLevel")),
+            "placeId": p.get("id", ""),
+            "lat": loc.get("latitude"), "lng": loc.get("longitude"),
+            "img": _place_photo_uri(photo_name) if photos else "",
+        })
+    return out
+
+
+# --------------------------------------------------------------------------------------
+# Grounded AI (Thai LLM / Typhoon) — powers "Ask LOMA" natural-language discovery (/ask):
+# the model extracts the traveller's needs and picks the best-matching real providers,
+# using ONLY the provider data the client sends (or that we retrieve from the provider
+# table). The API key lives in the repo-root .env (THAILLM_API_KEY); it never reaches the
+# browser — the web app calls /ask, not the LLM directly.
+# --------------------------------------------------------------------------------------
+
+_THAILLM_URL = _os.environ.get("THAILLM_URL", "http://thaillm.or.th/api/v1/chat/completions")
+_THAILLM_KEY = "8U3ZnOLCxKIkuOEc3bXYB6YtvYItI1qy"
+_THAILLM_MODEL = _os.environ.get("THAILLM_MODEL", "typhoon-s-thaillm-8b-instruct")
+
+
+class AskIn(BaseModel):
+    message: str
+    providers: list[dict[str, Any]] = Field(default_factory=list)
+    lang: Optional[str] = None
+    area: Optional[str] = None
+    limit: int = Field(default=20, ge=1, le=40)
+
+
+def _provider_line(p: dict[str, Any]) -> str:
+    """One compact, model-friendly line describing a provider."""
+    name = p.get("name") or p.get("id") or "?"
+    cat = p.get("cat") or p.get("category") or ""
+    area = p.get("area") or ""
+    head = f"- {name}" + (f" ({cat}{', ' + area if area else ''})" if cat or area else "")
+    meta = []
+    if p.get("rating"):
+        meta.append(f"{p['rating']}★" + (f" {p['reviews']} reviews" if p.get("reviews") else ""))
+    if p.get("priceText") or p.get("price"):
+        meta.append(str(p.get("priceText") or p.get("price")))
+    if p.get("hours"):
+        meta.append(f"hours {p['hours']}")
+    line = head + ((" | " + " · ".join(meta)) if meta else "")
+    if p.get("address") or p.get("note"):
+        line += f" | {p.get('address') or p.get('note')}"
+    if p.get("whyLocal") or p.get("summary") or p.get("sum"):
+        line += f" | {p.get('whyLocal') or p.get('summary') or p.get('sum')}"
+    return line
+
+
+def _retrieve_providers_db(message: str, area: Optional[str], limit: int) -> list[dict[str, Any]]:
+    """Fallback retrieval from the provider table when the client sends no shortlist."""
+    toks = [w for w in _re.split(r"\W+", message.lower()) if len(w) > 2]
+    try:
+        with get_conn() as conn:
+            rows = conn.execute(f"SELECT data FROM {PROVIDER_TABLE}").fetchall()
+    except Exception:
+        return []
+    provs = [r["data"] for r in rows]
+
+    def score(p: dict[str, Any]):
+        hay = " ".join(str(p.get(k, "")) for k in ("name", "category", "area", "summary", "address")).lower()
+        s = sum(1 for w in toks if w in hay)
+        if area and area.lower() in str(p.get("area", "")).lower():
+            s += 2
+        return (s, p.get("rating") or 0)
+
+    provs.sort(key=score, reverse=True)
+    return provs[:limit]
+
+
+def _thaillm_post(messages: list[dict[str, str]], max_tokens: int, temperature: float) -> Optional[str]:
+    if not _THAILLM_KEY:
+        return None
+    payload = {"model": _THAILLM_MODEL, "messages": messages, "max_tokens": max_tokens, "temperature": temperature}
+    try:
+        req = _urlreq.Request(
+            _THAILLM_URL,
+            data=_json.dumps(payload).encode(),
+            headers={
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {_THAILLM_KEY}",
+                # The ThaiLLM gateway 403s the default "Python-urllib/x" UA — send a normal one.
+                "User-Agent": "loma-logging-api/1.0",
+            },
+            method="POST",
+        )
+        with _urlreq.urlopen(req, timeout=45) as r:
+            d = _json.load(r)
+        return (d["choices"][0]["message"]["content"] or "").strip() or None
+    except Exception:
+        return None
+
+
+def _extract_json(raw: Optional[str]) -> Optional[dict[str, Any]]:
+    if not raw:
+        return None
+    raw = _re.sub(r"^```(json)?|```$", "", raw.strip(), flags=_re.I | _re.M).strip()
+    try:
+        return _json.loads(raw)
+    except Exception:
+        m = _re.search(r"\{.*\}", raw, _re.S)
+        if m:
+            try:
+                return _json.loads(m.group(0))
+            except Exception:
+                return None
+    return None
+
+
+@app.post("/ask")
+def ask(q: AskIn) -> dict[str, Any]:
+    """Ask LOMA (AI): parse the request and pick the best-matching real providers, with reasons."""
+    cands = (q.providers or _retrieve_providers_db(q.message, q.area, q.limit))[: q.limit]
+    valid = {p.get("id"): p for p in cands if p.get("id")}
+    lines = [f"{p.get('id')}: " + _provider_line(p).lstrip("- ") for p in cands if p.get("id")]
+    system = (
+        "You are LOMA, an AI local guide for Phuket. From the CANDIDATE places (each 'id: description') choose the "
+        "2-4 that BEST match the traveller's request. Reply with ONLY compact JSON, no prose. Shape: "
+        '{"needs": [up to 5 short need labels you inferred from the request, e.g. "Open late", "Wheelchair OK", '
+        '"Budget-friendly"], "intro": "one short friendly sentence", "picks": [{"id": "<candidate id>", '
+        '"why": "one specific sentence why it fits", "gem": true or false}]}. Use ONLY ids that appear in the '
+        "candidates. Write needs/intro/why in the same language as the request."
+    )
+    if q.lang == "th":
+        system += " Write needs/intro/why in Thai."
+    parsed = _extract_json(_thaillm_post(
+        [{"role": "system", "content": system + "\n\nCANDIDATES:\n" + "\n".join(lines)},
+         {"role": "user", "content": q.message}],
+        900, 0.2,
+    ))
+    if not parsed:
+        return {"ok": False, "needs": [], "intro": None, "picks": []}
+    picks = []
+    for it in (parsed.get("picks") or []):
+        if isinstance(it, dict) and it.get("id") in valid:
+            picks.append({"id": it["id"], "why": (it.get("why") or "").strip(), "gem": bool(it.get("gem"))})
+    needs = [str(n).strip() for n in (parsed.get("needs") or []) if str(n).strip()][:6]
+    return {"ok": bool(picks), "needs": needs, "intro": parsed.get("intro"), "picks": picks[:4],
+            "sources": [p["id"] for p in picks]}
+
+
 @app.post("/providers/bulk")
 def upsert_providers(body: ProviderBulk) -> dict[str, Any]:
     """Insert/update providers by id (idempotent — safe to re-run the seed)."""
@@ -281,6 +513,134 @@ def upsert_providers(body: ProviderBulk) -> dict[str, Any]:
             )
             n += 1
     return {"ok": True, "upserted": n}
+
+
+# --------------------------------------------------------------------------------------
+# Bookings — community-experience booking system (real DB-backed).
+#
+# A booking is NOT a visit: only a host check-in (status='attended') counts as income.
+# The tourist app creates self-serve bookings (POST /bookings); the community host reads
+# them (GET /bookings?community_id=...) and checks guests in (PATCH /bookings/{ref}).
+# Mirrors the web app's Booking type in src/bookings.ts.
+# --------------------------------------------------------------------------------------
+
+BOOKING_STATUSES = {"requested", "confirmed", "attended", "noshow"}
+SLOT_CAPACITY = 12  # keep in sync with src/bookings.ts
+
+
+class BookingIn(BaseModel):
+    """A new self-serve booking from the tourist app. `ref` is minted server-side."""
+
+    community_id: str
+    date: str = Field(description="ISO YYYY-MM-DD")
+    round: Optional[str] = None
+    pax: int = Field(default=1, ge=1, le=50)
+    hotel: Optional[str] = None
+    guest: Optional[str] = None
+    self_serve: bool = True
+
+
+class BookingStatusIn(BaseModel):
+    status: str
+
+
+def _booking_out(row: dict[str, Any]) -> dict[str, Any]:
+    """Serialize a DB row into the exact shape the web app's Booking type expects."""
+    return {
+        "ref": row["ref"],
+        "id": row["community_id"],   # the frontend keys bookings by community id
+        "hotel": row["hotel"],
+        "guest": row["guest"],
+        "pax": row["pax"],
+        "date": row["booking_date"],
+        "round": row["round"],
+        "status": row["status"],
+        "self": row["self_serve"],
+    }
+
+
+@app.get("/bookings")
+def list_bookings(
+    community_id: Optional[str] = None,
+    status: Optional[str] = None,
+    date: Optional[str] = None,
+) -> list[dict[str, Any]]:
+    """All bookings, newest last — optionally scoped to one community / status / day."""
+    clauses, params = [], []
+    for col, val in (("community_id", community_id), ("status", status), ("booking_date", date)):
+        if val is not None:
+            clauses.append(f"{col} = %s")
+            params.append(val)
+    where = ("WHERE " + " AND ".join(clauses)) if clauses else ""
+    with get_conn() as conn:
+        rows = conn.execute(
+            f"SELECT * FROM {BOOKING_TABLE} {where} ORDER BY booking_date, row_id", params
+        ).fetchall()
+    return [_booking_out(r) for r in rows]
+
+
+@app.post("/bookings")
+def create_booking(b: BookingIn) -> dict[str, Any]:
+    """Create a booking. The server mints the ref (BK-<row_id>) atomically."""
+    with get_conn() as conn:
+        # Reserve the next sequence value first, then use it to build a unique ref.
+        seq = conn.execute(f"SELECT nextval(pg_get_serial_sequence('{BOOKING_TABLE}', 'row_id')) AS n").fetchone()["n"]
+        ref = f"BK-{5000 + int(seq)}"
+        row = conn.execute(
+            f"""
+            INSERT INTO {BOOKING_TABLE}
+                (ref, row_id, community_id, hotel, guest, pax, booking_date, round, status, self_serve)
+            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+            RETURNING *
+            """,
+            (ref, seq, b.community_id, b.hotel, b.guest, b.pax, b.date, b.round,
+             "confirmed", b.self_serve),
+        ).fetchone()
+    return _booking_out(row)
+
+
+@app.patch("/bookings/{ref}")
+def update_booking_status(ref: str, body: BookingStatusIn) -> dict[str, Any]:
+    """Host action — check a guest in (attended) or mark a no-show."""
+    if body.status not in BOOKING_STATUSES:
+        raise HTTPException(400, f"status must be one of {sorted(BOOKING_STATUSES)}")
+    with get_conn() as conn:
+        row = conn.execute(
+            f"UPDATE {BOOKING_TABLE} SET status=%s, updated_at=now() WHERE ref=%s RETURNING *",
+            (body.status, ref),
+        ).fetchone()
+    if not row:
+        raise HTTPException(404, f"booking {ref} not found")
+    return _booking_out(row)
+
+
+@app.delete("/bookings/{ref}")
+def cancel_booking(ref: str) -> dict[str, Any]:
+    """Guest cancels their own self-serve booking."""
+    with get_conn() as conn:
+        row = conn.execute(
+            f"DELETE FROM {BOOKING_TABLE} WHERE ref=%s AND self_serve=TRUE RETURNING ref", (ref,)
+        ).fetchone()
+    if not row:
+        raise HTTPException(404, f"self-serve booking {ref} not found")
+    return {"ok": True, "ref": ref}
+
+
+@app.get("/bookings/availability")
+def booking_availability(community_id: str, date: str, round: str) -> dict[str, Any]:
+    """Seats left for a slot: capacity minus real (non-no-show) booked pax.
+    (The frontend adds a deterministic base load on top for the demo.)"""
+    with get_conn() as conn:
+        taken = conn.execute(
+            f"""SELECT COALESCE(SUM(pax), 0) AS n FROM {BOOKING_TABLE}
+                WHERE community_id=%s AND booking_date=%s AND round=%s AND status <> 'noshow'""",
+            (community_id, date, round),
+        ).fetchone()["n"]
+    return {
+        "community_id": community_id, "date": date, "round": round,
+        "capacity": SLOT_CAPACITY, "taken": int(taken),
+        "seats_left": max(0, SLOT_CAPACITY - int(taken)),
+    }
 
 
 # --------------------------------------------------------------------------------------
