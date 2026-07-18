@@ -34,11 +34,29 @@ def main():
 
     # 1) Tabbar: Shared (leftmost) -> reclist; For you -> foryou; Ask LOMA (rightmost,
     #    was "Hotel") -> ask (the same AI-guide screen as the top-nav "Ask LOMA"). Its
-    #    icon is the LOMA wordmark rendered in the brand serif so it inherits currentColor
-    #    (white on the navy tabbar, primary when active) like every other tab.
-    LOMA_ICON = (
-        '<span style="font-family:var(--fd),Georgia,serif;font-weight:800;'
-        'font-size:12.5px;letter-spacing:.02em;line-height:1">LOMA</span>'
+    #    icon is the real LOMA wordmark (loma-white.png — white logo on a transparent bg),
+    #    inlined as a data URI so the page stays self-contained (the PNG is .dockerignore'd
+    #    out of the image). White is visible in BOTH tab states: the navy tabbar's active
+    #    pill is translucent-white-on-navy (rgba(255,255,255,.15)), not a light fill.
+    import base64
+    import os
+    logo_b64 = base64.b64encode(
+        io.open(
+            os.path.join(os.path.dirname(os.path.abspath(__file__)), "loma-white.png"), "rb"
+        ).read()
+    ).decode("ascii")
+    # One global holds the ~37KB data URI; the tabbar references it (so the string isn't
+    # duplicated across the source or re-embedded on every touristTabbar() render).
+    logo_decl = (
+        'var LOMA_TABICON=\'<img alt="LOMA" src="data:image/png;base64,'
+        + logo_b64
+        + '" style="height:15px;width:auto;max-width:none;display:block">\';\n'
+    )
+    src = sub_once(
+        src,
+        "function touristTabbar(active){",
+        logo_decl + "function touristTabbar(active){",
+        "logo-decl",
     )
     src = sub_once(
         src,
@@ -46,7 +64,7 @@ def main():
         "/* LOMA tourist-tabs layer: Shared = the hotel's shared picks (reclist); For you =\n"
         "   the profile-based picks (foryou); Ask LOMA = the AI local guide (ask). */\n"
         "  const t=[['reclist',I.share,'Shared'],['foryou',I.bookmark,'For you'],['selfserve',I.search,'Explore'],['community',I.map,'Community'],"
-        "['ask','" + LOMA_ICON + "','Ask LOMA']];",
+        "['ask',LOMA_TABICON,'Ask LOMA']];",
         "tabbar",
     )
 
@@ -112,7 +130,7 @@ def main():
     print("wired LOMA.html tourist-tabs layer:")
     print("  · new 'Shared' tab (leftmost) -> the hotel's Local picks page")
     print("  · 'For you' tab -> profile-based picks, top-rated place per category")
-    print("  · 'Ask LOMA' tab (was 'Hotel') -> the AI local-guide screen, LOMA-wordmark icon")
+    print("  · 'Ask LOMA' tab (was 'Hotel') -> the AI local-guide screen, real LOMA logo icon")
     print("  · chat bubbles wrap long unbroken text (no right-edge overflow)")
 
 
