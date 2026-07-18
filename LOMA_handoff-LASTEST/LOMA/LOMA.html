@@ -434,7 +434,7 @@ p{text-wrap:pretty}
 .stick-cta{position:sticky;bottom:0;background:linear-gradient(180deg,rgba(255,255,255,0),var(--surface) 30%);padding:14px 16px;display:flex;gap:10px}
 
 /* modal */
-.modal-overlay{position:absolute;inset:0;background:rgba(12,31,29,.55);z-index:60;display:none;align-items:flex-end;justify-content:center}
+.modal-overlay{position:absolute;inset:0;background:rgba(12,31,29,.55);z-index:2000;display:none;align-items:flex-end;justify-content:center}
 .modal-overlay.show{display:flex}
 .modal{background:var(--surface);width:100%;border-radius:22px 22px 0 0;max-height:92%;overflow-y:auto;padding:8px 0 18px;animation:up .25s ease}
 @keyframes up{from{transform:translateY(40px);opacity:.6}to{transform:translateY(0);opacity:1}}
@@ -577,7 +577,7 @@ table.t tr:last-child td{border-bottom:none}
 .rationale ul{margin:0 0 10px 18px}
 .rationale li{font-size:13.5px;color:var(--ink-2);margin-bottom:5px}
 
-.toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);background:#0A3A73;color:#fff;font-size:13px;font-weight:600;padding:12px 20px;border-radius:99px;box-shadow:var(--shadow-lg);z-index:500;opacity:0;pointer-events:none;transition:.25s}
+.toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);background:#0A3A73;color:#fff;font-size:13px;font-weight:600;padding:12px 20px;border-radius:99px;box-shadow:var(--shadow-lg);z-index:3000;opacity:0;pointer-events:none;transition:.25s}
 .toast.show{opacity:1;transform:translate(-50%,-6px)}
 
 @media(max-width:560px){
@@ -1886,6 +1886,7 @@ const GUEST_REVIEWS = [
 ];
 function revKw(cat){return /Food|Kitchen/.test(cat)?'thai,food':/Massage|Wellness/.test(cat)?'spa,massage':/Souvenir|Craft/.test(cat)?'handicraft,thai':/Café|Dessert/.test(cat)?'coffee,dessert':'phuket,thailand';}
 function screenReviews(){
+  try{ if(typeof _lomaLoadReviews==='function') _lomaLoadReviews(); }catch(e){}
   const revs=GUEST_REVIEWS;
   const avg=revs.reduce((s,r)=>s+r.stars,0)/revs.length;
   const pos=Math.round(revs.filter(r=>r.stars>=4).length/revs.length*100);
@@ -3022,7 +3023,7 @@ function touristFeedback(){
     <div class="h-sec" style="text-align:center">${T('How was it?')}</div>
     <div class="feedback-stars" id="fbStars" style="margin:6px 0 20px">${[1,2,3,4,5].map(i=>`<span data-s="${i}">★</span>`).join('')}</div>`}
     <div class="h-sec" style="text-align:center">Anything to add?</div>
-    <div class="chips" style="justify-content:center">${['Great value','Authentic','Friendly','Hard to find','Would recommend'].map(t=>`<button class="chip">${t}</button>`).join('')}</div>
+    <div class="chips" id="fbTags" style="justify-content:center">${['Great value','Authentic','Friendly','Hard to find','Would recommend'].map(t=>`<button class="chip">${t}</button>`).join('')}</div>
 
     <div class="h-sec" style="text-align:center">Add photos (optional)</div>
     <div id="fbPhotos" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
@@ -3032,7 +3033,7 @@ function touristFeedback(){
     </div>
     <div style="font-size:11px;color:var(--muted);text-align:center;margin-top:7px">Your photos help future travellers and are reviewed before they appear.</div>
 
-    <textarea class="pp-input sm" rows="3" placeholder="Optional comment…" style="margin-top:14px;resize:none"></textarea>
+    <textarea class="pp-input sm" id="fbComment" rows="3" placeholder="Optional comment…" style="margin-top:14px;resize:none"></textarea>
     <div style="margin-top:14px"><button class="btn ${went===true?'btn-coral':'btn-primary'}" data-fbsubmit>${I.check} ${went===true?T('Confirm my visit'):T('Submit feedback')}</button></div>
     <div style="font-size:11.5px;color:var(--muted);background:var(--surface-2);border-radius:9px;padding:9px 11px;margin-top:12px;text-align:center">No account needed. Your feedback is shared privately with the place that hosted you, the property that recommended it, and LOMA — it is not posted publicly.</div>
   </div>`;
@@ -6444,6 +6445,9 @@ document.body.addEventListener('click',e=>{
       trackEvent('feedback_submitted',{provider_id:id});
       toast('✓ Thanks — nothing was counted as a visit');
     }
+    /* Persist the guest's rating + note so it lands on the staff Guest Feedback page
+       (count + avg update for real), attributed to the staff/hotel who shared it. */
+    if(lit>=1 && typeof lomaRecordFeedback==='function'){ try{ lomaRecordFeedback(id, lit); }catch(_){} }
     state.fbWent=undefined;state.fbBand=null;
     state.tourist='thanks';renderTourist();return;}
   const sscat=e.target.closest('[data-sscat]');
@@ -6530,13 +6534,17 @@ function switchPersona(p){state.persona=p;
 function openShare(id){state.shareId=id;document.getElementById('shareOverlay').innerHTML=shareModal(id);document.getElementById('shareOverlay').classList.add('show');}
 function shareLink(id){
   var base; try{ base=(location.protocol==='file:')?'https://loma.app/':(location.origin+location.pathname); }catch(e){ base='https://loma.app/'; }
-  if(id&&EV(id)) return base+'?e='+encodeURIComponent(id)+'&ref='+refFor(id);
+  /* Carry the sharing hotel id so a guest's later feedback attributes back to this
+     staff/property (the staff Guest Feedback page filters real feedback by hotel_id). */
+  var _h=''; try{ _h=(typeof PARTNER!=='undefined'&&PARTNER&&PARTNER.id)||''; }catch(e){}
+  var _hq=_h?('&h='+encodeURIComponent(_h)):'';
+  if(id&&EV(id)) return base+'?e='+encodeURIComponent(id)+'&ref='+refFor(id)+_hq;
   if(id==='PLAN'){
     var _ids=[]; try{ _ids=planStops().map(function(o){return o.id;}); }catch(e){}
     var _ref=''; try{ _ref='LOMA-PLAN-'+(1000+(planTitle().length*611)%9000); }catch(e){}
-    return base+'?ps='+encodeURIComponent(_ids.join(','))+'&ref='+encodeURIComponent(_ref);
+    return base+'?ps='+encodeURIComponent(_ids.join(','))+'&ref='+encodeURIComponent(_ref)+_hq;
   }
-  return base+'?p='+encodeURIComponent(id)+'&ref='+refFor(id);}
+  return base+'?p='+encodeURIComponent(id)+'&ref='+refFor(id)+_hq;}
 function shareMessage(id){
   if(id&&EV(id)){const e=EV(id);return `${EV_EMO[e.cat]} ${e.title}\n${attribution()}\n📅 ${e.date} · ${e.timeText}\n📍 ${e.venue}, ${e.area}\nSee details & map:\n${shareLink(id)}`;}
   if(id==='PLAN'){return `🗺 ${planTitle()}\n${attribution()}\n${planStops().length} local places — open:\n${shareLink(id)}`;}
@@ -7101,6 +7109,79 @@ function lomaLog(type, provider_id, channel, meta){
       body:JSON.stringify(body), keepalive:true}).catch(function(){});
   }catch(e){}
 }
+/* ===== LOMA real-data layer: guest feedback ====================================
+   A guest's star rating + note is (a) shown at once on the staff Guest Feedback
+   page (optimistic), and (b) POSTed to the DB as a `guest_feedback` event keyed to
+   the hotel/staff that shared the pick — so any staff device loading their feedback
+   sees real reviews and a real count/avg. Best-effort; offline-safe.
+================================================================================= */
+var _lomaReviews=null, _lomaReviewsFor=null;
+var _lomaReviewKeys=(function(){ try{ return new Set(); }catch(e){ return {has:function(){return false;},add:function(){}}; } })();
+function _lomaLinkHotelId(){
+  try{ if(typeof state!=='undefined' && state.linkHotel) return state.linkHotel; }catch(e){}
+  try{ if(window._lomaLinkHotel) return window._lomaLinkHotel; }catch(e){}
+  try{ if(typeof PARTNER!=='undefined' && PARTNER && PARTNER.id) return PARTNER.id; }catch(e){}
+  return null;
+}
+/* Called from the tourist feedback submit. Prepends the review locally and persists it. */
+function lomaRecordFeedback(id, stars){
+  try{
+    stars=Math.max(1,Math.min(5,parseInt(stars,10)||0)); if(stars<1) return;
+    var tags=[]; try{ document.querySelectorAll('#fbTags .chip.on').forEach(function(c){ var t=(c.textContent||'').trim(); if(t) tags.push(t); }); }catch(e){}
+    var comment=''; try{ var ta=document.getElementById('fbComment'); if(ta) comment=(ta.value||'').trim(); }catch(e){}
+    var sid=lomaSession(), hotel=_lomaLinkHotelId(), key=sid+'|'+id;
+    /* optimistic — show immediately when the staff switches to Guest Feedback */
+    try{
+      if(typeof GUEST_REVIEWS!=='undefined' && typeof P==='function' && P(id) && !_lomaReviewKeys.has(key)){
+        _lomaReviewKeys.add(key);
+        GUEST_REVIEWS.unshift({prov:id, stars:stars, when:'just now', tags:tags, comment:comment,
+          photos:0, ctx:'Guest · LOMA app', _live:true, _sid:sid, _key:key});
+      }
+    }catch(e){}
+    /* persist to the DB, attributed to the sharing hotel/staff */
+    try{
+      var body={ event_type:'guest_feedback', tourist_session_id:sid, hotel_id:hotel,
+        provider_id:id, channel:null,
+        metadata:{ stars:stars, tags:tags, comment:comment,
+                   recommendation_list_id:(typeof state!=='undefined'&&state.curList&&state.curList.id)||null } };
+      fetch(_lomaApiBase()+'/events',{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(body), keepalive:true}).catch(function(){});
+    }catch(e){}
+  }catch(e){}
+}
+/* Called from screenReviews(). Pulls this hotel's real guest_feedback events once and
+   merges them into GUEST_REVIEWS (deduped), so count + avg reflect real submissions. */
+function _lomaLoadReviews(){
+  var pid=(typeof PARTNER!=='undefined'&&PARTNER&&PARTNER.id)||null;
+  if(!pid || _lomaReviewsFor===pid) return;
+  _lomaReviewsFor=pid;
+  try{
+    fetch(_lomaApiBase()+'/events?event_type=guest_feedback&hotel_id='+encodeURIComponent(pid)+'&limit=200')
+      .then(function(x){return x.ok?x.json():null;})
+      .then(function(res){
+        var evs=(res&&res.events)||[]; var added=0;
+        evs.forEach(function(e){
+          if(!e.provider_id) return;
+          if(typeof P==='function' && !P(e.provider_id)) return;
+          var m=e.metadata||{};
+          if(typeof m==='string'){ try{ m=JSON.parse(m)||{}; }catch(e3){ m={}; } }
+          var stars=parseInt(m.stars,10)||0; if(stars<1) return;
+          var key=(e.tourist_session_id||'srv')+'|'+e.provider_id;
+          if(_lomaReviewKeys.has(key)) return;
+          _lomaReviewKeys.add(key);
+          try{
+            GUEST_REVIEWS.unshift({prov:e.provider_id, stars:Math.max(1,Math.min(5,stars)),
+              when:(e.server_ts?_lomaAgo(e.server_ts):'recently'),
+              tags:Array.isArray(m.tags)?m.tags:[], comment:m.comment||'', photos:0,
+              ctx:'Guest · LOMA app', _live:true, _sid:e.tourist_session_id, _key:key});
+            added++;
+          }catch(e2){}
+        });
+        if(added && typeof render==='function' && typeof state!=='undefined'
+           && state.persona==='staff' && state.staff==='reviews') render();
+      }).catch(function(){});
+  }catch(e){}
+}
 /* Real Google Maps URL for a provider operator, straight from the provider table:
    mapsUrl -> place_id search -> lat/lng directions -> name+area search. */
 function lomaMapsUrl(o){
@@ -7220,7 +7301,10 @@ function lomaSave(id){
 function lomaApplyIncomingLink(){
   if(window._lomaLinkApplied) return;
   var qs; try{ qs=new URLSearchParams(location.search); }catch(e){ return; }
-  var pid=qs.get('p'), eid=qs.get('e'), ref=qs.get('ref'), ps=qs.get('ps');
+  var pid=qs.get('p'), eid=qs.get('e'), ref=qs.get('ref'), ps=qs.get('ps'), hotel=qs.get('h');
+  /* Remember which staff/hotel shared this link so the guest's later feedback
+     attributes back to them on the staff Guest Feedback page. */
+  if(hotel){ try{ state.linkHotel=hotel; }catch(e){} try{ window._lomaLinkHotel=hotel; }catch(e){} }
   /* One place (?p=) or a whole shared set (?ps=id1,id2,…). Both land on the same
      branded picks page; a set just seeds more items. */
   var wanted = ps ? ps.split(',').map(function(s){return s.trim();}).filter(Boolean)
