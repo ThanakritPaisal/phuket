@@ -1,0 +1,665 @@
+<title>LOMA · Recommendation Intelligence</title>
+<style>
+  :root{
+    --paper:#eceff1; --surface:#ffffff; --surface-2:#f5f8f8;
+    --ink:#0f2a3c; --ink-soft:#4a6172; --ink-faint:#7a8f9b;
+    --line:#d6dfe3; --line-soft:#e6ecee;
+    --accent:#0c8a85; --accent-ink:#0a5f5b; --accent-wash:#e2f1ef;
+    --pos:#1f9d6b; --neg:#dd6650; --warn:#c98a1e;
+    --shadow:0 1px 2px rgba(15,42,60,.05), 0 8px 24px rgba(15,42,60,.06);
+    --radius:14px;
+    --font-sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --font-serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --font-mono:ui-monospace,"Cascadia Code","Cascadia Mono",Consolas,"SFMono-Regular",monospace;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --paper:#081820; --surface:#0f2530; --surface-2:#12303c;
+      --ink:#e7eff2; --ink-soft:#a2b6c0; --ink-faint:#74909d;
+      --line:#1e3945; --line-soft:#183038;
+      --accent:#34c2ba; --accent-ink:#7ee0da; --accent-wash:#0f3a3a;
+      --pos:#39c088; --neg:#ef8571; --warn:#e0a53c;
+      --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 30px rgba(0,0,0,.28);
+    }
+  }
+  :root[data-theme="light"]{
+    --paper:#eceff1; --surface:#ffffff; --surface-2:#f5f8f8;
+    --ink:#0f2a3c; --ink-soft:#4a6172; --ink-faint:#7a8f9b;
+    --line:#d6dfe3; --line-soft:#e6ecee;
+    --accent:#0c8a85; --accent-ink:#0a5f5b; --accent-wash:#e2f1ef;
+    --pos:#1f9d6b; --neg:#dd6650; --warn:#c98a1e;
+    --shadow:0 1px 2px rgba(15,42,60,.05), 0 8px 24px rgba(15,42,60,.06);
+  }
+  :root[data-theme="dark"]{
+    --paper:#081820; --surface:#0f2530; --surface-2:#12303c;
+    --ink:#e7eff2; --ink-soft:#a2b6c0; --ink-faint:#74909d;
+    --line:#1e3945; --line-soft:#183038;
+    --accent:#34c2ba; --accent-ink:#7ee0da; --accent-wash:#0f3a3a;
+    --pos:#39c088; --neg:#ef8571; --warn:#e0a53c;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 30px rgba(0,0,0,.28);
+  }
+
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font-sans);
+    line-height:1.62;font-size:16px;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 22px;}
+  .col{max-width:720px;margin-left:auto;margin-right:auto;}
+  h1,h2,h3{text-wrap:balance;line-height:1.18;}
+  p{margin:0 0 15px;}
+  a{color:var(--accent-ink);}
+  .eyebrow{font-family:var(--font-mono);font-size:11.5px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent-ink);font-weight:600;}
+  .mono{font-family:var(--font-mono);}
+  .tnum{font-variant-numeric:tabular-nums;}
+
+  /* ---- header ---- */
+  header.hero{padding:64px 0 30px;border-bottom:1px solid var(--line);
+    background:
+      radial-gradient(120% 90% at 88% -20%, var(--accent-wash) 0%, transparent 55%);}
+  .badge-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:26px;}
+  .brandmark{font-family:var(--font-serif);font-weight:700;font-style:italic;
+    letter-spacing:.02em;font-size:19px;color:var(--ink);}
+  .brandmark b{color:var(--accent-ink);font-style:normal;}
+  .draft-pill{font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--warn);border:1px solid var(--warn);
+    border-radius:99px;padding:3px 9px;opacity:.9;}
+  h1.title{font-family:var(--font-serif);font-weight:600;font-size:clamp(34px,6vw,56px);
+    letter-spacing:-.01em;margin:0 0 18px;max-width:15ch;}
+  .subtitle{font-size:clamp(17px,2.4vw,20px);color:var(--ink-soft);max-width:56ch;margin:0;}
+  .meta{display:flex;flex-wrap:wrap;gap:8px 26px;margin-top:30px;
+    font-family:var(--font-mono);font-size:12px;color:var(--ink-faint);letter-spacing:.02em;}
+  .meta span b{color:var(--ink-soft);font-weight:600;}
+
+  section{padding:44px 0;border-bottom:1px solid var(--line-soft);}
+  .kicker{margin:0 0 6px;}
+  h2{font-size:clamp(23px,3.4vw,30px);font-weight:700;letter-spacing:-.01em;margin:0 0 16px;}
+  h3{font-size:17px;font-weight:700;margin:0 0 8px;letter-spacing:-.005em;}
+  .lead{font-size:18.5px;color:var(--ink);}
+  .muted{color:var(--ink-soft);}
+
+  /* ---- callout ---- */
+  .callout{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--accent);
+    border-radius:var(--radius);padding:22px 24px;box-shadow:var(--shadow);margin:6px 0 4px;}
+  .callout .eyebrow{color:var(--neg);}
+  .callout .big{font-family:var(--font-serif);font-size:clamp(20px,3vw,25px);
+    line-height:1.32;margin:8px 0 6px;font-weight:500;}
+  .callout p:last-child{margin-bottom:0;}
+
+  /* ---- flow line ---- */
+  .flow{display:flex;align-items:stretch;gap:0;flex-wrap:wrap;margin:22px 0 4px;
+    border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--surface);}
+  .flow .node{flex:1;min-width:150px;padding:16px 18px;border-right:1px solid var(--line-soft);}
+  .flow .node:last-child{border-right:none;}
+  .flow .node .l{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--ink-faint);margin-bottom:5px;}
+  .flow .node .v{font-weight:700;font-size:15px;}
+  .flow .node.out{background:var(--accent-wash);}
+  .flow .node.out .v{color:var(--accent-ink);}
+
+  /* ---- signal table ---- */
+  .tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius);
+    box-shadow:var(--shadow);background:var(--surface);}
+  table{border-collapse:collapse;width:100%;min-width:520px;font-size:14.5px;}
+  thead th{font-family:var(--font-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--ink-faint);text-align:left;padding:13px 18px;border-bottom:1px solid var(--line);font-weight:600;}
+  tbody td{padding:12px 18px;border-bottom:1px solid var(--line-soft);vertical-align:middle;}
+  tbody tr:last-child td{border-bottom:none;}
+  .sig-name{font-weight:600;}
+  .sig-src{font-family:var(--font-mono);font-size:12px;color:var(--ink-soft);}
+  .wchip{font-family:var(--font-mono);font-weight:700;font-size:13px;padding:2px 9px;border-radius:7px;
+    display:inline-block;min-width:52px;text-align:center;}
+  .w-pos3{background:var(--pos);color:#fff;}
+  .w-pos2{background:color-mix(in srgb,var(--pos) 62%,var(--surface));color:#06301f;}
+  .w-pos1{background:color-mix(in srgb,var(--pos) 32%,var(--surface));color:var(--ink);}
+  .w-zero{background:var(--surface-2);color:var(--ink-soft);border:1px solid var(--line);}
+  .w-neg{background:var(--neg);color:#fff;}
+  @media (prefers-color-scheme:dark){
+    .w-pos2{color:#eafff5;}
+  }
+
+  /* ---- feature columns ---- */
+  .cards3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+  .fcard{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+    padding:18px 18px 8px;box-shadow:var(--shadow);}
+  .fcard h3{display:flex;align-items:center;gap:8px;}
+  .fcard .dot{width:9px;height:9px;border-radius:50%;flex:none;}
+  .fcard ul{margin:10px 0 12px;padding:0;list-style:none;}
+  .fcard li{font-size:13.5px;color:var(--ink-soft);padding:5px 0;border-top:1px solid var(--line-soft);
+    display:flex;gap:8px;}
+  .fcard li:first-child{border-top:none;}
+  .fcard li code{font-family:var(--font-mono);font-size:12px;color:var(--accent-ink);
+    background:var(--accent-wash);padding:1px 5px;border-radius:5px;white-space:nowrap;}
+  .cross{margin-top:16px;background:var(--surface-2);border:1px dashed var(--line);border-radius:12px;
+    padding:14px 18px;font-size:14px;color:var(--ink-soft);}
+  .cross b{color:var(--ink);}
+
+  /* ---- algorithm ladder ---- */
+  .ladder{position:relative;margin:14px 0 0;}
+  .rung{position:relative;display:grid;grid-template-columns:56px 1fr;gap:0;}
+  .rung .rail{position:relative;}
+  .rung .rail::before{content:"";position:absolute;left:19px;top:0;bottom:0;width:2px;background:var(--line);}
+  .rung:first-child .rail::before{top:26px;}
+  .rung:last-child .rail::before{bottom:auto;height:26px;}
+  .rung .knob{position:absolute;left:9px;top:20px;width:22px;height:22px;border-radius:50%;
+    background:var(--surface);border:2px solid var(--accent);display:grid;place-items:center;
+    font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--accent-ink);z-index:1;}
+  .rung .body{padding:12px 0 26px;}
+  .rung .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+    padding:18px 20px;box-shadow:var(--shadow);}
+  .rung .phase{font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--ink-faint);}
+  .rung .algo{display:inline-block;font-family:var(--font-mono);font-size:12px;font-weight:700;
+    color:var(--accent-ink);background:var(--accent-wash);border-radius:7px;padding:3px 10px;margin:2px 0 10px;}
+  .rung h3{font-size:18px;margin-bottom:6px;}
+  .rung p{font-size:14.5px;color:var(--ink-soft);margin-bottom:12px;}
+  .rung .io{display:flex;flex-wrap:wrap;gap:8px 20px;font-size:12.5px;font-family:var(--font-mono);
+    border-top:1px solid var(--line-soft);padding-top:11px;}
+  .rung .io b{color:var(--ink-faint);font-weight:600;text-transform:uppercase;letter-spacing:.05em;font-size:10.5px;}
+  .rung .io span{color:var(--ink-soft);}
+
+  /* ---- result / demo ---- */
+  .result-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+    box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column;}
+  .panel .head{padding:14px 18px;border-bottom:1px solid var(--line-soft);background:var(--surface-2);}
+  .panel .who{font-weight:700;font-size:15px;display:flex;align-items:center;gap:9px;}
+  .panel .flag{font-size:19px;}
+  .panel .intent{font-family:var(--font-mono);font-size:12px;color:var(--ink-soft);margin-top:5px;}
+  .recs{padding:10px 14px 14px;display:flex;flex-direction:column;gap:9px;}
+  .rec{display:grid;grid-template-columns:24px 1fr auto;gap:11px;align-items:center;
+    padding:9px 4px;border-bottom:1px solid var(--line-soft);}
+  .recs .rec:last-child{border-bottom:none;}
+  .rank{font-family:var(--font-mono);font-weight:700;color:var(--ink-faint);font-size:15px;text-align:center;}
+  .rec .nm{font-weight:600;font-size:14px;line-height:1.25;}
+  .rec .ct{font-family:var(--font-mono);font-size:11px;color:var(--ink-soft);margin-top:2px;
+    display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+  .gem{color:var(--accent-ink);font-weight:700;}
+  .score{display:flex;flex-direction:column;align-items:flex-end;gap:4px;width:76px;}
+  .score .pct{font-family:var(--font-mono);font-weight:700;font-size:14px;font-variant-numeric:tabular-nums;}
+  .score .track{width:100%;height:5px;border-radius:99px;background:var(--line);overflow:hidden;}
+  .score .fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--accent),var(--accent-ink));}
+  .demo-note{font-size:13px;color:var(--ink-faint);font-family:var(--font-mono);margin:14px 0 0;text-align:center;}
+
+  /* ---- heatmap ---- */
+  .heat-wrap{overflow-x:auto;margin-top:8px;}
+  .heat{border-collapse:separate;border-spacing:4px;min-width:520px;margin:0 auto;}
+  .heat th{font-family:var(--font-mono);font-size:11px;color:var(--ink-soft);font-weight:600;
+    padding:4px 6px;text-align:center;letter-spacing:.01em;}
+  .heat th.rowh{text-align:right;padding-right:10px;white-space:nowrap;}
+  .heat td{width:64px;height:40px;text-align:center;border-radius:8px;font-family:var(--font-mono);
+    font-size:12.5px;font-weight:700;font-variant-numeric:tabular-nums;}
+  .t1{background:#e4f1ef;color:#3a5a58;}
+  .t2{background:#bfe0db;color:#0f3d39;}
+  .t3{background:#7cc6bd;color:#08322e;}
+  .t4{background:#2ca79c;color:#ffffff;}
+  .t5{background:#0c847d;color:#ffffff;}
+  .heat-key{display:flex;align-items:center;gap:8px;justify-content:center;margin-top:14px;
+    font-family:var(--font-mono);font-size:11px;color:var(--ink-faint);flex-wrap:wrap;}
+  .heat-key .sw{width:22px;height:12px;border-radius:3px;display:inline-block;}
+
+  /* ---- score breakdown ---- */
+  .break{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+    box-shadow:var(--shadow);padding:20px 22px;}
+  .break .head2{display:flex;justify-content:space-between;align-items:baseline;gap:12px;
+    flex-wrap:wrap;border-bottom:1px solid var(--line-soft);padding-bottom:12px;margin-bottom:8px;}
+  .break .head2 .t{font-weight:700;font-size:15px;}
+  .break .head2 .s{font-family:var(--font-mono);font-weight:700;color:var(--accent-ink);font-size:15px;}
+  .contrib{display:grid;grid-template-columns:1fr 128px 48px;gap:8px 12px;align-items:center;
+    padding:9px 0;border-bottom:1px solid var(--line-soft);font-size:13.5px;}
+  .contrib:last-of-type{border-bottom:none;}
+  .contrib .lab{color:var(--ink-soft);}
+  .contrib .lab b{color:var(--ink);font-weight:600;}
+  .bar{position:relative;height:14px;background:var(--surface-2);border-radius:4px;}
+  .bar .mid{position:absolute;left:50%;top:-3px;bottom:-3px;width:1px;background:var(--line);}
+  .bar .seg{position:absolute;top:0;height:100%;border-radius:4px;}
+  .seg.p{left:50%;background:var(--accent);}
+  .seg.n{right:50%;background:var(--neg);}
+  .contrib .val{font-family:var(--font-mono);font-size:12.5px;font-weight:700;text-align:right;
+    font-variant-numeric:tabular-nums;}
+  .val.p{color:var(--accent-ink);} .val.n{color:var(--neg);}
+  .sumline{display:grid;grid-template-columns:1fr 128px 48px;gap:8px 12px;padding-top:12px;margin-top:4px;
+    border-top:2px solid var(--line);font-size:13.5px;align-items:center;}
+  .sumline .lab{font-weight:700;}
+  .sumline .val{font-family:var(--font-mono);font-weight:700;text-align:right;}
+
+  /* ---- pitfalls ---- */
+  .pit{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .pit .p{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px 18px;
+    box-shadow:var(--shadow);}
+  .pit .p .tag{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--neg);font-weight:700;}
+  .pit .p h3{font-size:15px;margin:6px 0 6px;}
+  .pit .p p{font-size:13.5px;color:var(--ink-soft);margin:0;}
+  .pit .p .fix{margin-top:9px;font-size:13px;color:var(--ink);border-top:1px solid var(--line-soft);padding-top:9px;}
+  .pit .p .fix b{color:var(--accent-ink);font-family:var(--font-mono);font-size:11px;
+    text-transform:uppercase;letter-spacing:.06em;}
+
+  /* ---- steps ---- */
+  .steps{counter-reset:s;display:flex;flex-direction:column;gap:12px;margin-top:6px;}
+  .step{display:grid;grid-template-columns:40px 1fr;gap:16px;align-items:start;
+    background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px 18px;box-shadow:var(--shadow);}
+  .step::before{counter-increment:s;content:counter(s);font-family:var(--font-mono);font-weight:700;
+    font-size:17px;color:#fff;background:var(--accent);width:34px;height:34px;border-radius:9px;
+    display:grid;place-items:center;}
+  .step h3{font-size:15.5px;margin-bottom:4px;}
+  .step p{font-size:14px;color:var(--ink-soft);margin:0;}
+  .step .now{font-family:var(--font-mono);font-size:10.5px;color:var(--pos);font-weight:700;
+    text-transform:uppercase;letter-spacing:.06em;margin-left:8px;}
+
+  footer{padding:40px 0 64px;color:var(--ink-faint);font-size:13px;}
+  footer .rule{height:1px;background:var(--line);margin-bottom:22px;}
+  footer p{margin:0 0 8px;max-width:70ch;}
+  footer .mono{font-size:12px;}
+
+  @media (max-width:720px){
+    .cards3{grid-template-columns:1fr;}
+    .result-grid{grid-template-columns:1fr;}
+    .pit{grid-template-columns:1fr;}
+    .contrib,.sumline{grid-template-columns:1fr 90px 44px;}
+  }
+  @media (prefers-reduced-motion:no-preference){
+    .fcard,.rung .card,.panel,.step,.pit .p{transition:transform .18s ease, box-shadow .18s ease;}
+    .fcard:hover,.pit .p:hover{transform:translateY(-2px);}
+  }
+</style>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="badge-row">
+      <span class="brandmark"><b>LOMA</b> · Recommendation Intelligence</span>
+      <span class="draft-pill">Working draft</span>
+    </div>
+    <h1 class="title">Teaching LOMA who to recommend, to whom.</h1>
+    <p class="subtitle">A staged machine-learning plan that turns the thumbs-up/down and demographic
+      signals we now log into personalized, explainable, and fair local recommendations.</p>
+    <div class="meta">
+      <span><b>Prepared for</b> LOMA — Phuket pilot</span>
+      <span><b>Data source</b> logging-api · /events</span>
+      <span><b>Status</b> pre-model, data-collection phase</span>
+    </div>
+  </div>
+</header>
+
+<section>
+  <div class="wrap col">
+    <p class="eyebrow kicker">Start here</p>
+    <h2>You log what tourists <em>do</em>. You don't yet log what they <em>saw</em>.</h2>
+    <p class="lead">Every event we record — a thumbs-up, a tapped route, a confirmed visit — is an
+      action someone <em>took</em>. To rank places, a model also needs the opposite: the cards a
+      tourist was shown and <em>ignored</em>. Without that, there are no negatives and no way to
+      correct for the fact that the top card is seen far more than the sixth.</p>
+    <div class="callout">
+      <p class="eyebrow">The one unlock</p>
+      <p class="big">Add an <span class="mono">rec_impression</span> event — fired when a card is
+        shown, carrying its position and the tourist's context at that moment.</p>
+      <p class="muted">That single addition converts the logs from “a pile of clicks” into trainable
+        rows of <span class="mono">(context, item, shown → outcome)</span>. It mirrors the thumbs
+        implementation and is the prerequisite for everything below.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap col">
+    <p class="eyebrow kicker">The problem, in one line</p>
+    <h2>Personalized learning-to-rank</h2>
+    <p class="muted">Not rating-prediction — Phuket tourists are mostly one-shot visitors, so we
+      personalize on <b>demographic segments and expressed needs</b>, never on a personal history
+      that won't exist.</p>
+    <div class="flow">
+      <div class="node"><div class="l">Input · who</div><div class="v">Tourist context</div></div>
+      <div class="node"><div class="l">Input · what</div><div class="v">Provider features</div></div>
+      <div class="node"><div class="l">Model</div><div class="v">P( good match )</div></div>
+      <div class="node out"><div class="l">Output</div><div class="v">Ranked picks →</div></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap col">
+    <p class="eyebrow kicker">Labels</p>
+    <h2>Turning mixed signals into one target</h2>
+    <p class="muted">A thumbs-up and an actual visit are not worth the same. We fold every logged
+      signal into a graded relevance score, then down-weight by card position (a top-slot no-click
+      is a stronger negative than a bottom-slot one) and by recency.</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Signal</th><th>Logged as</th><th>Meaning</th><th>Label</th></tr></thead>
+        <tbody>
+          <tr><td class="sig-name">Confirmed visit / booking</td><td class="sig-src">provider_confirmed_visit</td><td class="muted">Ground truth</td><td><span class="wchip w-pos3">+1.0</span></td></tr>
+          <tr><td class="sig-name">Route opened · inquiry · QR</td><td class="sig-src">direction_clicked</td><td class="muted">Strong intent</td><td><span class="wchip w-pos2">+0.8</span></td></tr>
+          <tr><td class="sig-name">Thumbs up</td><td class="sig-src">rec_feedback · up</td><td class="muted">Explicit like</td><td><span class="wchip w-pos2">+0.6</span></td></tr>
+          <tr><td class="sig-name">Shared · long dwell on card</td><td class="sig-src">link_shared</td><td class="muted">Weak positive</td><td><span class="wchip w-pos1">+0.4</span></td></tr>
+          <tr><td class="sig-name">Shown, no action</td><td class="sig-src">rec_impression</td><td class="muted">Implicit negative</td><td><span class="wchip w-zero">0.0</span></td></tr>
+          <tr><td class="sig-name">Thumbs down</td><td class="sig-src">rec_feedback · down</td><td class="muted">Explicit reject — gold</td><td><span class="wchip w-neg">−1.0</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="col">
+      <p class="eyebrow kicker">Features</p>
+      <h2>Everything the model reads — all of it already in your data</h2>
+    </div>
+    <div class="cards3" style="margin-top:18px">
+      <div class="fcard">
+        <h3><span class="dot" style="background:var(--accent)"></span>Tourist</h3>
+        <ul>
+          <li><code>nationality</code> from onboarding</li>
+          <li><code>age</code> band</li>
+          <li><code>g</code> party / group</li>
+          <li><code>askNeeds</code> intent tags</li>
+          <li><code>lang</code> · budget</li>
+        </ul>
+      </div>
+      <div class="fcard">
+        <h3><span class="dot" style="background:var(--warn)"></span>Context</h3>
+        <ul>
+          <li>time-of-day · day</li>
+          <li><code>hotel_id</code> / area</li>
+          <li>weather-fit from <code>setting</code></li>
+          <li><code>screen</code> surface</li>
+          <li>session position</li>
+        </ul>
+      </div>
+      <div class="fcard">
+        <h3><span class="dot" style="background:var(--pos)"></span>Provider</h3>
+        <ul>
+          <li><code>category</code> · <code>rating</code> · <code>reviews</code></li>
+          <li><code>price</code> · <code>is_hidden_gem</code></li>
+          <li><code>loma_score</code> prior</li>
+          <li><code>cultural_locality</code> · dietary</li>
+          <li>review aspects · distance</li>
+        </ul>
+      </div>
+    </div>
+    <div class="col">
+      <div class="cross">
+        <b>Where personalization actually lives — the cross features.</b> nationality × category
+        affinity, age × price, needs ↔ item match, hotel × category. Tree models learn these splits
+        directly; neural models learn them as embeddings. Your hand-tuned <code>loma_score</code>
+        isn't discarded — it enters as a feature and the model learns the <em>residual</em> on top.
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap col">
+    <p class="eyebrow kicker">The algorithms</p>
+    <h2>A maturity ladder, matched to how much data exists</h2>
+    <p class="muted">Don't reach for a neural net on day one. Each rung ships value on its own and
+      earns the next by accumulating the data that rung needs.</p>
+  </div>
+  <div class="wrap col">
+    <div class="ladder">
+
+      <div class="rung">
+        <div class="rail"><span class="knob">0</span></div>
+        <div class="body"><div class="card">
+          <div class="phase">Phase 0 · today · ~no data</div>
+          <div class="algo">Bayesian-smoothed demographic priors</div>
+          <h3>Segment affinity table</h3>
+          <p>Per <b>nationality × category</b> (and age × price) up-vote rates with shrinkage toward
+            the global mean so three votes don't crown a category. Solves cold-start and ships now —
+            it's just aggregation over the thumbs you already collect.</p>
+          <div class="io">
+            <span><b>reads</b>&nbsp; rec_feedback + demographics</span>
+            <span><b>returns</b>&nbsp; a reweight over loma_score</span>
+          </div>
+        </div></div>
+      </div>
+
+      <div class="rung">
+        <div class="rail"><span class="knob">1</span></div>
+        <div class="body"><div class="card">
+          <div class="phase">Phase 1 · hundreds–thousands of labeled impressions</div>
+          <div class="algo">Gradient-boosted trees — LightGBM / LambdaMART</div>
+          <h3>The workhorse ranker</h3>
+          <p>Pointwise (logistic) to start, then pairwise LambdaMART to optimize rank order directly.
+            The sweet spot for sparse tabular data with rich cross features and modest volume — fast
+            to train, hard to beat here, and it explains itself. Retrain nightly.</p>
+          <div class="io">
+            <span><b>reads</b>&nbsp; full feature vector + graded labels</span>
+            <span><b>returns</b>&nbsp; calibrated P(match) per provider</span>
+          </div>
+        </div></div>
+      </div>
+
+      <div class="rung">
+        <div class="rail"><span class="knob">2</span></div>
+        <div class="body"><div class="card">
+          <div class="phase">Phase 2 · 10k+ interactions</div>
+          <div class="algo">Two-tower neural embeddings + GBDT re-rank</div>
+          <h3>Retrieval at scale</h3>
+          <p>A tourist tower and a provider tower learn embeddings so hundreds of operators can be
+            retrieved by vector similarity in milliseconds, with the Phase-1 tree re-ranking the
+            shortlist. Only worth it once catalog and traffic grow.</p>
+          <div class="io">
+            <span><b>reads</b>&nbsp; interaction history + content features</span>
+            <span><b>returns</b>&nbsp; candidate shortlist + embeddings</span>
+          </div>
+        </div></div>
+      </div>
+
+      <div class="rung">
+        <div class="rail"><span class="knob">3</span></div>
+        <div class="body"><div class="card">
+          <div class="phase">Phase 3 · steady traffic</div>
+          <div class="algo">Contextual bandit — Thompson sampling / LinUCB</div>
+          <h3>Closing the loop</h3>
+          <p>The system <em>chooses</em> what to show, so it must <b>explore</b>, not just exploit —
+            otherwise today's popular places get shown more, get more votes, and win forever. The
+            bandit balances the two and logs each pick's propensity so we can evaluate new models
+            offline. This matters more than model sophistication.</p>
+          <div class="io">
+            <span><b>reads</b>&nbsp; ranker scores + uncertainty</span>
+            <span><b>returns</b>&nbsp; the shown set + propensities</span>
+          </div>
+        </div></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="col">
+      <p class="eyebrow kicker">What the end result looks like</p>
+      <h2>Same intent, two tourists — the model reorders by who's asking</h2>
+      <p class="muted">A German couple in their late 30s and a young Thai traveler both ask for
+        “somewhere local for dinner.” Same verified candidates; different ranking. Illustrative
+        scores.</p>
+    </div>
+
+    <div class="result-grid" style="margin-top:18px">
+      <div class="panel">
+        <div class="head">
+          <div class="who"><span class="flag">🇩🇪</span> German · 35–44</div>
+          <div class="intent">“local dinner, not touristy”</div>
+        </div>
+        <div class="recs">
+          <div class="rec"><div class="rank">1</div>
+            <div><div class="nm">Ocean Rhyme — Thai Seafood</div><div class="ct">Seafood · ★4.9</div></div>
+            <div class="score"><span class="pct">94%</span><span class="track"><span class="fill" style="width:94%"></span></span></div></div>
+          <div class="rec"><div class="rank">2</div>
+            <div><div class="nm">Minami Kitchen Phuket</div><div class="ct">Local Food · <span class="gem">💎 hidden</span></div></div>
+            <div class="score"><span class="pct">87%</span><span class="track"><span class="fill" style="width:87%"></span></span></div></div>
+          <div class="rec"><div class="rank">3</div>
+            <div><div class="nm">Green Bar &amp; Restaurant</div><div class="ct">Local Food · ★5.0</div></div>
+            <div class="score"><span class="pct">79%</span><span class="track"><span class="fill" style="width:79%"></span></span></div></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="head">
+          <div class="who"><span class="flag">🇹🇭</span> Thai · 18–24</div>
+          <div class="intent">“local dinner, cheap, walkable”</div>
+        </div>
+        <div class="recs">
+          <div class="rec"><div class="rank">1</div>
+            <div><div class="nm">Grandma's Home — Wonton &amp; Noodle</div><div class="ct">Street Food · ★5.0</div></div>
+            <div class="score"><span class="pct">91%</span><span class="track"><span class="fill" style="width:91%"></span></span></div></div>
+          <div class="rec"><div class="rank">2</div>
+            <div><div class="nm">Green Bar &amp; Restaurant</div><div class="ct">Local Food · ★5.0</div></div>
+            <div class="score"><span class="pct">82%</span><span class="track"><span class="fill" style="width:82%"></span></span></div></div>
+          <div class="rec"><div class="rank">3</div>
+            <div><div class="nm">Ocean Rhyme — Thai Seafood</div><div class="ct">Seafood · ★4.9</div></div>
+            <div class="score"><span class="pct">68%</span><span class="track"><span class="fill" style="width:68%"></span></span></div></div>
+        </div>
+      </div>
+    </div>
+    <p class="demo-note">Seafood tops the list for one and lands third for the other — driven by the affinity table below, not the star rating.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="col">
+      <p class="eyebrow kicker">The learned model, made visible</p>
+      <h2>Nationality × category affinity</h2>
+      <p class="muted">This is literally the Phase-0 model — up-vote rate per segment, the same
+        object the tree model later refines. Darker = this nationality tends to reward this
+        category. Illustrative values.</p>
+    </div>
+    <div class="heat-wrap">
+      <table class="heat">
+        <thead><tr>
+          <th class="rowh"></th>
+          <th>Local&nbsp;Food</th><th>Seafood</th><th>Street&nbsp;Food</th><th>Café</th><th>Massage</th><th>Boat&nbsp;/&nbsp;Sea</th>
+        </tr></thead>
+        <tbody>
+          <tr><th class="rowh">🇩🇪 Germany</th>
+            <td class="t5 tnum">.78</td><td class="t4 tnum">.71</td><td class="t2 tnum">.55</td><td class="t1 tnum">.40</td><td class="t2 tnum">.52</td><td class="t4 tnum">.68</td></tr>
+          <tr><th class="rowh">🇬🇧 UK</th>
+            <td class="t4 tnum">.72</td><td class="t4 tnum">.69</td><td class="t3 tnum">.58</td><td class="t3 tnum">.61</td><td class="t3 tnum">.66</td><td class="t4 tnum">.70</td></tr>
+          <tr><th class="rowh">🇹🇭 Thailand</th>
+            <td class="t3 tnum">.60</td><td class="t2 tnum">.55</td><td class="t5 tnum">.82</td><td class="t5 tnum">.85</td><td class="t2 tnum">.48</td><td class="t1 tnum">.45</td></tr>
+          <tr><th class="rowh">🇨🇳 China</th>
+            <td class="t3 tnum">.58</td><td class="t4 tnum">.74</td><td class="t3 tnum">.62</td><td class="t3 tnum">.66</td><td class="t5 tnum">.79</td><td class="t4 tnum">.72</td></tr>
+          <tr><th class="rowh">🇷🇺 Russia</th>
+            <td class="t2 tnum">.55</td><td class="t5 tnum">.80</td><td class="t2 tnum">.50</td><td class="t1 tnum">.44</td><td class="t5 tnum">.83</td><td class="t5 tnum">.88</td></tr>
+          <tr><th class="rowh">🇦🇺 Australia</th>
+            <td class="t4 tnum">.70</td><td class="t3 tnum">.66</td><td class="t3 tnum">.60</td><td class="t4 tnum">.72</td><td class="t3 tnum">.58</td><td class="t5 tnum">.84</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="heat-key">
+      <span>lower affinity</span>
+      <span class="sw t1"></span><span class="sw t2"></span><span class="sw t3"></span><span class="sw t4"></span><span class="sw t5"></span>
+      <span>higher affinity</span>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap col">
+    <p class="eyebrow kicker">And it explains itself</p>
+    <h2>Why this place, for this tourist</h2>
+    <p class="muted">Because Phase 1 is tree-based, every score decomposes into feature
+      contributions — so staff (and operators) see <em>why</em> a place was recommended, not just a
+      number. Example for the German couple's top pick.</p>
+    <div class="break" style="margin-top:6px">
+      <div class="head2">
+        <div class="t">Ocean Rhyme — Thai Seafood <span class="mono muted" style="font-weight:400">· 🇩🇪 35–44 · “local dinner”</span></div>
+        <div class="s">94% match</div>
+      </div>
+      <div class="contrib"><div class="lab"><b>loma_score</b> — base local-quality prior</div>
+        <div class="bar"><span class="mid"></span><span class="seg p" style="width:33%"></span></div><div class="val p">+.42</div></div>
+      <div class="contrib"><div class="lab"><b>Seafood × 🇩🇪</b> demographic affinity</div>
+        <div class="bar"><span class="mid"></span><span class="seg p" style="width:16%"></span></div><div class="val p">+.19</div></div>
+      <div class="contrib"><div class="lab"><b>★4.9 · 647 reviews</b> — evidence weight</div>
+        <div class="bar"><span class="mid"></span><span class="seg p" style="width:12%"></span></div><div class="val p">+.14</div></div>
+      <div class="contrib"><div class="lab"><b>“not touristy”</b> ↔ cultural-locality match</div>
+        <div class="bar"><span class="mid"></span><span class="seg p" style="width:9%"></span></div><div class="val p">+.11</div></div>
+      <div class="contrib"><div class="lab"><b>Verified · open now</b></div>
+        <div class="bar"><span class="mid"></span><span class="seg p" style="width:5%"></span></div><div class="val p">+.06</div></div>
+      <div class="contrib"><div class="lab"><b>5.4 km</b> from hotel — distance penalty</div>
+        <div class="bar"><span class="mid"></span><span class="seg n" style="width:7%"></span></div><div class="val n">−.08</div></div>
+      <div class="sumline"><div class="lab">Calibrated score</div>
+        <div class="bar"><span class="mid"></span><span class="seg p" style="width:42%;background:var(--accent-ink)"></span></div>
+        <div class="val">.84</div></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="col">
+      <p class="eyebrow kicker">Guardrails</p>
+      <h2>Pitfalls we design against — most of them LOMA-specific</h2>
+      <p class="muted">A naive engagement optimizer would quietly betray the product's mission. These
+        are constraints, not afterthoughts.</p>
+    </div>
+    <div class="pit" style="margin-top:18px">
+      <div class="p">
+        <div class="tag">Runaway loop</div>
+        <h3>Rich-get-richer</h3>
+        <p>Popular places get shown → get more votes → get shown more, burying the hidden gems that
+          are LOMA's whole reason to exist.</p>
+        <div class="fix"><b>Fix</b> · bandit exploration + an explicit hidden-gem exposure floor.</div>
+      </div>
+      <div class="p">
+        <div class="tag">Mission risk</div>
+        <h3>Operator fairness</h3>
+        <p>“100% to the owner” means many small operators. Pure engagement collapses onto a handful
+          of winners.</p>
+        <div class="fix"><b>Fix</b> · exposure-fairness / diversity term so the long tail keeps impressions.</div>
+      </div>
+      <div class="p">
+        <div class="tag">Bias</div>
+        <h3>Position bias</h3>
+        <p>The top card is clicked more regardless of quality; ignore it and the model just learns
+          “position 1 = good.”</p>
+        <div class="fix"><b>Fix</b> · log position, correct with inverse-propensity weighting.</div>
+      </div>
+      <div class="p">
+        <div class="tag">Sparsity</div>
+        <h3>One-shot tourists &amp; new operators</h3>
+        <p>Most visitors never return; new operators start with zero interactions.</p>
+        <div class="fix"><b>Fix</b> · personalize on segments, not user IDs; lean on content features for cold items.</div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="cross" style="margin-top:16px">
+        <b>Measuring it.</b> Offline — NDCG@3 (you show ~3 picks), AUC, and replay/off-policy estimates
+        using logged propensities before anything goes live. Online — A/B on thumbs-up rate and
+        route-clicks, with the north star being <b>confirmed-visit rate</b>, plus the fairness and
+        hidden-gem-exposure guardrails as release gates. Privacy stays intact: we train on coarse
+        bands (age ranges, nationality), never PII.
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap col">
+    <p class="eyebrow kicker">Near-term path</p>
+    <h2>Four moves, in order</h2>
+    <div class="steps">
+      <div class="step"><div><h3>Add <span class="mono">rec_impression</span> logging</h3>
+        <p>Position + context snapshot on every card shown. The unblocker — small patcher, mirrors the thumbs work.</p></div></div>
+      <div class="step"><div><h3>Harden the best labels <span class="now">collecting now</span></h3>
+        <p>Keep thumbs; make sure <span class="mono">provider_confirmed_visit</span> and card-dwell fire reliably.</p></div></div>
+      <div class="step"><div><h3>Ship Phase-0 priors for an immediate lift</h3>
+        <p>A <span class="mono">GET /recommendations</span> that reweights by the nationality × category affinity table — usable after weeks, not months.</p></div></div>
+      <div class="step"><div><h3>Train the LightGBM ranker, evaluate by replay, then A/B behind the bandit</h3>
+        <p>With the hidden-gem and fairness guardrails wired in as release gates.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap col">
+    <div class="rule"></div>
+    <p class="mono">LOMA · Recommendation Intelligence — working draft for internal review.</p>
+    <p>Provider names are real catalog entries; all scores, percentages, and affinity values on this
+      page are <b>illustrative</b> — chosen to show the shape of the output, not measured results.
+      Nothing here has been trained yet; the plan is contingent on adding impression logging and
+      accumulating labeled data.</p>
+  </div>
+</footer>
