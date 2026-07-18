@@ -1152,7 +1152,7 @@ function qrSVG(){
 /* ============================================================
    APP STATE + NAV
    ============================================================ */
-const state = { persona:"staff", staff:"home", tourist:"card", askStage:0, askNeeds:null, askQ:"", ob:null, profile:null, profileSkipped:false, provider:"home", admin:"overview", curProv:"BRT", view:'phone',
+const state = { persona:"staff", staff:"home", tourist:"card", askStage:0, askNeeds:null, askQ:"", askHistory:[], ob:null, profile:null, profileSkipped:false, provider:"home", admin:"overview", curProv:"BRT", view:'phone',
                 provAuthed:false, provAuthScreen:"login", provAcct:null, provAvail:true,
                 provReg:{cat:"Local Food", area:"Patong", phoneVerified:false, docs:{license:false,id:false,storefront:false}, imported:null, googleClaimed:false},
                 authed:false, authScreen:"login", auth:null, pendingAcct:null, prefillUser:"",
@@ -3544,52 +3544,79 @@ const ASK_PICKS=[
   {id:'KLD',  gem:true,  why:'Almost no tourists know this one — one low step, staff happily help. Open latest tonight.'}
 ];
 function askExample(){return state.lang==='ไทย' ? 'อยากได้ร้านอาหารท้องถิ่นที่เปิดดึก รองรับรถเข็นผู้สูงอายุ ไม่ไกลมาก ราคาไม่แรง' : 'Local restaurant open late, wheelchair accessible for my mom, not far, and not expensive';}
+/* Ask LOMA keeps a running chat history (bubbles), not just the latest turn. Each
+   send appends a turn; lomaAsk fills that same turn in when the AI answers. The log
+   is persisted so the conversation survives navigation and reloads. */
+function askCurrentTurn(){ var h=state.askHistory||[]; return h.length?h[h.length-1]:null; }
+function askPersist(){ try{ localStorage.setItem('loma_ask_hist', JSON.stringify((state.askHistory||[]).slice(-20))); }catch(e){} }
+function askRestore(){
+  try{ var s=localStorage.getItem('loma_ask_hist'); if(!s) return;
+    var h=JSON.parse(s);
+    if(Array.isArray(h)){ h.forEach(function(t){ if(t&&t.loading) t.loading=false; }); state.askHistory=h; if(h.length) state.askStage=1; }
+  }catch(e){}
+}
 function askSend(t){ t=(t||'').trim();
   if(!t){const i=document.getElementById('lomaIn'); if(i){i.value=askExample(); i.focus();} return;}
-  state.askQ=t; state.askStage=1; state.askNeeds=null; state.askPicks=null; state.askIntro=null; state.askErr=false;
-  state.askLoading=(typeof lomaAsk==='function'); render();
-  if(typeof lomaAsk==='function') lomaAsk(t);
+  state.askQ=t; state.askStage=1;
+  state.askHistory=state.askHistory||[];
+  var turn={ q:t, needs:null, picks:null, intro:null, err:false, real:false, loading:(typeof lomaAsk==='function') };
+  state.askHistory.push(turn);
+  askPersist(); render();
+  if(typeof lomaAsk==='function') lomaAsk(t, turn);
+}
+/* Re-run the last question in place (used by the "Try again" button). */
+function askRetry(){
+  var turn=askCurrentTurn(); if(!turn) return;
+  turn.err=false; turn.picks=null; turn.intro=null; turn.needs=null;
+  turn.loading=(typeof lomaAsk==='function');
+  askPersist(); render();
+  if(typeof lomaAsk==='function') lomaAsk(turn.q, turn);
 }
 function touristAsk(){
   if(!state.profile && !state.profileSkipped) return touristOnboard();
-  if(state.askStage===1 && !state.askNeeds && !state.askLoading) state.askNeeds=['Local food','Open late','♿ Wheelchair OK','Not far','Budget-friendly'];
+  if(!state._askRestored){ state._askRestored=true; try{ if(typeof askRestore==='function') askRestore(); }catch(e){} }
+  const hist=state.askHistory||(state.askHistory=[]);
   const bot=t=>`<div style="display:flex;gap:9px;margin-bottom:13px"><div style="width:30px;height:30px;border-radius:50%;background:var(--primary);display:grid;place-items:center;flex:none"><span style="font-size:12px">✨</span></div><div style="background:var(--surface-2);border-radius:5px 15px 15px 15px;padding:10px 13px;font-size:13.5px;color:var(--ink);line-height:1.5;max-width:84%">${t}</div></div>`;
   const user=t=>`<div style="display:flex;justify-content:flex-end;margin-bottom:13px"><div style="background:var(--primary);color:#fff;border-radius:15px 5px 15px 15px;padding:10px 13px;font-size:13.5px;line-height:1.5;max-width:84%">${t}</div></div>`;
   let body='';
   body+=bot(T('Sawasdee ka! 🙏 Tell me what you feel like — food, souvenirs, a boat trip — and any needs (budget, time, accessibility). I only suggest verified local places, never ads.'));
-  if(state.askStage===0){
+  if(!hist.length){
     body+=`<div style="display:flex;flex-wrap:wrap;gap:8px;margin:2px 0 10px 39px">
       <button class="chip" data-lomaq="${askExample()}">${state.lang==='ไทย'?'🌙 ร้านท้องถิ่น เปิดดึก รถเข็นเข้าได้':'🌙 Local dinner · late · wheelchair OK'}</button>
       <button class="chip" data-lomaq="${state.lang==='ไทย'?'ของฝากทำมือ ไม่ใช่ของโหล งบ 500':'Handmade souvenirs, not mass-made, under ฿500'}">${state.lang==='ไทย'?'🎁 ของฝากทำมือ':'🎁 Handmade souvenirs'}</button>
     </div>`;
   } else {
-    body+=user(state.askQ);
-    if(state.askLoading){
+    hist.forEach(function(turn,ti){
+    const isLast = ti===hist.length-1;
+    body+=user(turn.q);
+    if(turn.loading){
       body+=bot(state.lang==='ไทย'?'กำลังค้นหาร้าน/สถานที่ท้องถิ่นที่ตรงกับคุณ… ✨':'Finding the best local matches for you… ✨');
-    } else if(state.askErr){
+    } else if(turn.err){
       body+=bot(state.lang==='ไทย'?'ขออภัยค่ะ ตอนนี้เชื่อมต่อผู้ช่วย AI (thaillm) ไม่ได้ กรุณาลองใหม่อีกครั้ง 🙏':'Sorry — I could not reach the AI (thaillm) right now. Please try again. 🙏');
-      body+=`<div style="margin:2px 0 6px 39px"><button class="btn btn-coral" data-lomaretry style="width:auto;padding:10px 18px;font-weight:700">${state.lang==='ไทย'?'ลองอีกครั้ง':'Try again'}</button></div>`;
+      if(isLast) body+=`<div style="margin:2px 0 6px 39px"><button class="btn btn-coral" data-lomaretry style="width:auto;padding:10px 18px;font-weight:700">${state.lang==='ไทย'?'ลองอีกครั้ง':'Try again'}</button></div>`;
     } else {
-    var _askReal=!!(state.askPicks&&state.askPicks.length);
-    var _askItems=_askReal?state.askPicks:ASK_PICKS;
-    body+=bot(state.askIntro||T('Got it — here is what I understood. Tap ✕ to change:'));
-    if((state.askNeeds||[]).length) body+=`<div style="display:flex;flex-wrap:wrap;gap:6px;margin:0 0 13px 39px">${state.askNeeds.map(n=>`<span class="chip" style="display:inline-flex;align-items:center;gap:6px;background:var(--primary-l);color:var(--primary);font-weight:700">${T(n)}<button data-lomarm="${n}" style="opacity:.6;font-size:12px">✕</button></span>`).join('')}</div>`;
+    var _askReal=!!(turn.picks&&turn.picks.length);
+    var _askItems=_askReal?turn.picks:ASK_PICKS;
+    var _needs=turn.needs; if(!_needs){ _needs=['Local food','Open late','♿ Wheelchair OK','Not far','Budget-friendly']; turn.needs=_needs; }
+    body+=bot(turn.intro||T('Got it — here is what I understood. Tap ✕ to change:'));
+    if(_needs.length) body+=`<div style="display:flex;flex-wrap:wrap;gap:6px;margin:0 0 13px 39px">${_needs.map(n=>`<span class="chip" style="display:inline-flex;align-items:center;gap:6px;background:var(--primary-l);color:var(--primary);font-weight:700">${T(n)}${isLast?`<button data-lomarm="${n}" style="opacity:.6;font-size:12px">✕</button>`:''}</span>`).join('')}</div>`;
     body+=bot(T('Verified local places that fit — every baht goes 100% to the owner:'));
     body+=`<div style="margin:0 0 6px">`+_askItems.map(x=>{const p=P(x.id); if(!p) return '';
       return bigCard(p,{sub:_askReal?x.why:T(x.why),gem:!!x.gem});
     }).join('')+`</div>`;
     body+=`<div style="font-size:11.5px;color:var(--muted);background:var(--surface-2);border-radius:9px;padding:9px 12px;margin:0 0 13px 39px;line-height:1.5">💚 ${T('No ads · no commission · shops never pay to appear. Your hotel earns Impact Credits for this.')}</div>`;
-    body+=`<div style="display:flex;flex-wrap:wrap;gap:8px;margin:0 0 6px 39px">
+    if(isLast) body+=`<div style="display:flex;flex-wrap:wrap;gap:8px;margin:0 0 6px 39px">
       <button class="chip" data-lomaref="${state.lang==='ไทย'?'ถูกกว่านี้':'cheaper'}">💸 ${T('Cheaper')}</button>
       <button class="chip" data-lomaref="${state.lang==='ไทย'?'เดินถึงได้':'walkable only'}">🚶 ${T('Walkable only')}</button>
       <button class="chip" data-lomaref="${state.lang==='ไทย'?'บรรยากาศอื่น':'different vibe'}">🔄 ${T('Different vibe')}</button>
     </div>`;
     }
+    });
   }
   return `<div class="appbar"><div class="row1">
       <button data-go="selfserve" style="width:32px;height:32px;border-radius:50%;background:var(--surface-2);display:grid;place-items:center;flex:none;font-size:20px;color:var(--ink-2);line-height:1">‹</button>
       <div class="where"><div class="t">${T('Ask LOMA')}</div><div class="p">${T('AI local guide · verified places only')}</div></div>
-      <span style="display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);font-weight:600"><span style="width:8px;height:8px;border-radius:50%;background:var(--ok)"></span>AI</span>
+      ${hist.length?`<button data-lomaclear title="${state.lang==='ไทย'?'เริ่มแชทใหม่':'New chat'}" style="background:var(--surface-2);border-radius:99px;padding:6px 11px;font-size:11px;font-weight:700;color:var(--ink-2);display:inline-flex;align-items:center;gap:4px">✏️ ${state.lang==='ไทย'?'ใหม่':'New'}</button>`:`<span style="display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);font-weight:600"><span style="width:8px;height:8px;border-radius:50%;background:var(--ok)"></span>AI</span>`}
     </div></div>
     <div class="pad" style="flex:1;padding-top:16px">${body}</div>
     <div style="position:sticky;bottom:0;background:var(--surface);border-top:1px solid var(--line);padding:9px 12px 12px">
@@ -5926,15 +5953,17 @@ document.body.addEventListener('click',e=>{
   if(askq){sendChat(askq.dataset.askq);return;}
   const chatsend=e.target.closest('[data-chatsend]');
   if(chatsend){const inp=document.getElementById('chatIn');if(inp){sendChat(inp.value);}return;}
+  const lomaclear=e.target.closest('[data-lomaclear]');
+  if(lomaclear){state.askHistory=[];state.askStage=0;state.askQ='';try{if(typeof askPersist==='function')askPersist();}catch(_){}toast(state.lang==='ไทย'?'เริ่มแชทใหม่':'New chat');render();return;}
   const lomaq=e.target.closest('[data-lomaq]');
   if(lomaq){askSend(lomaq.dataset.lomaq);return;}
   const lomasend=e.target.closest('[data-lomasend]');
   if(lomasend){const i=document.getElementById('lomaIn');if(i){askSend(i.value);}return;}
   const lomarm=e.target.closest('[data-lomarm]');
-  if(lomarm){state.askNeeds=(state.askNeeds||[]).filter(n=>n!==lomarm.dataset.lomarm);toast(state.lang==='ไทย'?'จัดอันดับใหม่ตามเงื่อนไขที่เหลือ (เดโม)':'Re-ranking with remaining needs (demo)');render();return;}
+  if(lomarm){var _t=(typeof askCurrentTurn==='function')&&askCurrentTurn(); if(_t&&_t.needs){_t.needs=_t.needs.filter(n=>n!==lomarm.dataset.lomarm); if(typeof askPersist==='function')askPersist();} toast(state.lang==='ไทย'?'จัดอันดับใหม่ตามเงื่อนไขที่เหลือ (เดโม)':'Re-ranking with remaining needs (demo)');render();return;}
   const lomaref=e.target.closest('[data-lomaref]');
   const lomaretry=e.target.closest('[data-lomaretry]');
-  if(lomaretry){ askSend(state.askQ||''); return; }
+  if(lomaretry){ if(typeof askRetry==='function'){askRetry();} else {askSend(state.askQ||'');} return; }
   if(lomaref){var _r=lomaref.dataset.lomaref||''; askSend(((state.askQ||'')+' '+_r).trim()); return;}
   const obc=e.target.closest('[data-ob]');
   if(obc){const i=obc.dataset.ob.indexOf('|');const k=obc.dataset.ob.slice(0,i),v=obc.dataset.ob.slice(i+1);state.ob=state.ob||{};state.ob[k]=v;if(k==='n')delete state.ob.nOther;render();return;}
@@ -7273,19 +7302,29 @@ function lomaAskCandidates(text){
 /* Ask LOMA (AI) — POST the request + candidates to /ask; the Thai LLM extracts the needs
    and picks 2-4 matching providers with reasons. Populates state and re-renders. On any
    failure it just clears the loading flag so touristAsk shows its built-in picks. */
-function lomaAsk(text){
+function lomaAsk(text, turn){
+  /* Resolve into the specific chat turn (falls back to the latest) so answers land on
+     the right bubble even across multiple sends. */
+  function _turn(){ try{ if(turn) return turn; if(state&&state.askHistory&&state.askHistory.length) return state.askHistory[state.askHistory.length-1]; }catch(e){} return null; }
   var body={ message:String(text||''), lang:(typeof state!=='undefined'&&state.lang==='ไทย')?'th':'en', area:(typeof PARTNER!=='undefined'&&PARTNER&&PARTNER.area)||null, providers:lomaAskCandidates(text), limit:20 };
   var opt={ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) };
   try{ if(typeof AbortSignal!=='undefined' && AbortSignal.timeout) opt.signal=AbortSignal.timeout(60000); }catch(e){}
   fetch(_lomaApiBase()+'/ask',opt).then(function(x){ return x.ok?x.json():null; }).then(function(d){
     if(typeof state==='undefined') return;
-    state.askLoading=false;
+    var tn=_turn(); if(!tn) return;
+    tn.loading=false;
     if(d&&d.ok&&d.picks&&d.picks.length){
-      state.askPicks=d.picks; state.askIntro=d.intro||null; state.askErr=false;
-      if(d.needs&&d.needs.length) state.askNeeds=d.needs;
-    } else { state.askErr=true; }
+      tn.picks=d.picks; tn.intro=d.intro||null; tn.err=false; tn.real=true;
+      if(d.needs&&d.needs.length) tn.needs=d.needs;
+    } else { tn.err=true; }
+    try{ if(typeof askPersist==='function') askPersist(); }catch(e){}
     if(typeof render==='function') render();
-  }).catch(function(){ if(typeof state!=='undefined'){ state.askLoading=false; state.askErr=true; } if(typeof render==='function') render(); });
+  }).catch(function(){
+    if(typeof state==='undefined') return;
+    var tn=_turn(); if(tn){ tn.loading=false; tn.err=true; }
+    try{ if(typeof askPersist==='function') askPersist(); }catch(e){}
+    if(typeof render==='function') render();
+  });
 }
 /* Persist a saved pick on this device (survives reloads). */
 function lomaSave(id){
