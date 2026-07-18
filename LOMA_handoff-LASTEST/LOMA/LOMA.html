@@ -3616,7 +3616,7 @@ function touristAsk(){
       <div class="where"><div class="t">${T('Ask LOMA')}</div><div class="p">${T('AI local guide · verified places only')}</div></div>
       <span style="display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);font-weight:600"><span style="width:8px;height:8px;border-radius:50%;background:var(--ok)"></span>AI</span>
     </div></div>
-    <div class="pad" style="flex:1;padding-top:16px">${body}</div>
+    <div class="pad" style="flex:1;min-height:0;overflow-y:auto;padding-top:16px">${body}</div>
     <div style="position:sticky;bottom:0;background:var(--surface);border-top:1px solid var(--line);padding:9px 12px 12px">
       <div style="display:flex;gap:8px;align-items:center">
         <input id="lomaIn" class="pp-input sm" placeholder="${state.lang==='ไทย'?'พิมพ์บอกความต้องการ…':'Tell me what you need…'}" style="margin:0;flex:1">

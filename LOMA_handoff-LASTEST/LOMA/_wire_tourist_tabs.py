@@ -126,12 +126,25 @@ def main():
         "bubble-wrap-user",
     )
 
+    # 6) Ask-LOMA compose bar sticky: the bar already had position:sticky, but the whole
+    #    screen scrolled (the .pad grows with the chat) so the sticky tabbar covered it —
+    #    you only saw the input at the very bottom. Make the MESSAGE BODY scroll internally
+    #    (flex:1;min-height:0;overflow-y:auto) instead, so the compose bar + tabbar stay
+    #    pinned and the input is always reachable without scrolling.
+    src = sub_once(
+        src,
+        '<div class="pad" style="flex:1;padding-top:16px">${body}</div>',
+        '<div class="pad" style="flex:1;min-height:0;overflow-y:auto;padding-top:16px">${body}</div>',
+        "ask-scroll-body",
+    )
+
     io.open(HTML, "w", encoding="utf-8", newline="").write(src)
     print("wired LOMA.html tourist-tabs layer:")
     print("  · new 'Shared' tab (leftmost) -> the hotel's Local picks page")
     print("  · 'For you' tab -> profile-based picks, top-rated place per category")
     print("  · 'Ask LOMA' tab (was 'Hotel') -> the AI local-guide screen, real LOMA logo icon")
     print("  · chat bubbles wrap long unbroken text (no right-edge overflow)")
+    print("  · Ask LOMA compose bar stays pinned (message body scrolls, not the input)")
 
 
 if __name__ == "__main__":
