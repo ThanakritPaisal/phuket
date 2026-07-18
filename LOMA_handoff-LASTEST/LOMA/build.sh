@@ -20,6 +20,7 @@ python _wire_communities.py
 python _wire_live_actions.py
 python _wire_real_prototype.py
 python _wire_tourist_tabs.py
+python _wire_rec_feedback.py
 python _wire_recent_recs.py
 python _wire_ui_final.py
 

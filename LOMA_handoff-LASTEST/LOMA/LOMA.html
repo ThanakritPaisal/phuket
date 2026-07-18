@@ -3247,6 +3247,8 @@ function shortLine(t){
 function bigCard(p,opt){
   opt=opt||{};
   const cat=T(opt.catLabel||p.loma_cat||p.cat||'Local');
+  const _fbcat=opt.catLabel||p.loma_cat||p.cat||'Local';
+  const _fbv=(typeof lomaGetFb==='function')?lomaGetFb(p.id):'';
   const sub=shortLine(opt.sub||p.sum||p.reason||'');
   const pills=[];
   if(opt.house) pills.push('⭐');
@@ -3265,6 +3267,12 @@ function bigCard(p,opt){
       <div class="bc-mt">
         <span class="bc-rt">${rating}</span>
         <span class="bc-ds">${p.dist||''}</span>
+      </div>
+      <div class="bc-fb" data-nostretch>
+        <span class="bc-fbq">${T('Good match?')}</span>
+        <button type="button" class="bc-fbb up${_fbv==='up'?' on':''}" data-fb="up" data-fbprov="${p.id}" data-fbcat="${_fbcat}" data-fbrating="${p.rating!=null?p.rating:''}" data-fbreviews="${p.reviews||0}" data-fbarea="${p.area||p.tambon||''}" aria-label="Good recommendation">👍</button>
+        <button type="button" class="bc-fbb down${_fbv==='down'?' on':''}" data-fb="down" data-fbprov="${p.id}" data-fbcat="${_fbcat}" data-fbrating="${p.rating!=null?p.rating:''}" data-fbreviews="${p.reviews||0}" data-fbarea="${p.area||p.tambon||''}" aria-label="Not a good recommendation">👎</button>
+        <span class="bc-fbthx">${_fbv?T('Thanks — noted'):''}</span>
       </div>
     </div>
   </div>`;
@@ -5899,7 +5907,52 @@ function renderRationale(){
 /* ============================================================
    EVENT DELEGATION
    ============================================================ */
+/* ===== LOMA rec-feedback layer ================================================
+   Thumbs up/down on recommended provider cards -> POST /events (demographic + decision
+   + business) for future ML. Best-effort; nothing blocks if the API is down.
+============================================================================== */
+function lomaFbMap(){ try{ return JSON.parse(localStorage.getItem('loma_fb')||'{}'); }catch(e){ return {}; } }
+function lomaGetFb(pid){ try{ return lomaFbMap()[pid]||''; }catch(e){ return ''; } }
+function lomaSetFb(pid,vote){ try{ var m=lomaFbMap(); m[pid]=vote; localStorage.setItem('loma_fb',JSON.stringify(m)); }catch(e){} }
+(function(){ try{
+  var st=document.createElement('style');
+  st.textContent=
+    '.bc-fb{display:flex;align-items:center;gap:7px;margin-top:9px;padding-top:9px;border-top:1px solid var(--line)}'+
+    '.bc-fbq{font-size:11.5px;color:var(--muted);font-weight:600}'+
+    '.bc-fbb{width:34px;height:28px;display:grid;place-items:center;border:1px solid var(--line);'+
+      'border-radius:99px;background:var(--surface);font-size:14px;line-height:1;cursor:pointer;'+
+      'transition:transform .1s var(--ease),background .15s,border-color .15s;-webkit-tap-highlight-color:transparent}'+
+    '.bc-fbb:active{transform:scale(.9)}'+
+    '.bc-fbb.up.on{background:var(--primary-l);border-color:var(--primary)}'+
+    '.bc-fbb.down.on{background:#fdecec;border-color:#e2726e}'+
+    '.bc-fbthx{margin-left:auto;font-size:11px;font-weight:700;color:var(--primary);opacity:0;transition:opacity .2s}';
+  document.head.appendChild(st);
+}catch(e){} })();
 document.body.addEventListener('click',e=>{
+  // ---- RECOMMENDATION FEEDBACK (thumbs up/down) -> DB for ML ----
+  const fb=e.target.closest('[data-fb]');
+  if(fb){
+    e.stopPropagation();
+    const pid=fb.getAttribute('data-fbprov'), vote=fb.getAttribute('data-fb');
+    const pf=state.profile||{};
+    lomaLog('rec_feedback', pid, null, {
+      vote:vote,
+      nationality:pf.n||null, age:pf.a||null,
+      category:fb.getAttribute('data-fbcat')||null,
+      rating:(fb.getAttribute('data-fbrating')||null),
+      reviews:(fb.getAttribute('data-fbreviews')||null),
+      area:fb.getAttribute('data-fbarea')||null,
+      screen:state.tourist||null
+    });
+    lomaSetFb(pid, vote);
+    const grp=fb.closest('.bc-fb');
+    if(grp){
+      grp.querySelectorAll('[data-fb]').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-fb')===vote); });
+      const thx=grp.querySelector('.bc-fbthx'); if(thx){ thx.textContent=T('Thanks — noted'); thx.style.opacity='1'; }
+    }
+    return;
+  }
+
   // staff tabbar / go buttons
   const go=e.target.closest('[data-go]');
   if(go){
