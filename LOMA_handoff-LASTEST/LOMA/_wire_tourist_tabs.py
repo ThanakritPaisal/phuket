@@ -32,13 +32,21 @@ def main():
         print("already wired — nothing to do")
         return
 
-    # 1) Tabbar: Shared (leftmost) -> reclist; For you -> foryou. Keep Explore/Community/Hotel.
+    # 1) Tabbar: Shared (leftmost) -> reclist; For you -> foryou; Ask LOMA (rightmost,
+    #    was "Hotel") -> ask (the same AI-guide screen as the top-nav "Ask LOMA"). Its
+    #    icon is the LOMA wordmark rendered in the brand serif so it inherits currentColor
+    #    (white on the navy tabbar, primary when active) like every other tab.
+    LOMA_ICON = (
+        '<span style="font-family:var(--fd),Georgia,serif;font-weight:800;'
+        'font-size:12.5px;letter-spacing:.02em;line-height:1">LOMA</span>'
+    )
     src = sub_once(
         src,
         "const t=[['reclist',I.bookmark,'For you'],['selfserve',I.search,'Explore'],['community',I.map,'Community'],['chat',I.home,'Hotel']];",
         "/* LOMA tourist-tabs layer: Shared = the hotel's shared picks (reclist); For you =\n"
-        "   the profile-based picks (foryou). */\n"
-        "  const t=[['reclist',I.share,'Shared'],['foryou',I.bookmark,'For you'],['selfserve',I.search,'Explore'],['community',I.map,'Community'],['chat',I.home,'Hotel']];",
+        "   the profile-based picks (foryou); Ask LOMA = the AI local guide (ask). */\n"
+        "  const t=[['reclist',I.share,'Shared'],['foryou',I.bookmark,'For you'],['selfserve',I.search,'Explore'],['community',I.map,'Community'],"
+        "['ask','" + LOMA_ICON + "','Ask LOMA']];",
         "tabbar",
     )
 
@@ -74,10 +82,38 @@ def main():
         "foryou-tabbar",
     )
 
+    # 4) The Ask-LOMA screen now has its own tab, so highlight it (was 'selfserve',
+    #    from when Ask LOMA was only reachable from the top nav).
+    src = sub_once(
+        src,
+        "data-lomasend style=\"width:auto;padding:12px 18px;font-weight:700\">${T('Send')}</button>\n"
+        "      </div>\n    </div>${touristTabbar('selfserve')}",
+        "data-lomasend style=\"width:auto;padding:12px 18px;font-weight:700\">${T('Send')}</button>\n"
+        "      </div>\n    </div>${touristTabbar('ask')}",
+        "ask-tabbar",
+    )
+
+    # 5) Chat bubbles: a long unbroken string (no spaces) ignores max-width and spills
+    #    past the bubble's right edge. Force it to wrap. (bot bubble, then user bubble.)
+    src = sub_once(
+        src,
+        "color:var(--ink);line-height:1.5;max-width:84%\">",
+        "color:var(--ink);line-height:1.5;max-width:84%;word-break:break-word;overflow-wrap:anywhere\">",
+        "bubble-wrap-bot",
+    )
+    src = sub_once(
+        src,
+        "padding:10px 13px;font-size:13.5px;line-height:1.5;max-width:84%\">",
+        "padding:10px 13px;font-size:13.5px;line-height:1.5;max-width:84%;word-break:break-word;overflow-wrap:anywhere\">",
+        "bubble-wrap-user",
+    )
+
     io.open(HTML, "w", encoding="utf-8", newline="").write(src)
     print("wired LOMA.html tourist-tabs layer:")
     print("  · new 'Shared' tab (leftmost) -> the hotel's Local picks page")
     print("  · 'For you' tab -> profile-based picks, top-rated place per category")
+    print("  · 'Ask LOMA' tab (was 'Hotel') -> the AI local-guide screen, LOMA-wordmark icon")
+    print("  · chat bubbles wrap long unbroken text (no right-edge overflow)")
 
 
 if __name__ == "__main__":

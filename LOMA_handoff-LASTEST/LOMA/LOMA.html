@@ -3161,8 +3161,8 @@ const TH={
 function T(en){return (state.lang==='ไทย' && TH[en]) ? TH[en] : en;}
 function touristTabbar(active){
   /* LOMA tourist-tabs layer: Shared = the hotel's shared picks (reclist); For you =
-   the profile-based picks (foryou). */
-  const t=[['reclist',I.share,'Shared'],['foryou',I.bookmark,'For you'],['selfserve',I.search,'Explore'],['community',I.map,'Community'],['chat',I.home,'Hotel']];
+   the profile-based picks (foryou); Ask LOMA = the AI local guide (ask). */
+  const t=[['reclist',I.share,'Shared'],['foryou',I.bookmark,'For you'],['selfserve',I.search,'Explore'],['community',I.map,'Community'],['ask','<span style="font-family:var(--fd),Georgia,serif;font-weight:800;font-size:12.5px;letter-spacing:.02em;line-height:1">LOMA</span>','Ask LOMA']];
   return `<div class="tabbar dk">${t.map(([s,ic,l])=>`<button class="${active===s?'on':''}" data-go="${s}"><span class="ic">${ic}</span>${T(l)}</button>`).join('')}</div>`;
 }
 
@@ -3569,8 +3569,8 @@ function askSend(t){ t=(t||'').trim();
 function touristAsk(){
   if(!state.profile && !state.profileSkipped) return touristOnboard();
   if(state.askStage===1 && !state.askNeeds && !state.askLoading) state.askNeeds=['Local food','Open late','♿ Wheelchair OK','Not far','Budget-friendly'];
-  const bot=t=>`<div style="display:flex;gap:9px;margin-bottom:13px"><div style="width:30px;height:30px;border-radius:50%;background:var(--primary);display:grid;place-items:center;flex:none"><span style="font-size:12px">✨</span></div><div style="background:var(--surface-2);border-radius:5px 15px 15px 15px;padding:10px 13px;font-size:13.5px;color:var(--ink);line-height:1.5;max-width:84%">${t}</div></div>`;
-  const user=t=>`<div style="display:flex;justify-content:flex-end;margin-bottom:13px"><div style="background:var(--primary);color:#fff;border-radius:15px 5px 15px 15px;padding:10px 13px;font-size:13.5px;line-height:1.5;max-width:84%">${t}</div></div>`;
+  const bot=t=>`<div style="display:flex;gap:9px;margin-bottom:13px"><div style="width:30px;height:30px;border-radius:50%;background:var(--primary);display:grid;place-items:center;flex:none"><span style="font-size:12px">✨</span></div><div style="background:var(--surface-2);border-radius:5px 15px 15px 15px;padding:10px 13px;font-size:13.5px;color:var(--ink);line-height:1.5;max-width:84%;word-break:break-word;overflow-wrap:anywhere">${t}</div></div>`;
+  const user=t=>`<div style="display:flex;justify-content:flex-end;margin-bottom:13px"><div style="background:var(--primary);color:#fff;border-radius:15px 5px 15px 15px;padding:10px 13px;font-size:13.5px;line-height:1.5;max-width:84%;word-break:break-word;overflow-wrap:anywhere">${t}</div></div>`;
   let body='';
   body+=bot(T('Sawasdee ka! 🙏 Tell me what you feel like — food, souvenirs, a boat trip — and any needs (budget, time, accessibility). I only suggest verified local places, never ads.'));
   if(state.askStage===0){
@@ -3613,7 +3613,7 @@ function touristAsk(){
         <input id="lomaIn" class="pp-input sm" placeholder="${state.lang==='ไทย'?'พิมพ์บอกความต้องการ…':'Tell me what you need…'}" style="margin:0;flex:1">
         <button class="btn btn-coral" data-lomasend style="width:auto;padding:12px 18px;font-weight:700">${T('Send')}</button>
       </div>
-    </div>${touristTabbar('selfserve')}`;
+    </div>${touristTabbar('ask')}`;
 }
 function touristThanks(){
   const p=P(state.curProv);
